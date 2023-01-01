@@ -1,15 +1,16 @@
-import "../styles/globals.css";
+import { Source_Sans_Pro } from "@next/font/google";
 import type { AppProps } from "next/app";
-import { Jost } from "@next/font/google";
+import "../styles/globals.css";
 
-const jost = Jost({
+const ssp = Source_Sans_Pro({
   subsets: ["latin"],
-  variable: "--jost-font",
+  weight: ["400"],
+  variable: "--ssp-font",
 });
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={jost.className}>
+    <main className={ssp.className}>
       <Component {...pageProps} />
     </main>
   );

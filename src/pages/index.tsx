@@ -1,4 +1,5 @@
 import Head from "next/head";
+import LogoWithText from "../components/Logo/LogoWithText";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <LogoWithText />
       <h1 className="text-xl">Dennis Mitchell</h1>
     </>
   );

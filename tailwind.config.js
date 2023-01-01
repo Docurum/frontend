@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--jost-font)"],
+        sans: ["var(--ssp-font)"],
       },
     },
   },
