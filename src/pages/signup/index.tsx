@@ -5,7 +5,9 @@ import Logo from "../../components/Logo/Logo";
 
 const SignUp = () => {
   return (
-    <div className="w-full flex min-h-screen">
+    <div className="w-full flex flex-row min-h-screen" style={{
+      maxWidth:'1920px'
+    }}>
       <LeftHalf />
       <RightHalf />
     </div>
@@ -18,7 +20,7 @@ const LeftHalf = () => {
   return (
     <div className="w-1/2 flex">
       <div className="flex-grow bg-blue-200 m-6 rounded-lg relative" style={{ background: "linear-gradient(45deg, rgba(14,5,161,1) 0%, rgba(29,29,186,1) 41%, rgba(0,212,255,1) 100%)" }}>
-        <Image src="/doc.png" alt="docurum" width={900} height={900} className="absolute bottom-0 left-1/2 translate-x-[-50%]" />
+        <Image src="/doc.png" alt="docurum" width={570} height={900} className="absolute bottom-0 left-1/2 translate-x-[-50%]" />
       </div>
     </div>
   );
