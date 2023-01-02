@@ -7,6 +7,7 @@ import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
 import Logo from "../../components/Logo/Logo";
+import SEO from "../../components/SEO";
 
 const nameSchema = z.string().min(3).max(80).trim();
 
@@ -19,7 +20,7 @@ const usernameSchema = z
   .trim()
   .transform((username) => username.toLocaleLowerCase());
 
-const emailSchema = z.string().max(60).email().trim();
+const emailSchema = z.string().min(4).max(60).email().trim();
 
 const passwordSchema = z
   .string()
@@ -57,6 +58,7 @@ type registerSchemaType = z.infer<typeof registerSchema>;
 const SignUp = () => {
   return (
     <div className="w-full flex min-h-screen select-none">
+      <SEO title="Signup" />
       <LeftHalf />
       <RightHalf />
     </div>
@@ -166,7 +168,7 @@ const RightHalf = () => {
             <div className="relative">
               <input
                 className={classNames(
-                  ["rounded w-full py-2 px-3 text-gray-700"],
+                  ["rounded w-full py-2 px-3 text-gray-700 pr-10"],
                   [errors.password ? "border-2 border-red-500 focus:outline-red-600" : "border border-gray-300 focus:outline-blue-600"]
                 )}
                 id="password"
@@ -217,7 +219,11 @@ const RightHalf = () => {
               Are you a Doctor ?
             </label>
           </div>
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed" type="submit" disabled={isSubmitting || isValidating}>
+          <button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed"
+            type="submit"
+            disabled={isSubmitting || isValidating}
+          >
             Create account
           </button>
           <div className="text-center pt-6 flex gap-x-3 items-center justify-center">
