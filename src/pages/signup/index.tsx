@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
-import { registerUser } from "../../api";
+import { checkUsernameExists, registerUser } from "../../api";
 import Logo from "../../components/Logo/Logo";
 import SEO from "../../components/SEO";
 
@@ -80,27 +80,30 @@ const LeftHalf = () => {
 const RightHalf = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
   const {
     reset,
     register,
     handleSubmit,
     setError,
+    clearErrors,
     formState: { errors, isSubmitting, isValidating },
   } = useForm<registerSchemaType>({
     mode: "onChange",
     resolver: zodResolver(registerSchema),
   });
+
   const onSubmit: SubmitHandler<registerSchemaType> = async (formData) => {
     console.table(formData);
     try {
       const { data } = await registerUser(formData);
       toast.success(data.message, { id: data.message });
+      setIsUsernameAvailable(false);
       reset();
       setShowPassword(false);
       setShowConfirmPassword(false);
     } catch (err: any) {
       const errorMessage = err.response.data.message;
-      console.log(errorMessage);
       errorMessage.forEach((error: { message: string; path: [keyof registerSchemaType] }) => {
         setError(error.path[0], {
           message: error.message,
@@ -108,6 +111,21 @@ const RightHalf = () => {
       });
     }
   };
+
+  const checkUsernameExistsHandler = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    try {
+      await checkUsernameExists({ username: e.target.value });
+      clearErrors("username");
+      setIsUsernameAvailable(true);
+    } catch (err: any) {
+      setIsUsernameAvailable(false);
+      const errorMessage = err.response.data.message[0] as { message: string; path: [keyof registerSchemaType] };
+      setError(errorMessage.path[0], {
+        message: errorMessage.message,
+      });
+    }
+  };
+
   return (
     <div className="w-1/2 flex flex-col items-center justify-center gap-y-2.5 my-12">
       <div className="bg-white border-2 border-gray-300 p-1 rounded-lg" style={{ background: "linear-gradient(0deg, rgba(221,222,225,1) 0%, rgba(255,255,255,0.5504073455554097) 100%)" }}>
@@ -149,16 +167,17 @@ const RightHalf = () => {
             <input
               className={classNames(
                 ["rounded w-full py-2 px-3 text-gray-700"],
-                [errors.username ? "border-2 border-red-500 focus:outline-red-600" : "border border-gray-300 focus:outline-blue-600"]
-                // [getFieldState("username").isDirty && !errors.username && "!border-2 border-green-600 focus:!outline-green-600"]
+                [errors.username ? "border-2 border-red-500 focus:outline-red-600" : "border border-gray-300 focus:outline-blue-600"],
+                [isUsernameAvailable && !errors.username && "!border-2 border-green-600 focus:!outline-green-600"]
               )}
               id="username"
               type="text"
               placeholder="Choose your username"
               {...register("username")}
+              onChange={checkUsernameExistsHandler}
             />
             {errors.username && <p className="text-red-500 text-sm italic">{errors.username.message}</p>}
-            {/* {getFieldState("username").isDirty && !errors.username && <p className="text-green-700 text-sm italic">Username available!</p>} */}
+            {isUsernameAvailable && !errors.username && <p className="text-green-700 text-sm italic">Username available!</p>}
           </div>
           <div className="mb-3">
             <label className="block mb-2" htmlFor="email">
