@@ -5,7 +5,7 @@ import Logo from "../../components/Logo/Logo";
 
 const Login = () => {
   return (
-    <div className="w-full flex min-h-screen">
+    <div className="w-full flex min-h-screen select-none">
       <LeftHalf />
       <RightHalf />
     </div>
