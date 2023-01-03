@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import Logo from "../../components/Logo/Logo";
@@ -73,7 +74,9 @@ const RightHalf = () => {
           </div>
           <div className="text-center flex gap-x-3 items-center justify-center">
             <span className="text-gray-500 font-medium">{"Don't have an account?"}</span>
-            <span className="font-semibold text-blue-600">Create Account</span>
+            <Link href="/signup">
+              <span className="font-semibold text-blue-600 hover:cursor-pointer">Create Account</span>
+            </Link>
           </div>
         </form>
       </div>

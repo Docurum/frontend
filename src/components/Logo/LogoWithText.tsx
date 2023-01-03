@@ -48,7 +48,7 @@ const LogoWithText = ({ className }: { className?: string }) => {
             fill="#2548f5"
           />
         </g>
-        <text id="docurum" transform="translate(391 333)" fill="#343434" font-size="190" font-family="" className="font-sans" font-weight="500">
+        <text id="docurum" transform="translate(391 333)" fill="#343434" fontSize="190" font-family="" className="font-sans" font-weight="500">
           <tspan x="0" y="0">
             doc
           </tspan>

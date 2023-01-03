@@ -1,11 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
+import { registerUser } from "../../api";
 import Logo from "../../components/Logo/Logo";
 import SEO from "../../components/SEO";
 
@@ -27,10 +30,7 @@ const passwordSchema = z
   .min(8)
   .max(50)
   // https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a
-  .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/gm,
-    "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character."
-  )
+  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/gm, "Must contain at least one uppercase letter, one lowercase letter, one number and one special character.")
   .trim();
 
 const registerSchema = z
@@ -45,7 +45,7 @@ const registerSchema = z
   .strict()
   .refine(
     ({ confirmPassword, password }) => {
-      return confirmPassword === password;
+      return password === confirmPassword;
     },
     {
       path: ["confirmPassword"],
@@ -53,7 +53,7 @@ const registerSchema = z
     }
   );
 
-type registerSchemaType = z.infer<typeof registerSchema>;
+export type registerSchemaType = z.infer<typeof registerSchema>;
 
 const SignUp = () => {
   return (
@@ -84,17 +84,29 @@ const RightHalf = () => {
     reset,
     register,
     handleSubmit,
-    getFieldState,
+    setError,
     formState: { errors, isSubmitting, isValidating },
   } = useForm<registerSchemaType>({
-    mode: "onBlur",
+    mode: "onChange",
     resolver: zodResolver(registerSchema),
   });
-  const onSubmit: SubmitHandler<registerSchemaType> = (data) => {
-    console.table(data);
-    reset();
-    setShowPassword(false);
-    setShowConfirmPassword(false);
+  const onSubmit: SubmitHandler<registerSchemaType> = async (formData) => {
+    console.table(formData);
+    try {
+      const { data } = await registerUser(formData);
+      toast.success(data.message, { id: data.message });
+      reset();
+      setShowPassword(false);
+      setShowConfirmPassword(false);
+    } catch (err: any) {
+      const errorMessage = err.response.data.message;
+      console.log(errorMessage);
+      errorMessage.forEach((error: { message: string; path: [keyof registerSchemaType] }) => {
+        setError(error.path[0], {
+          message: error.message,
+        });
+      });
+    }
   };
   return (
     <div className="w-1/2 flex flex-col items-center justify-center gap-y-2.5 my-12">
@@ -137,8 +149,8 @@ const RightHalf = () => {
             <input
               className={classNames(
                 ["rounded w-full py-2 px-3 text-gray-700"],
-                [errors.username ? "border-2 border-red-500 focus:outline-red-600" : "border border-gray-300 focus:outline-blue-600"],
-                [getFieldState("username").isDirty && !errors.username && "!border-2 border-green-600 focus:!outline-green-600"]
+                [errors.username ? "border-2 border-red-500 focus:outline-red-600" : "border border-gray-300 focus:outline-blue-600"]
+                // [getFieldState("username").isDirty && !errors.username && "!border-2 border-green-600 focus:!outline-green-600"]
               )}
               id="username"
               type="text"
@@ -146,7 +158,7 @@ const RightHalf = () => {
               {...register("username")}
             />
             {errors.username && <p className="text-red-500 text-sm italic">{errors.username.message}</p>}
-            {getFieldState("username").isDirty && !errors.username && <p className="text-green-700 text-sm italic">Username available!</p>}
+            {/* {getFieldState("username").isDirty && !errors.username && <p className="text-green-700 text-sm italic">Username available!</p>} */}
           </div>
           <div className="mb-3">
             <label className="block mb-2" htmlFor="email">
@@ -228,7 +240,9 @@ const RightHalf = () => {
           </button>
           <div className="text-center pt-6 flex gap-x-3 items-center justify-center">
             <span className="text-gray-500 font-medium">Already have an account?</span>
-            <span className="font-semibold text-blue-600 hover:cursor-pointer">Log in</span>
+            <Link href="/login">
+              <span className="font-semibold text-blue-600 hover:cursor-pointer">Log in</span>
+            </Link>
           </div>
         </form>
       </div>
