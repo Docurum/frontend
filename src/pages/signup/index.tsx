@@ -1,12 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { z } from "zod";
+import { checkUsernameExists, registerUser } from "../../api";
 import Logo from "../../components/Logo/Logo";
+import SEO from "../../components/SEO";
 
 const nameSchema = z.string().min(3).max(80).trim();
 
@@ -19,17 +23,14 @@ const usernameSchema = z
   .trim()
   .transform((username) => username.toLocaleLowerCase());
 
-const emailSchema = z.string().max(60).email().trim();
+const emailSchema = z.string().min(4).max(60).email().trim();
 
 const passwordSchema = z
   .string()
   .min(8)
   .max(50)
   // https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a
-  .regex(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/gm,
-    "Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character."
-  )
+  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/gm, "Must contain at least one uppercase letter, one lowercase letter, one number and one special character.")
   .trim();
 
 const registerSchema = z
@@ -44,7 +45,7 @@ const registerSchema = z
   .strict()
   .refine(
     ({ confirmPassword, password }) => {
-      return confirmPassword === password;
+      return password === confirmPassword;
     },
     {
       path: ["confirmPassword"],
@@ -52,11 +53,12 @@ const registerSchema = z
     }
   );
 
-type registerSchemaType = z.infer<typeof registerSchema>;
+export type registerSchemaType = z.infer<typeof registerSchema>;
 
 const SignUp = () => {
   return (
     <div className="w-full flex min-h-screen select-none">
+      <SEO title="Signup" />
       <LeftHalf />
       <RightHalf />
     </div>
@@ -78,22 +80,52 @@ const LeftHalf = () => {
 const RightHalf = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
   const {
     reset,
     register,
     handleSubmit,
-    getFieldState,
+    setError,
+    clearErrors,
     formState: { errors, isSubmitting, isValidating },
   } = useForm<registerSchemaType>({
-    mode: "onBlur",
+    mode: "onChange",
     resolver: zodResolver(registerSchema),
   });
-  const onSubmit: SubmitHandler<registerSchemaType> = (data) => {
-    console.table(data);
-    reset();
-    setShowPassword(false);
-    setShowConfirmPassword(false);
+
+  const onSubmit: SubmitHandler<registerSchemaType> = async (formData) => {
+    console.table(formData);
+    try {
+      const { data } = await registerUser(formData);
+      toast.success(data.message, { id: data.message });
+      setIsUsernameAvailable(false);
+      reset();
+      setShowPassword(false);
+      setShowConfirmPassword(false);
+    } catch (err: any) {
+      const errorMessage = err.response.data.message;
+      errorMessage.forEach((error: { message: string; path: [keyof registerSchemaType] }) => {
+        setError(error.path[0], {
+          message: error.message,
+        });
+      });
+    }
   };
+
+  const checkUsernameExistsHandler = async (e: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    try {
+      await checkUsernameExists({ username: e.target.value });
+      clearErrors("username");
+      setIsUsernameAvailable(true);
+    } catch (err: any) {
+      setIsUsernameAvailable(false);
+      const errorMessage = err.response.data.message[0] as { message: string; path: [keyof registerSchemaType] };
+      setError(errorMessage.path[0], {
+        message: errorMessage.message,
+      });
+    }
+  };
+
   return (
     <div className="w-1/2 flex flex-col items-center justify-center gap-y-2.5 my-12">
       <div className="bg-white border-2 border-gray-300 p-1 rounded-lg" style={{ background: "linear-gradient(0deg, rgba(221,222,225,1) 0%, rgba(255,255,255,0.5504073455554097) 100%)" }}>
@@ -136,15 +168,16 @@ const RightHalf = () => {
               className={classNames(
                 ["rounded w-full py-2 px-3 text-gray-700"],
                 [errors.username ? "border-2 border-red-500 focus:outline-red-600" : "border border-gray-300 focus:outline-blue-600"],
-                [getFieldState("username").isDirty && !errors.username && "!border-2 border-green-600 focus:!outline-green-600"]
+                [isUsernameAvailable && !errors.username && "!border-2 border-green-600 focus:!outline-green-600"]
               )}
               id="username"
               type="text"
               placeholder="Choose your username"
               {...register("username")}
+              onChange={checkUsernameExistsHandler}
             />
             {errors.username && <p className="text-red-500 text-sm italic">{errors.username.message}</p>}
-            {getFieldState("username").isDirty && !errors.username && <p className="text-green-700 text-sm italic">Username available!</p>}
+            {isUsernameAvailable && !errors.username && <p className="text-green-700 text-sm italic">Username available!</p>}
           </div>
           <div className="mb-3">
             <label className="block mb-2" htmlFor="email">
@@ -166,7 +199,7 @@ const RightHalf = () => {
             <div className="relative">
               <input
                 className={classNames(
-                  ["rounded w-full py-2 px-3 text-gray-700"],
+                  ["rounded w-full py-2 px-3 text-gray-700 pr-10"],
                   [errors.password ? "border-2 border-red-500 focus:outline-red-600" : "border border-gray-300 focus:outline-blue-600"]
                 )}
                 id="password"
@@ -217,12 +250,18 @@ const RightHalf = () => {
               Are you a Doctor ?
             </label>
           </div>
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed" type="submit" disabled={isSubmitting || isValidating}>
+          <button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed"
+            type="submit"
+            disabled={isSubmitting || isValidating}
+          >
             Create account
           </button>
           <div className="text-center pt-6 flex gap-x-3 items-center justify-center">
             <span className="text-gray-500 font-medium">Already have an account?</span>
-            <span className="font-semibold text-blue-600 hover:cursor-pointer">Log in</span>
+            <Link href="/login">
+              <span className="font-semibold text-blue-600 hover:cursor-pointer">Log in</span>
+            </Link>
           </div>
         </form>
       </div>

@@ -1,11 +1,14 @@
 import Image from "next/image";
+import Link from "next/link";
 import { AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import Logo from "../../components/Logo/Logo";
+import SEO from "../../components/SEO";
 
 const Login = () => {
   return (
     <div className="w-full flex min-h-screen select-none">
+      <SEO title="Login" />
       <LeftHalf />
       <RightHalf />
     </div>
@@ -63,18 +66,6 @@ const RightHalf = () => {
               </div>
             </div>
           </div>
-          {/* <div className="mb-3">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-              Password
-            </label>
-            <input
-              className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              type="password"
-              placeholder="******************"
-            />
-            <p className="text-red-500 text-xs italic">Please choose a password.</p>
-          </div> */}
           <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg" type="button">
             Create account
           </button>
@@ -83,7 +74,9 @@ const RightHalf = () => {
           </div>
           <div className="text-center flex gap-x-3 items-center justify-center">
             <span className="text-gray-500 font-medium">{"Don't have an account?"}</span>
-            <span className="font-semibold text-blue-600">Create Account</span>
+            <Link href="/signup">
+              <span className="font-semibold text-blue-600 hover:cursor-pointer">Create Account</span>
+            </Link>
           </div>
         </form>
       </div>
