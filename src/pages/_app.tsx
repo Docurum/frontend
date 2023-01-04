@@ -2,7 +2,9 @@ import { Source_Sans_Pro } from "@next/font/google";
 import type { AppProps } from "next/app";
 import { useEffect } from "react";
 import { Toaster, toast, useToasterStore } from "react-hot-toast";
+
 import "../styles/globals.css";
+import "../components/SearchBar/index.css"
 
 const ssp = Source_Sans_Pro({
   subsets: ["latin"],
