@@ -69,7 +69,7 @@ export default SignUp;
 
 const LeftHalf = () => {
   return (
-    <div className="w-1/2 flex">
+    <div className="hidden w-1/2 md:flex">
       <div className="flex-grow bg-blue-200 m-6 rounded-lg relative" style={{ background: "linear-gradient(45deg, rgba(14,5,161,1) 0%, rgba(29,29,186,1) 41%, rgba(0,212,255,1) 100%)" }}>
         <Image src="/doc.png" alt="docurum" width={570} height={900} className="absolute bottom-0 left-1/2 translate-x-[-50%]" />
       </div>
@@ -127,7 +127,7 @@ const RightHalf = () => {
   };
 
   return (
-    <div className="w-1/2 flex flex-col items-center justify-center gap-y-2.5 my-12">
+    <div className="w-full px-10 md:px-5 md:w-1/2 flex flex-col items-center justify-center gap-y-2.5 my-12">
       <div className="bg-white border-2 border-gray-300 p-1 rounded-lg" style={{ background: "linear-gradient(0deg, rgba(221,222,225,1) 0%, rgba(255,255,255,0.5504073455554097) 100%)" }}>
         <Logo className="w-10 h-10" />
       </div>

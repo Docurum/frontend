@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { Toaster, toast, useToasterStore } from "react-hot-toast";
 
 import "../styles/globals.css";
-import "../components/SearchBar/index.css"
 
 const ssp = Source_Sans_Pro({
   subsets: ["latin"],

@@ -1,7 +1,3 @@
-.search-scrollbar{
-    overflow-y: scroll;
-}
-
 .search-scrollbar::-webkit-scrollbar{
     height: 7px;
     width: 7px;
