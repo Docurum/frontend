@@ -206,10 +206,10 @@ export default function SearchBar() {
         type="text"
         name="searchInputController"
         ref={inputRef}
-        placeholder=" Search for topics here"
+        placeholder="🔍 Search for topics here"
         onChange={(event) => onInputChange(event)}
       />
-      <div ref={ulRef} className={classNames([styles["search-scrollbar"]], ["absolute flex flex-col max-h-[400px] w-[430px] overflow-y-scroll overflow-x-hidden rounded-md bg-gray-100"])}>
+      <div ref={ulRef} className={classNames([styles["search-scrollbar"]], ["hidden absolute flex-col max-h-[400px] w-[430px] overflow-y-scroll overflow-x-hidden rounded-md bg-gray-100"])}>
         {searchList.map((d) => {
           return <SearchCard key={d.id} title={d.title} description={d.description} author={d.author} commentCount={d.commentCount} likes={d.views} />;
         })}
@@ -228,9 +228,9 @@ interface ISearchCardProps {
 
 const SearchCard: FC<ISearchCardProps> = ({ title, description, author, commentCount, likes }) => {
   return (
-    <div className="mt-2 pb-2 mb-2 relative mx-2 px-4 pt-2 shadow-md w-[4300px] rounded-lg flex flex-col shadow-blue-300 hover:cursor-pointer hover:shadow-blue-400 ">
+    <div className="mt-2 pb-2 mb-2 relative mx-2 px-4 pt-2 shadow-md w-[410px] rounded-lg flex flex-col shadow-blue-300 hover:cursor-pointer hover:shadow-blue-400 ">
       <div className=" text-xl font-bold">{title}</div>
-      <div className="flex flex-col w-[410px] text-md h-42">{description.length > 130 ? description.substring(0, 130) : description}</div>
+      <div className="flex flex-col w-[370px] text-md h-42">{description.length > 130 ? description.substring(0, 130) : description}</div>
     </div>
   );
 };
