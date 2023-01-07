@@ -54,6 +54,7 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
     handleSubmit,
     setError,
     clearErrors,
+    setValue,
     formState: { errors, isSubmitting, isValidating },
   } = useForm<registerSchemaType>({
     mode: "onChange",
@@ -75,15 +76,23 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       toast.success(data.message, { id: data.message });
       setIsUsernameAvailable(false);
       reset();
+      // As reset will fallback to defaultValues
+      // so they have to be cleared explicitly
+      setValue("name", "");
+      setValue("email", "");
       setShowPassword(false);
       setShowConfirmPassword(false);
     } catch (err: any) {
-      const errorMessage = err.response.data.message;
-      errorMessage.forEach((error: { message: string; path: [keyof registerSchemaType] }) => {
-        setError(error.path[0], {
-          message: error.message,
+      if (err.response) {
+        const errorMessage = err.response.data.message;
+        errorMessage.forEach((error: { message: string; path: [keyof registerSchemaType] }) => {
+          setError(error.path[0], {
+            message: error.message,
+          });
         });
-      });
+      } else {
+        toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
+      }
     }
   };
 
@@ -93,19 +102,28 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       clearErrors("username");
       setIsUsernameAvailable(true);
     } catch (err: any) {
-      setIsUsernameAvailable(false);
-      const errorMessage = err.response.data.message[0] as { message: string; path: [keyof registerSchemaType] };
-      setError(errorMessage.path[0], {
-        message: errorMessage.message,
-      });
+      if (err.response) {
+        setIsUsernameAvailable(false);
+        const errorMessage = err.response.data.message[0] as { message: string; path: [keyof registerSchemaType] };
+        setError(errorMessage.path[0], {
+          message: errorMessage.message,
+        });
+      } else {
+        toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
+      }
     }
   };
 
   return (
     <div className="w-full px-10 md:px-5 md:w-1/2 flex flex-col items-center justify-center gap-y-2.5 my-12">
-      <div className="bg-white border-2 border-gray-300 p-1 rounded-lg" style={{ background: "linear-gradient(0deg, rgba(221,222,225,1) 0%, rgba(255,255,255,0.5504073455554097) 100%)" }}>
-        <Logo className="w-10 h-10" />
-      </div>
+      <Link href="/">
+        <div
+          className="bg-white border-2 border-gray-300 p-1 rounded-lg hover:cursor-pointer"
+          style={{ background: "linear-gradient(0deg, rgba(221,222,225,1) 0%, rgba(255,255,255,0.5504073455554097) 100%)" }}
+        >
+          <Logo className="w-10 h-10" />
+        </div>
+      </Link>
       <div className="text-3xl font-bold">Create your account</div>
       <div className="text-gray-500">Enter the fields below to get started</div>
       <button

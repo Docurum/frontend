@@ -57,10 +57,10 @@ const getGoogleOAuthTokens = async (code: string) => {
       },
     });
     return res.data;
-  } catch (error: any) {
-    console.log(error);
-    console.log(error.response.data);
-    throw new Error(error.message);
+  } catch (err: any) {
+    console.log(err);
+    console.log(err.response.data);
+    throw new Error(err.message);
   }
 };
 
