@@ -2,73 +2,24 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
-import { z } from "zod";
 import { checkUsernameExists, registerUser } from "../../api";
 import Logo from "../../components/Logo/Logo";
 import SEO from "../../components/SEO";
+import registerSchema from "../../schemas/registerSchema";
+import { googleProfile } from "../../types/googleProfile";
+import { registerSchemaType } from "../../types/signup";
+import capsEveryFirstLetter from "../../utils/capsEveryFirstLetter";
 import getGoogleOAuthURL from "../../utils/getGoogleUrl";
-import { parseCookies, setCookie, destroyCookie } from "nookies";
 
 export function getServerSideProps(ctx: any) {
   const googleUser = ctx.req.cookies.googleUser ? JSON.parse(ctx.req.cookies.googleUser) : null;
   return { props: { googleUser } };
 }
-
-const capitalizeEveryFirstLetter = (s: string): string => {
-  const arr = s.split(" ");
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
-  }
-  return arr.join(" ");
-};
-
-const nameSchema = z.string().min(3).max(80).trim();
-
-const usernameSchema = z
-  .string()
-  .min(4)
-  .max(20)
-  // https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
-  .regex(/^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/gm)
-  .trim()
-  .transform((username) => username.toLocaleLowerCase());
-
-const emailSchema = z.string().min(4).max(60).email().trim();
-
-const passwordSchema = z
-  .string()
-  .min(8)
-  .max(50)
-  // https://stackoverflow.com/questions/19605150/regex-for-password-must-contain-at-least-eight-characters-at-least-one-number-a
-  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/gm, "Must contain at least one uppercase letter, one lowercase letter, one number and one special character.")
-  .trim();
-
-const registerSchema = z
-  .object({
-    name: nameSchema,
-    username: usernameSchema,
-    email: emailSchema,
-    password: passwordSchema,
-    confirmPassword: z.string().trim(),
-    isDoctor: z.boolean().default(false),
-  })
-  .strict()
-  .refine(
-    ({ confirmPassword, password }) => {
-      return password === confirmPassword;
-    },
-    {
-      path: ["confirmPassword"],
-      message: "Passwords don't match",
-    }
-  );
-
-export type registerSchemaType = z.infer<typeof registerSchema>;
 
 const SignUp = ({ googleUser }: { googleUser: googleProfile | null }) => {
   return (
@@ -92,12 +43,6 @@ const LeftHalf = () => {
   );
 };
 
-interface googleProfile {
-  name: string; // ✅
-  email: string; // ✅
-  picture: string; // ✅
-}
-
 const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
@@ -109,13 +54,12 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
     handleSubmit,
     setError,
     clearErrors,
-    setValue,
     formState: { errors, isSubmitting, isValidating },
   } = useForm<registerSchemaType>({
     mode: "onChange",
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      name: capitalizeEveryFirstLetter((googleUser?.name || "").toLowerCase()),
+      name: capsEveryFirstLetter((googleUser?.name || "").toLowerCase()),
       username: "",
       email: googleUser?.email || "",
       password: "",
@@ -123,9 +67,6 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       isDoctor: false,
     },
   });
-
-  const cookies = parseCookies();
-  console.log({ cookies });
 
   const onSubmit: SubmitHandler<registerSchemaType> = async (formData) => {
     console.table(formData);

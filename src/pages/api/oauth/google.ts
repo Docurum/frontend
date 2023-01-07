@@ -3,17 +3,9 @@ import { CookieSerializeOptions, serialize } from "cookie";
 import jwt from "jsonwebtoken";
 import type { NextApiRequest, NextApiResponse } from "next";
 import qs from "qs";
+import cookieOptions from "../../../utils/cookieOptions";
 
-const cookieOptions: CookieSerializeOptions = {
-  maxAge: 10,
-  httpOnly: false,
-  domain: "localhost",
-  path: "/",
-  sameSite: "lax",
-  secure: true,
-};
-
-export const setCookie = (res: NextApiResponse, name: string, value: unknown, options: CookieSerializeOptions = {}) => {
+const setCookie = (res: NextApiResponse, name: string, value: unknown, options: CookieSerializeOptions = {}) => {
   const stringValue = typeof value === "object" ? JSON.stringify(value) : String(value);
   if (typeof options.maxAge === "number") {
     options.expires = new Date(Date.now() + options.maxAge * 1000);

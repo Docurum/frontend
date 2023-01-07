@@ -1,37 +1,21 @@
 import { Source_Sans_Pro } from "@next/font/google";
+import { CookieSerializeOptions } from "cookie";
 import type { AppProps } from "next/app";
-import { useEffect, useState } from "react";
-import { Toaster, toast, useToasterStore } from "react-hot-toast";
-import GoogleOneTapLogin from "react-google-one-tap-login";
-import { parseCookies, setCookie, destroyCookie } from "nookies";
-import nookies from "nookies";
-import { CookieSerializeOptions, serialize } from "cookie";
 import { useRouter } from "next/router";
+import { destroyCookie, setCookie } from "nookies";
+import { useEffect, useState } from "react";
+import GoogleOneTapLogin from "react-google-one-tap-login";
+import { Toaster, toast, useToasterStore } from "react-hot-toast";
 
 import "../styles/globals.css";
+import capsEveryFirstLetter from "../utils/capsEveryFirstLetter";
+import cookieOptions from "../utils/cookieOptions";
 
 const ssp = Source_Sans_Pro({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--ssp-font",
 });
-
-const capitalizeEveryFirstLetter = (s: string): string => {
-  const arr = s.split(" ");
-  for (let i = 0; i < arr.length; i++) {
-    arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].slice(1);
-  }
-  return arr.join(" ");
-};
-
-const cookieOptions: CookieSerializeOptions = {
-  maxAge: 10,
-  httpOnly: false,
-  domain: "localhost",
-  path: "/",
-  sameSite: "lax",
-  secure: true,
-};
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -51,7 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
     if (typeof options.maxAge === "number") {
       options.expires = new Date(Date.now() + options.maxAge * 1000);
     }
-    setCookie(null, "googleUser", stringValue, cookieOptions);
+    setCookie(null, "googleUser", stringValue, options);
     router.push("/login");
   };
 
@@ -64,14 +48,19 @@ export default function App({ Component, pageProps }: AppProps) {
       .filter((_, i) => i >= MAX_TOAST_LIMIT) // Is toast index over limit?
       .forEach((t) => toast.dismiss(t.id)); // Dismiss – Use toast.remove(t.id) for no exit animation
   }, [toasts]);
+
   return (
     <main className={ssp.className}>
+      {/* Don't show google one tap on signup and login page */}
       {isWindowInit && !["signup", "login"].includes(router.asPath.slice(1)) && (
         <GoogleOneTapLogin
-          onError={(error) => console.error(error)}
+          onError={(error) => {
+            console.error(error);
+            router.push("/login");
+          }}
           onSuccess={(response) => {
             const user = {
-              name: capitalizeEveryFirstLetter(response.name.toLowerCase()),
+              name: capsEveryFirstLetter(response.name.toLowerCase()),
               email: response.email,
               picture: response.picture,
             };
