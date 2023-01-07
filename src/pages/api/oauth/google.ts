@@ -6,7 +6,7 @@ import qs from "qs";
 
 const cookieOptions: CookieSerializeOptions = {
   maxAge: 10,
-  httpOnly: true,
+  httpOnly: false,
   domain: "localhost",
   path: "/",
   sameSite: "lax",
@@ -31,7 +31,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const user = {
       name: googleUser.name,
       email: googleUser.email,
-      email_verified: googleUser.email_verified,
       picture: googleUser.picture,
     };
     setCookie(res, "googleUser", user, cookieOptions);

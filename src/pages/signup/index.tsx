@@ -3,7 +3,6 @@ import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import GoogleOneTapLogin from "react-google-one-tap-login";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
@@ -13,6 +12,7 @@ import { checkUsernameExists, registerUser } from "../../api";
 import Logo from "../../components/Logo/Logo";
 import SEO from "../../components/SEO";
 import getGoogleOAuthURL from "../../utils/getGoogleUrl";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
 
 export function getServerSideProps(ctx: any) {
   const googleUser = ctx.req.cookies.googleUser ? JSON.parse(ctx.req.cookies.googleUser) : null;
@@ -95,7 +95,6 @@ const LeftHalf = () => {
 interface googleProfile {
   name: string; // ✅
   email: string; // ✅
-  email_verified: boolean; // ✅
   picture: string; // ✅
 }
 
@@ -103,13 +102,6 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
-  const [isWindowInit, setIsWindowInit] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (window) {
-      setIsWindowInit(true);
-    }
-  }, []);
 
   const {
     reset,
@@ -131,6 +123,9 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       isDoctor: false,
     },
   });
+
+  const cookies = parseCookies();
+  console.log({ cookies });
 
   const onSubmit: SubmitHandler<registerSchemaType> = async (formData) => {
     console.table(formData);
@@ -167,16 +162,6 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
 
   return (
     <div className="w-full px-10 md:px-5 md:w-1/2 flex flex-col items-center justify-center gap-y-2.5 my-12">
-      {isWindowInit && (
-        <GoogleOneTapLogin
-          onError={(error) => console.error(error)}
-          onSuccess={(response) => {
-            setValue("name", capitalizeEveryFirstLetter(response.name.toLowerCase()));
-            setValue("email", response.email);
-          }}
-          googleAccountConfigs={{ client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string }}
-        />
-      )}
       <div className="bg-white border-2 border-gray-300 p-1 rounded-lg" style={{ background: "linear-gradient(0deg, rgba(221,222,225,1) 0%, rgba(255,255,255,0.5504073455554097) 100%)" }}>
         <Logo className="w-10 h-10" />
       </div>
