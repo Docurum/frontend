@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { registerSchemaType } from "../pages/signup";
+import { registerSchemaType } from "../types/signup";
 
 const API = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
