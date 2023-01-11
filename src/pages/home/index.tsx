@@ -1,14 +1,14 @@
 import AppBar from "../../components/AppBar";
-import QandACard from "../../components/QandACard";
+import QandASection from "../../components/QandASection";
 
 export default function Home() {
   return (
-    <div className="flex flex-col h-[100vh]">
+    <div className="flex flex-col h-[100vh] overflow-y-hidden">
       <AppBar />
       <div className="flex flex-row h-[90vh]">
-        <div className="basis-1/4 shadow-md shadow-blue-400 border-2 border-black"></div>
-        <QandACard />
-        <div className="basis-1/4 shadow-md shadow-blue-400 border-2 border-black"></div>
+        <div className="w-[25vw] shadow-md shadow-blue-400 border-2 border-black"></div>
+        <QandASection />
+        <div className="w-[25vw] shadow-md shadow-blue-400 border-2 border-black"></div>
       </div>
     </div>
   );
