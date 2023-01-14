@@ -13,7 +13,7 @@ import HealthCategory from "../HealthCategory";
 const QandASection = () => {
   const [qAndAList, updateQandAList] = useState(list);
   return (
-    <div className={classNames([styles["scrollbar"]], ["basis-1/2 mt-2 flex flex-col shadow-md shadow-blue-400 overflow-y-scroll scrollbar"])}>
+    <div className={classNames([styles["scrollbar"]], ["basis-1/2 mt-2 flex flex-col overflow-y-scroll scrollbar"])}>
       {qAndAList.map((d) => {
         return (
           <QandACard
@@ -48,7 +48,7 @@ interface IQandCardProps {
 
 const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCount, likes, views, upvote, shares, category }) => {
   return (
-    <div className="shadow-md shadow-blue-400 mx-2 mt-2 rounded-md">
+    <div className="shadow-md shadow-blue-200 mx-2 mt-2 rounded-md">
       <div className="basis-1 flex flex-row">
         <div className="flex flex-col mt-8 mx-4 items-center">
           <div className="hover:cursor-pointer">
