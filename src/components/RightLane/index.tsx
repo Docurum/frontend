@@ -71,7 +71,7 @@ export default function RightLane() {
 
   const [doctorsList, setdoctorsList] = useState(list);
   return (
-    <div className="w-[25%] flex flex-col items-center">
+    <div className="hidden flex-col items-center lg:flex xl:w-3/12">
       <div className="flex flex-row bg-blue-600 shadow-blue-200 shadow-md rounded-lg w-[80%] mt-[5%] p-3 items-center justify-center hover:cursor-pointer">
         <AiOutlinePlus size={25} color="white" />
         <div className="text-white text-md font-bold ml-2">Start a New Topic</div>
@@ -110,12 +110,12 @@ interface IContributors {
 
 const Contributors: FC<IContributors> = ({ name, votes }) => {
   return (
-    <div className="flex flex-row justify-between mx-4 mb-6">
+    <div className="flex flex-row justify-between mx-4 mb-4">
       <div className="flex flex-row items-center">
-        <div className="border-2 border-gray-400 rounded-2xl">
-          <Image src={`https://avatars.dicebear.com/api/personas/${name}.svg`} alt={"avatar"} height={30} width={30} />
+        <div className="border-2 border-gray-400 rounded-2xl shrink-0">
+          <Image src={`https://avatars.dicebear.com/api/personas/${name}.svg`} alt={"avatar"} height={30} width={30} className="" />
         </div>
-        <div className="font-bold text-blue-600 ml-2 hover:cursor-pointer text-">{name}</div>
+        <div className="font-bold text-blue-600 ml-2 hover:cursor-pointer text-[15px]">{name}</div>
       </div>
       <div className="flex flex-row items-center">
         <div className="text-md font-bold text-slate-500 mr-1">{votes}</div>

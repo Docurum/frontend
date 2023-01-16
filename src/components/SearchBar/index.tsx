@@ -45,14 +45,20 @@ export default function SearchBar() {
   return (
     <div>
       <input
-        className="p-4 h-12 outline-none text-lg bg-gray-200 rounded-md shadow-lg w-[30vw] text-gray-700"
+        className="p-4 h-12 outline-none text-lg bg-gray-200 rounded-md shadow-lg w-[92vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] text-gray-700"
         type="text"
         name="searchInputController"
         ref={inputRef}
         placeholder="🔍 Search for topics here"
         onChange={(event) => onInputChange(event)}
       />
-      <div ref={ulRef} className={classNames([styles["search-scrollbar"]], ["hidden absolute flex-col max-h-[400px] w-[30vw] overflow-y-scroll overflow-x-hidden rounded-md bg-gray-100"])}>
+      <div
+        ref={ulRef}
+        className={classNames(
+          [styles["search-scrollbar"]],
+          ["hidden absolute flex-col max-h-[400px] w-[92vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] overflow-y-scroll overflow-x-hidden rounded-md bg-gray-100"]
+        )}
+      >
         {searchList.map((d) => {
           return (
             <SearchCard key={d.id} shares={d.shares} upvote={d.upvote} views={d.views} title={d.title} description={d.description} author={d.author} commentCount={d.commentCount} likes={d.views} />
@@ -76,9 +82,9 @@ interface ISearchCardProps {
 
 const SearchCard: FC<ISearchCardProps> = ({ title, description, author, commentCount, likes, views, upvote, shares }) => {
   return (
-    <div className="mt-2 pb-2 mb-2 relative mx-2 px-4 pt-2 shadow-md w-[28.5vw] rounded-lg flex flex-col shadow-blue-300 hover:cursor-pointer hover:shadow-blue-400 ">
-      <div className=" text-xl font-bold w-[27vw]">{title}</div>
-      <div className="flex flex-col w-[27vw] text-md h-42 mr-2">{description.length > 130 ? description.substring(0, 130) : description}</div>
+    <div className="mt-2 pb-2 mb-2 relative mx-2 px-4 pt-2 shadow-md w-[90vw] sm:w-[73vw] md:w-[58.5vw] lg:w-[43vw] rounded-lg flex flex-col shadow-blue-300 hover:cursor-pointer hover:shadow-blue-400 ">
+      <div className=" text-xl font-bold w-[12/13]">{title}</div>
+      <div className="flex flex-col w-[12/13] text-md h-42 mr-2">{description.length > 130 ? description.substring(0, 130) : description}</div>
       <div className="h-[2px] bg-gray-400 mr-8 my-2"></div>
       {/* <div className="flex flex-row items-center">
         <div className="border-2 border-gray-400 rounded-2xl">

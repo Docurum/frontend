@@ -1,4 +1,4 @@
-import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
+import { AiOutlineArrowDown, AiOutlineArrowUp, AiOutlinePlus } from "react-icons/ai";
 import { FaLungs, FaRegCommentAlt } from "react-icons/fa";
 import { GoGraph } from "react-icons/go";
 import { BsFillShareFill } from "react-icons/bs";
@@ -9,27 +9,34 @@ import { list } from "../../../constants";
 import styles from "./index.module.css";
 import classNames from "classnames";
 import HealthCategory from "../HealthCategory";
+import BottomNavBar from "../BottomNavBar";
 
 const QandASection = () => {
   const [qAndAList, updateQandAList] = useState(list);
   return (
-    <div className={classNames([styles["scrollbar"]], ["basis-1/2 mt-2 flex flex-col overflow-y-scroll scrollbar"])}>
-      {qAndAList.map((d) => {
-        return (
-          <QandACard
-            key={d.id}
-            category={d.category}
-            shares={d.shares}
-            upvote={d.upvote}
-            views={d.views}
-            title={d.title}
-            description={d.description}
-            author={d.author}
-            commentCount={d.commentCount}
-            likes={d.views}
-          />
-        );
-      })}
+    <div className="mt-2 flex flex-col w-full lg:w-1/2">
+      <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar"])}>
+        {qAndAList.map((d) => {
+          return (
+            <QandACard
+              key={d.id}
+              category={d.category}
+              shares={d.shares}
+              upvote={d.upvote}
+              views={d.views}
+              title={d.title}
+              description={d.description}
+              author={d.author}
+              commentCount={d.commentCount}
+              likes={d.views}
+            />
+          );
+        })}
+      </div>
+      <div className="hidden max-lg:flex flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
+        <AiOutlinePlus size={30} color="white" />
+      </div>
+      <BottomNavBar />
     </div>
   );
 };
@@ -50,7 +57,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   return (
     <div className="shadow-md shadow-blue-200 mx-2 mt-2 rounded-md">
       <div className="basis-1 flex flex-row">
-        <div className="flex flex-col mt-8 mx-4 items-center">
+        <div className="hidden flex-col mt-8 mx-4 items-center sm:flex">
           <div className="hover:cursor-pointer">
             <AiOutlineArrowUp size={30} color={upvote > 0 ? "#2548f5" : "gray"} />
           </div>
@@ -59,7 +66,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
             <AiOutlineArrowDown size={30} color={upvote < 0 ? "red" : "gray"} />
           </div>
         </div>
-        <div className="flex flex-col mt-6">
+        <div className="flex flex-col mt-6 max-sm:ml-4">
           <div className="flex flex-row items-center justify-between mr-8">
             <div className="text-xl font-bold hover:cursor-pointer">{title}</div>
             <div className="hover:cursor-pointer">
@@ -67,12 +74,23 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
             </div>
           </div>
           <HealthCategory category={category} />
-          <div className="text-md text-gray-600 mt-2 mr-6 font-bold">{description}</div>
+          <div className="hidden text-md text-gray-600 mt-2 mr-6 font-bold sm:block">{description.length < 300 ? description : description.substring(0, 300) + "..."}</div>
+          <div className="hidden text-md text-gray-600 text-sm mt-2 mr-6 font-bold max-sm:block">{description.length < 200 ? description : description.substring(0, 200) + "..."}</div>
           <div className="h-[2px] bg-gray-400 mr-8 mt-4"></div>
           <div className="flex flex-row my-4 items-center justify-between mr-8">
-            <div className="flex flex-row items-center">
+            <div className="hidden flex-row  items-center max-sm:flex">
+              <div className="hover:cursor-pointer">
+                <AiOutlineArrowUp size={25} color={upvote > 0 ? "#2548f5" : "gray"} />
+              </div>
+              <div className="text-lg font-bold ml-2">{upvote}</div>
+              <div className="hover:cursor-pointer ml-2">
+                <AiOutlineArrowDown size={25} color={upvote < 0 ? "red" : "gray"} />
+              </div>
+            </div>
+            <div className="hidden flex-row items-center sm:flex">
               <div className="border-2 border-gray-400 rounded-2xl">
-                <Image src={`https://avatars.dicebear.com/api/personas/${author}.svg`} alt={"avatar"} height={30} width={30} />
+                {/* <Image src={`https://avatars.dicebear.com/api/personas/${author}.svg`} alt="avatar" height={30} width={30} /> */}
+                <Image src={`https://avatars.dicebear.com/api/personas/abc.svg`} alt="avatar" height={30} width={30} />
               </div>
               <div className="font-bold text-gray-600 ml-4">Posted by </div>
               <div className="font-bold text-blue-600 ml-1 hover:cursor-pointer">Dr. {author}</div>

@@ -27,9 +27,12 @@ const EmailConfirmation = () => {
       confirmEmail(token)
         .then((val) => {
           console.log(val);
-          if (val === "ok") {
+          if (val === "S") {
             setIsVerified(true);
           }
+        })
+        .catch((e) => {
+          console.log(e);
         })
         .finally(() => {
           setIsLoading(false);
