@@ -1,8 +1,10 @@
 import { AiOutlineArrowDown, AiOutlineArrowUp, AiOutlinePlus } from "react-icons/ai";
-import { FaLungs, FaRegCommentAlt } from "react-icons/fa";
+import { FaLungs, FaRegCommentAlt, FaSave } from "react-icons/fa";
 import { GoGraph } from "react-icons/go";
-import { BsFillShareFill } from "react-icons/bs";
+import { BsFillShareFill, BsSave } from "react-icons/bs";
 import { HiDotsVertical } from "react-icons/hi";
+import { MdOutlineReportProblem, MdOutlineBlock } from "react-icons/md";
+import { IoIosNotificationsOutline } from "react-icons/io";
 import Image from "next/image";
 import { FC, useState } from "react";
 import { list } from "../../../constants";
@@ -10,11 +12,12 @@ import styles from "./index.module.css";
 import classNames from "classnames";
 import HealthCategory from "../HealthCategory";
 import BottomNavBar from "../BottomNavBar";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
 const QandASection = () => {
   const [qAndAList, updateQandAList] = useState(list);
   return (
-    <div className="mt-2 flex flex-col w-full lg:w-1/2">
+    <div className="mt-2 flex flex-col w-full lg:w-1/2 h-[90vh]">
       <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar"])}>
         {qAndAList.map((d) => {
           return (
@@ -33,7 +36,7 @@ const QandASection = () => {
           );
         })}
       </div>
-      <div className="hidden max-lg:flex flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
+      <div className="hidden max-lg:flex z-2 flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
         <AiOutlinePlus size={30} color="white" />
       </div>
       <BottomNavBar />
@@ -69,9 +72,51 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
         <div className="flex flex-col mt-6 max-sm:ml-4">
           <div className="flex flex-row items-center justify-between mr-8">
             <div className="text-xl font-bold hover:cursor-pointer">{title}</div>
-            <div className="hover:cursor-pointer">
-              <HiDotsVertical size={20} color="gray" />
-            </div>
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger className="outline-none">
+                <div className="hover:cursor-pointer">
+                  <HiDotsVertical size={20} color="gray" />
+                </div>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content className="w-36 h-40 flex flex-col items-end  bg-white rounded-md shadow-lg shadow-slate-200" side="bottom" align="end" sideOffset={2}>
+                  <div className="items-end mr-[2px] w-0 h-0 border-l-transparent border-l-[6px] border-r-transparent border-r-[6px] border-b-[6px] border-b-slate-100"></div>
+                  <DropdownMenu.Item className="outline-none">
+                    <div className="flex flex-row items-start w-36 pt-2 px-4 py-2 rounded-tr-md rounded-tl-md bg-slate-100 hover:bg-slate-200 hover:cursor-pointer ">
+                      <div>
+                        <BsSave size={25} color="gray" />
+                      </div>
+                      <div className="ml-4 text-md font-bold text-slate-700">Save</div>
+                    </div>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="outline-none">
+                    <div className="flex flex-row items-start w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer ">
+                      <div>
+                        <IoIosNotificationsOutline size={25} color="gray" />
+                      </div>
+                      <div className="ml-4 text-md font-bold text-slate-700">Notify</div>
+                    </div>
+                  </DropdownMenu.Item>
+
+                  <DropdownMenu.Item className="outline-none">
+                    <div className="flex flex-row items-start w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer outline-none">
+                      <div>
+                        <MdOutlineReportProblem size={25} color="gray" />
+                      </div>
+                      <div className="ml-4 text-md font-bold text-slate-700">Report</div>
+                    </div>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="outline-none">
+                    <div className="flex flex-row items-start rounded-bl-md rounded-br-md w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer outline-none">
+                      <div>
+                        <MdOutlineBlock size={25} color="gray" />
+                      </div>
+                      <div className="ml-4 text-md font-bold text-slate-700">Block</div>
+                    </div>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
           </div>
           <HealthCategory category={category} />
           <div className="hidden text-md text-gray-600 mt-2 mr-6 font-bold sm:block">{description.length < 300 ? description : description.substring(0, 300) + "..."}</div>

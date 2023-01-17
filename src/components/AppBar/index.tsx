@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function AppBar() {
   return (
-    <div className="flex flex-row shadow p-4 h-[10vh] items-center justify-between">
+    <div className="flex flex-row shadow p-4 max-h-[10vh] items-center justify-between">
       <div className="hidden flex-row items-center sm:ml-8 sm:flex">
         <Logo className="h-10 w-10" />
         <div className="text-3xl font-bold text-black hidden md:block">doc</div>
