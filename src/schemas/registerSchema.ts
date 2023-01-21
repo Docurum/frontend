@@ -8,6 +8,7 @@ const registerSchema = z
     email: emailSchema,
     password: passwordSchema,
     confirmPassword: z.string().trim(),
+    picture: z.string().nullish(),
     isDoctor: z.boolean().default(false),
   })
   .strict()

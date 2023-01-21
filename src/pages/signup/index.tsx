@@ -65,6 +65,7 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       email: googleUser?.email || "",
       password: "",
       confirmPassword: "",
+      picture: googleUser?.picture || null,
       isDoctor: false,
     },
   });
@@ -80,6 +81,7 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       // so they have to be cleared explicitly
       setValue("name", "");
       setValue("email", "");
+      setValue("picture", null);
       setShowPassword(false);
       setShowConfirmPassword(false);
     } catch (err: any) {
