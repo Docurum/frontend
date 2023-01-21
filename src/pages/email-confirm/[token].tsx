@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import Lottie from "react-lottie-player";
 import successAnimation from "../../animations/89776-success-tick.json";
 import failedAnimation from "../../animations/94303-failed.json";
@@ -19,10 +20,14 @@ const EmailConfirmation = () => {
           const resp = await verifyEmail(token);
           setMessage(resp.data.message);
           setIsVerified(true);
-        } catch (err: any) {
-          setMessage(err.response.data.message);
-        } finally {
           setIsLoading(false);
+        } catch (err: any) {
+          if (err.response) {
+            setMessage(err.response.data.message);
+            setIsLoading(false);
+          } else {
+            toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
+          }
         }
       };
       confirmEmail();
