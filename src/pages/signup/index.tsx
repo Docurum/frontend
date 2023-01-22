@@ -126,8 +126,8 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
           <Logo className="w-10 h-10" />
         </div>
       </Link>
-      <div className="text-3xl font-bold">Create your account</div>
-      <div className="text-gray-500">Enter the fields below to get started</div>
+      <div className="text-3xl font-bold text-center">Create your account</div>
+      <div className="text-gray-500 text-center">Enter the fields below to get started</div>
       <button
         className="flex w-full max-w-md bg-white items-center justify-center gap-x-3 font-semibold text-lg py-2 rounded-lg shadow border border-gray-300 hover:bg-gray-100"
         onClick={() => {
