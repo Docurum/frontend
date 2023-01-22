@@ -105,7 +105,7 @@ const RightHalf = () => {
               <Lottie loop={false} animationData={emailAnimation} play />
             </div>
             <span className="font-bold text-2xl mb-2 text-center">Check your mail</span>
-            <span className="text-gray-600 text-center mb-4 text-lg">We have sent password instructions to your email.</span>
+            <span className="text-gray-600 text-center mb-4 text-lg">We have sent password recover instructions to your email.</span>
             <div className="text-gray-600 text-center">
               Did not receive the email? Check your spam filter, or
               <div
