@@ -36,7 +36,7 @@ const QandASection = () => {
           );
         })}
       </div>
-      <div className="hidden max-lg:flex z-2 flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
+      <div className="hidden max-lg:flex z-5 flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
         <AiOutlinePlus size={30} color="white" />
       </div>
       <BottomNavBar />
