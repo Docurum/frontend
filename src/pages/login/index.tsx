@@ -78,8 +78,8 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
           <Logo className="w-10 h-10" />
         </div>
       </Link>
-      <div className="text-3xl font-bold">Log In to your account</div>
-      <div className="text-gray-500">Enter the fields below to get started</div>
+      <div className="text-3xl font-bold text-center">Log In to your account</div>
+      <div className="text-gray-500 text-center">Enter the fields below to get started</div>
       <button
         className="flex w-full max-w-md bg-white items-center justify-center gap-x-3 font-semibold text-lg py-2 rounded-lg shadow border border-gray-300 hover:bg-gray-100"
         onClick={() => {
@@ -149,7 +149,9 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
             Log In
           </button>
           <div className="text-center p-4 flex gap-x-3 items-center justify-center">
-            <span className="font-semibold text-blue-600">Forgot your password?</span>
+            <Link href="/forgot-password">
+              <span className="font-semibold text-blue-600">Forgot your password?</span>
+            </Link>
           </div>
           <div className="text-center flex gap-x-3 items-center justify-center">
             <span className="text-gray-500 font-medium">{"Don't have an account?"}</span>

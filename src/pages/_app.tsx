@@ -52,7 +52,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <main className={ssp.className}>
       {/* Don't show google one tap on signup and login page */}
-      {isWindowInit && !["signup", "login", "email-confirm"].includes(router.asPath.slice(1).split("/")[0]) && (
+      {isWindowInit && !["signup", "login", "email-confirm", "forgot-password"].includes(router.asPath.slice(1).split("/")[0]) && (
         <GoogleOneTapLogin
           onError={(error) => {
             console.error(error);

@@ -1,8 +1,10 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 import Lottie from "react-lottie-player";
 import successAnimation from "../../animations/89776-success-tick.json";
 import failedAnimation from "../../animations/94303-failed.json";
+import { verifyEmail } from "../../api";
 import SEO from "../../components/SEO";
 
 const EmailConfirmation = () => {
@@ -13,32 +15,22 @@ const EmailConfirmation = () => {
   useEffect(() => {
     if (router.isReady) {
       const token = router.query.token as string;
-      const confirmEmail = async (token: string) => {
-        const prms = new Promise((resolve, reject) => {
-          setTimeout(() => {
-            if (token === "abc") {
-              resolve("S");
-            } else {
-              reject("F");
-            }
-          }, 3000);
-        });
-        return prms;
-      };
-      confirmEmail(token)
-        .then((val) => {
-          if (val === "S") {
-            setMessage("Your email has been successfully verified!");
-            setIsVerified(true);
-          }
-        })
-        .catch((e) => {
-          setMessage("Your verification link has been expired!");
-          console.log(e);
-        })
-        .finally(() => {
+      const confirmEmail = async () => {
+        try {
+          const resp = await verifyEmail(token);
+          setMessage(resp.data.message);
+          setIsVerified(true);
           setIsLoading(false);
-        });
+        } catch (err: any) {
+          if (err.response) {
+            setMessage(err.response.data.message);
+            setIsLoading(false);
+          } else {
+            toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
+          }
+        }
+      };
+      confirmEmail();
     }
   }, [router]);
 
