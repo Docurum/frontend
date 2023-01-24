@@ -93,8 +93,9 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
               message: error.message,
             });
           });
+        } else {
+          toast.error(errorMessage, { id: errorMessage });
         }
-        toast.error(errorMessage, { id: errorMessage });
       } else {
         toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
       }
