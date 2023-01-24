@@ -11,3 +11,7 @@ type APIResponse = Promise<AxiosResponse<{ message: string; status: string }>>;
 export const registerUser = (data: registerSchemaType): APIResponse => API.post("/auth/register", data);
 export const checkUsernameExists = (data: { username: string }): APIResponse => API.post("/auth/check-username", data);
 export const verifyEmail = (token: string): APIResponse => API.get(`/auth/email-confirm/${token}`);
+
+export const sendForgotPasswordMail = (data: { email: string }): APIResponse => API.post("/auth/forgot-password", data);
+export const checkResetPasswordTokenExists = (token: string): APIResponse => API.get(`/auth/reset-password/${token}`);
+export const resetPassword = (data: { token: string; password: string; confirmPassword: string }): APIResponse => API.post("/auth/reset-password", data);

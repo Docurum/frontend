@@ -87,11 +87,15 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
     } catch (err: any) {
       if (err.response) {
         const errorMessage = err.response.data.message;
-        errorMessage.forEach((error: { message: string; path: [keyof registerSchemaType] }) => {
-          setError(error.path[0], {
-            message: error.message,
+        if (Array.isArray(errorMessage)) {
+          errorMessage.forEach((error: { message: string; path: [keyof registerSchemaType] }) => {
+            setError(error.path[0], {
+              message: error.message,
+            });
           });
-        });
+        } else {
+          toast.error(errorMessage, { id: errorMessage });
+        }
       } else {
         toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
       }
