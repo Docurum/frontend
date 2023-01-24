@@ -4,8 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 import Lottie from "react-lottie-player";
 import emailAnimation from "../../animations/87580-email-icon-animation.json";
+import { sendForgotPasswordMail } from "../../api";
 import Logo from "../../components/Logo/Logo";
 import SEO from "../../components/SEO";
 import { emailSchemaType, emailValidation } from "../../types/login";
@@ -33,14 +35,12 @@ const LeftHalf = () => {
 };
 
 const RightHalf = () => {
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [step, setStep] = useState<"one" | "two">("one");
 
   const {
     reset,
     register,
     handleSubmit,
-    setError,
     formState: { errors, isSubmitting, isValidating },
   } = useForm<emailSchemaType>({
     mode: "onChange",
@@ -52,9 +52,18 @@ const RightHalf = () => {
 
   const onSubmit: SubmitHandler<emailSchemaType> = async (formData) => {
     console.table(formData);
-    reset();
-    setShowPassword(false);
-    setStep("two");
+    try {
+      await sendForgotPasswordMail(formData);
+      reset();
+      setStep("two");
+    } catch (err: any) {
+      if (err.response) {
+        reset();
+        setStep("two");
+      } else {
+        toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
+      }
+    }
   };
 
   return (
