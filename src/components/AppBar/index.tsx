@@ -1,12 +1,17 @@
 import Logo from "../Logo/Logo";
 import SearchBar from "../SearchBar";
-import { IoIosNotificationsOutline } from "react-icons/io";
+import { IoIosNotificationsOutline, IoIosLogOut } from "react-icons/io";
+import { CgProfile } from "react-icons/cg";
+import { CiEdit } from "react-icons/ci";
+import { FaRegEdit } from "react-icons/fa";
 import Image from "next/image";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { BsFillShareFill, BsSave } from "react-icons/bs";
 import { MdOutlineReportProblem, MdOutlineBlock } from "react-icons/md";
+import { useRouter } from "next/router";
 
 export default function AppBar() {
+  const router = useRouter();
   return (
     <div className="flex flex-row shadow p-4 max-h-[10vh] items-center justify-between">
       <div className="hidden flex-row items-center sm:ml-8 sm:flex">
@@ -25,12 +30,12 @@ export default function AppBar() {
             </div>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="w-36 h-40 flex flex-col items-end  bg-white rounded-md shadow-lg shadow-slate-200" side="bottom" align="end" sideOffset={2}>
+            <DropdownMenu.Content className="w-36 h-32 flex flex-col items-end  bg-white rounded-md shadow-lg shadow-slate-200" side="bottom" align="end" sideOffset={2}>
               <div className="items-end mr-[2px] w-0 h-0 border-l-transparent border-l-[6px] border-r-transparent border-r-[6px] border-b-[6px] border-b-slate-100"></div>
-              <DropdownMenu.Item className="outline-none">
+              <DropdownMenu.Item className="outline-none" onClick={() => router.push("/profile")}>
                 <div className="flex flex-row items-start w-36 pt-2 px-4 py-2 rounded-tr-md rounded-tl-md bg-slate-100 hover:bg-slate-200 hover:cursor-pointer ">
                   <div>
-                    <BsSave size={25} color="gray" />
+                    <CgProfile size={25} color="gray" />
                   </div>
                   <div className="ml-4 text-md font-bold text-slate-700">Profile</div>
                 </div>
@@ -38,26 +43,18 @@ export default function AppBar() {
               <DropdownMenu.Item className="outline-none">
                 <div className="flex flex-row items-start w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer ">
                   <div>
-                    <IoIosNotificationsOutline size={25} color="gray" />
+                    <CiEdit size={25} color="gray" />
                   </div>
                   <div className="ml-4 text-md font-bold text-slate-700">Edit</div>
                 </div>
               </DropdownMenu.Item>
 
               <DropdownMenu.Item className="outline-none">
-                <div className="flex flex-row items-start w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer outline-none">
-                  <div>
-                    <MdOutlineReportProblem size={25} color="gray" />
-                  </div>
-                  <div className="ml-4 text-md font-bold text-slate-700">Report</div>
-                </div>
-              </DropdownMenu.Item>
-              <DropdownMenu.Item className="outline-none">
                 <div className="flex flex-row items-start rounded-bl-md rounded-br-md w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer outline-none">
                   <div>
-                    <MdOutlineBlock size={25} color="gray" />
+                    <IoIosLogOut size={25} color="gray" />
                   </div>
-                  <div className="ml-4 text-md font-bold text-slate-700">Block</div>
+                  <div className="ml-4 text-md font-bold text-slate-700">Logout</div>
                 </div>
               </DropdownMenu.Item>
             </DropdownMenu.Content>
