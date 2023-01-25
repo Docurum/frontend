@@ -344,7 +344,7 @@ const Chart = ({ display }) => {
     totalLiquidityUSD: 173,
     oneDayVolumeUSD: 3.1,
     volumeChangeUSD: 4,
-    liquidityChangeUSD: -67,
+    liquidityChangeUSD: 7.3,
     oneWeekVolume: 31,
     weeklyVolumeChange: 13,
   };

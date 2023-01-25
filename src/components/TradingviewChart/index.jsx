@@ -29,35 +29,35 @@ var priceFormatter = new Intl.NumberFormat("en-US", {
 
 const formattedNum = (number, usd = false, acceptNegatives = false) => {
   if (isNaN(number) || number === "" || number === undefined) {
-    return usd ? "$0" : 0;
+    return usd ? "0" : 0;
   }
   let num = parseFloat(number);
 
   if (num > 500000000) {
-    return (usd ? "$" : "") + toK(num.toFixed(0), true);
+    return (usd ? "" : "") + toK(num.toFixed(0), true);
   }
 
   if (num === 0) {
     if (usd) {
-      return "$0";
+      return "0";
     }
     return 0;
   }
 
   if (num < 0.0001 && num > 0) {
-    return usd ? "< $0.0001" : "< 0.0001";
+    return usd ? "< 0.0001" : "< 0.0001";
   }
 
   if (num > 1000) {
-    return usd ? "$" + Number(parseFloat(num).toFixed(0)).toLocaleString() : "" + Number(parseFloat(num).toFixed(0)).toLocaleString();
+    return usd ? "" + Number(parseFloat(num).toFixed(0)).toLocaleString() : "" + Number(parseFloat(num).toFixed(0)).toLocaleString();
   }
 
   if (usd) {
     if (num < 0.1) {
-      return "$" + Number(parseFloat(num).toFixed(4));
+      return "" + Number(parseFloat(num).toFixed(4));
     } else {
       let usdString = priceFormatter.format(num);
-      return "$" + usdString.slice(1, usdString.length);
+      return "" + usdString.slice(1, usdString.length);
     }
   }
 
@@ -177,9 +177,9 @@ const TradingViewChart = ({ type = CHART_TYPES.BAR, data, base, baseChange, fiel
                 lineWidth: 3,
               })
             : chart.addAreaSeries({
-                topColor: "#7CE0D6",
-                bottomColor: "rgba(124, 224, 214, 0)",
-                lineColor: "#7CE0D6",
+                topColor: "rgba(96, 165, 250, 0.8)", //blue-400
+                bottomColor: "rgb(255, 255, 255)", //blue-200
+                lineColor: "rgba(59, 130, 246, 0.9)", //blue-600
                 lineWidth: 3,
               });
 
@@ -255,14 +255,14 @@ const TradingViewChart = ({ type = CHART_TYPES.BAR, data, base, baseChange, fiel
   return (
     <div className="relative">
       <div ref={ref} id={"test-id" + type} />
-      <div className="absolute rounded-md w-10 h-10 flex justify-center items-center text-gray-600 hover:cursor-pointer bottom-0 right-0"></div>
+      {/* <div className="absolute rounded-md w-10 h-10 flex justify-center items-center text-gray-600 hover:cursor-pointer bottom-0 right-0"></div>
       <div
         onClick={() => {
           chartCreated && chartCreated.timeScale().fitContent();
         }}
       >
         <AiOutlinePlayCircle size={20} />
-      </div>
+      </div> */}
     </div>
   );
 };
