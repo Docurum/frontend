@@ -4,14 +4,22 @@ import { FaHome } from "react-icons/fa";
 import { MdOutlineExplore } from "react-icons/md";
 import { RiQuestionMark, RiQuestionAnswerLine } from "react-icons/ri";
 import { MdLocalHospital } from "react-icons/md";
+import { useRouter } from "next/router";
 
 export default function LeftLane() {
   const [index, setIndex] = useState(0);
+  const router = useRouter();
   return (
     <div className="w-[25%] hidden md:block">
       <div className="flex flex-col h-[85vh] mt-10 ml-[10%] items-between justify-between">
         <div className="flex flex-col">
-          <div className={`flex flex-row ${index === 0 ? "bg-blue-50" : "bg-white"}  w-46 xl:w-72 h-10 items-center hover:cursor-pointer mb-4`} onClick={() => setIndex(0)}>
+          <div
+            className={`flex flex-row ${index === 0 ? "bg-blue-50" : "bg-white"}  w-46 xl:w-72 h-10 items-center hover:cursor-pointer mb-4`}
+            onClick={() => {
+              router.push("/home");
+              setIndex(0);
+            }}
+          >
             <div className={`w-1 mr-3 h-10 ${index === 0 ? "bg-blue-600" : "bg-white"}`}></div>
             <FaHome size={20} color={`${index === 0 ? "#2563eb" : "gray"}`} />
             <div className={`text-md ${index === 0 ? "text-blue-600" : "text-slate-500"} font-bold ml-2`}>Home</div>
