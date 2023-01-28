@@ -1,6 +1,6 @@
 import Lottie from "react-lottie-player";
 import goldTrophy from "../../animations/Gold_Trophy.json";
-import silverTrophy from "../../animations/Silver_Trophy.json";
+import silverTrophy from "../../animations/SilverTrophy.json";
 import bronzeTrophy from "../../animations/Bronze_Trophy.json";
 import { FC, useState } from "react";
 
