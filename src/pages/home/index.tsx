@@ -1,6 +1,6 @@
 import AppBar from "../../components/AppBar";
 import LeftLane from "../../components/LeftLane";
-import QandASection from "../../components/QandASection";
+import { QandASectionHome } from "../../components/QandASection";
 import RightLane from "../../components/RightLane";
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
         <AppBar />
         <div className="flex flex-row h-[90vh]">
           <LeftLane />
-          <QandASection />
+          <QandASectionHome />
           <RightLane />
         </div>
       </div>

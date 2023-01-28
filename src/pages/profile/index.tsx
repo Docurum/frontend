@@ -1,8 +1,7 @@
 import AppBar from "../../components/AppBar";
 import LeftLane from "../../components/LeftLane";
 import Profile from "../../components/Profile";
-import QandASection from "../../components/QandASection";
-import RightLane from "../../components/RightLane";
+import { ProfileRightSection } from "../../components/ProfileRightSection";
 
 export default function ProfilePage() {
   return (
@@ -12,6 +11,7 @@ export default function ProfilePage() {
         <div className="flex flex-row h-[90vh]">
           <LeftLane />
           <Profile />
+          <ProfileRightSection />
         </div>
       </div>
     </div>

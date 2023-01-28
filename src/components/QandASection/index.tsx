@@ -14,32 +14,38 @@ import HealthCategory from "../HealthCategory";
 import BottomNavBar from "../BottomNavBar";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
-const QandASection = () => {
-  const [qAndAList, updateQandAList] = useState(list);
+const QandASectionHome = () => {
   return (
-    <div className="mt-2 flex flex-col w-full lg:w-1/2 h-[90vh]">
-      <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar"])}>
-        {qAndAList.map((d) => {
-          return (
-            <QandACard
-              key={d.id}
-              category={d.category}
-              shares={d.shares}
-              upvote={d.upvote}
-              views={d.views}
-              title={d.title}
-              description={d.description}
-              author={d.author}
-              commentCount={d.commentCount}
-              likes={d.views}
-            />
-          );
-        })}
-      </div>
+    <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
+      <QandASection />
       <div className="hidden max-lg:flex z-5 flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
         <AiOutlinePlus size={30} color="white" />
       </div>
       <BottomNavBar />
+    </div>
+  );
+};
+
+const QandASection = () => {
+  const [qAndAList, updateQandAList] = useState(list);
+  return (
+    <div className="flex flex-col mb-4">
+      {qAndAList.map((d) => {
+        return (
+          <QandACard
+            key={d.id}
+            category={d.category}
+            shares={d.shares}
+            upvote={d.upvote}
+            views={d.views}
+            title={d.title}
+            description={d.description}
+            author={d.author}
+            commentCount={d.commentCount}
+            likes={d.views}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -161,4 +167,4 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   );
 };
 
-export default QandASection;
+export { QandASection, QandASectionHome };
