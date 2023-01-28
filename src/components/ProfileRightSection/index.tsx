@@ -1,5 +1,4 @@
 import Lottie from "react-lottie-player";
-import lungsAnimation from "../../animations/lungs.json";
 import goldTrophy from "../../animations/Gold_Trophy.json";
 import silverTrophy from "../../animations/Silver_Trophy.json";
 import bronzeTrophy from "../../animations/Bronze_Trophy.json";
