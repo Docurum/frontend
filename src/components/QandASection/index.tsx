@@ -14,7 +14,22 @@ import HealthCategory from "../HealthCategory";
 import BottomNavBar from "../BottomNavBar";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
+interface IQandCardProps {
+  id: number;
+  title: string;
+  description: string;
+  author: string;
+  commentCount: number;
+  category: string[];
+  upvote: number;
+  createdAt: number;
+  updatedAt: number;
+  views: string;
+  shares: string;
+}
+
 const QandASectionHome = () => {
+  const [qaList, updateQandAList] = useState<Array<IQandCardProps>>(list);
   return (
     <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
       <QandASection />
@@ -30,10 +45,10 @@ const QandASection = () => {
   const [qAndAList, updateQandAList] = useState(list);
   return (
     <div className="flex flex-col mb-4">
-      {qAndAList.map((d) => {
+      {qAndAList.map((d: any, index: number) => {
         return (
           <QandACard
-            key={d.id}
+            key={index}
             category={d.category}
             shares={d.shares}
             upvote={d.upvote}
@@ -42,7 +57,9 @@ const QandASection = () => {
             description={d.description}
             author={d.author}
             commentCount={d.commentCount}
-            likes={d.views}
+            id={0}
+            createdAt={0}
+            updatedAt={0}
           />
         );
       })}
@@ -55,14 +72,13 @@ interface IQandCardProps {
   description: string;
   author: string;
   commentCount: number;
-  likes: string;
   views: string;
   upvote: number;
   shares: string;
   category: string[];
 }
 
-const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCount, likes, views, upvote, shares, category }) => {
+const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCount, views, upvote, shares, category }) => {
   return (
     <div className="shadow-md shadow-blue-200 mx-2 mt-2 rounded-md">
       <div className="basis-1 flex flex-row">
@@ -167,4 +183,4 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   );
 };
 
-export { QandASection, QandASectionHome };
+export { QandASection, QandASectionHome, QandACard };

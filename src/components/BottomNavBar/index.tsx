@@ -4,14 +4,22 @@ import { FaHome } from "react-icons/fa";
 import { MdOutlineExplore } from "react-icons/md";
 import { RiQuestionMark, RiQuestionAnswerLine } from "react-icons/ri";
 import { MdLocalHospital } from "react-icons/md";
+import { useRouter } from "next/router";
 
 export default function BottomNavBar() {
   const [index, setIndex] = useState(0);
+  const router = useRouter();
   return (
     <>
       <div className="fixed bottom-0 md:hidden">
         <div className="flex flex-row">
-          <div className={`flex flex-col ${index === 0 ? "bg-blue-50" : "bg-white"}  w-[25vw] h-14 justify-center items-center hover:cursor-pointer`} onClick={() => setIndex(0)}>
+          <div
+            className={`flex flex-col ${index === 0 ? "bg-blue-50" : "bg-white"}  w-[25vw] h-14 justify-center items-center hover:cursor-pointer`}
+            onClick={() => {
+              setIndex(0);
+              router.push("/home");
+            }}
+          >
             <FaHome size={20} color={`${index === 0 ? "#2563eb" : "gray"}`} />
             <div className={`text-sm ${index === 0 ? "text-blue-600" : "text-slate-500"} font-bold`}>Home</div>
           </div>
