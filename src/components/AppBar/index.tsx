@@ -53,7 +53,7 @@ const NotificationDropdownMenu = () => {
         </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content side="bottom" align="end" sideOffset={2}>
+        <DropdownMenu.Content side="bottom" align="end" className="z-50" sideOffset={2}>
           <div className={"w-96 h-[70vh] flex flex-col items-end "}>
             <Notification />
           </div>

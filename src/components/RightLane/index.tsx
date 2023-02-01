@@ -4,8 +4,10 @@ import Image from "next/image";
 import classNames from "classnames";
 import { FC, useState } from "react";
 import styles from "./index.module.css";
+import { useRouter } from "next/router";
 
 export default function RightLane() {
+  const router = useRouter();
   const list = [
     {
       id: 0,
@@ -72,7 +74,7 @@ export default function RightLane() {
   const [doctorsList, setdoctorsList] = useState(list);
   return (
     <div className="hidden flex-col items-center lg:flex xl:w-3/12">
-      <div className="flex flex-row bg-blue-600 shadow-blue-200 shadow-md rounded-lg w-[80%] mt-[5%] p-3 items-center justify-center hover:cursor-pointer">
+      <div onClick={() => router.push("/start-topic")} className="flex flex-row bg-blue-600 shadow-blue-200 shadow-md rounded-lg w-[80%] mt-[5%] p-3 items-center justify-center hover:cursor-pointer">
         <AiOutlinePlus size={25} color="white" />
         <div className="text-white text-md font-bold ml-2">Start a New Topic</div>
       </div>

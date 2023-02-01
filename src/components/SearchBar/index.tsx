@@ -56,7 +56,7 @@ export default function SearchBar() {
         ref={ulRef}
         className={classNames(
           [styles["search-scrollbar"]],
-          ["hidden absolute flex-col max-h-[400px] w-[92vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] overflow-y-scroll overflow-x-hidden rounded-md bg-gray-100"]
+          ["hidden absolute z-50 flex-col max-h-[400px] w-[92vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] overflow-y-scroll overflow-x-hidden rounded-md bg-gray-100"]
         )}
       >
         {searchList.map((d) => {
