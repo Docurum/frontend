@@ -1,7 +1,10 @@
+import dynamic from "next/dynamic";
 import { useState } from "react";
 import BottomNavBar from "../BottomNavBar";
-import { FileUpload, FileUploadMobile } from "../FileUpload";
-import RichTextExample from "../RichText";
+import { FileUploadMobile } from "../FileUpload";
+const Editor = dynamic(() => import("../RichText"), {
+  ssr: false,
+});
 
 export default function CreateTopic() {
   const [title, setTitle] = useState("");
@@ -36,7 +39,7 @@ export default function CreateTopic() {
           name="title"
           placeholder="Add Title"
         />
-        <RichTextExample formValues={formValues} setFormValues={setFormValues} />
+        <Editor formValues={formValues} setFormValues={setFormValues} />
         <div className="flex flex-row justify-between items-center mt-4">
           <div
             className="flex flex-row items-center justify-center h-10 w-20 bg-blue-600 rounded-md"
