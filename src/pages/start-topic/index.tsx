@@ -1,9 +1,7 @@
 import AppBar from "../../components/AppBar";
 import CreateTopic from "../../components/CreateTopic";
+import { Dropzone } from "../../components/Dropzone";
 import LeftLane from "../../components/LeftLane";
-import Uppy from "@uppy/core";
-import { DashboardModal } from "@uppy/react";
-import { FileUpload } from "../../components/FileUpload";
 
 export default function StartTopicPage() {
   return (
@@ -13,7 +11,7 @@ export default function StartTopicPage() {
         <div className="flex flex-row h-[90vh]">
           <LeftLane />
           <CreateTopic />
-          <FileUpload />
+          <Dropzone file={"a"} onFileCapture={() => {}} setFile={() => {}} />
         </div>
       </div>
     </div>

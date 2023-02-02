@@ -1,7 +1,7 @@
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import BottomNavBar from "../BottomNavBar";
-import { FileUploadMobile } from "../FileUpload";
+import { DropzoneMobile } from "../Dropzone";
 const Editor = dynamic(() => import("../RichText"), {
   ssr: false,
 });
@@ -49,7 +49,7 @@ export default function CreateTopic() {
           >
             <div className="text-white font-bold text-lg">Post</div>
           </div>
-          <FileUploadMobile />
+          <DropzoneMobile file={"a"} onFileCapture={() => {}} setFile={() => {}} />
         </div>
       </div>
       <BottomNavBar />

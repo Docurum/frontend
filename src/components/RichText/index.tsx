@@ -54,7 +54,7 @@ const RichTextExample: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
         <BlockButton format="justify" icon="format_align_justify" /> */}
       {/* </div> */}
       <Editable
-        className="mt-1 p-4 max-h-96 h-96 items-start justify-start outline-none bg-slate-50 text-lg rounded-md shadow-md w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] text-gray-700"
+        className="mt-1 p-4 max-h-96 h-96 overflow-x-hidden overflow-y-scroll custom-scrollbar scrollbar items-start justify-start outline-none bg-slate-50 text-lg rounded-md shadow-md w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] text-gray-700"
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         placeholder="What's on your mind ?"
