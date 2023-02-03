@@ -1,14 +1,13 @@
-import { useCallback } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-hot-toast";
 import { BsPaperclip } from "react-icons/bs";
 import { GiPlainArrow } from "react-icons/gi";
 
-const Dropzone = ({ file, setFile, onFileCapture }: { file: any; setFile: any; onFileCapture: any }) => {
+const Dropzone = ({ files, setFiles }: { files: any; setFiles: any }) => {
   const onDrop: any = useCallback((acceptedFiles: string[], fileRejections: any[]) => {
     if (acceptedFiles.length > 0) {
-      setFile(acceptedFiles[0]);
-      onFileCapture(acceptedFiles[0]);
+      setFiles(acceptedFiles[0]);
     }
     fileRejections.forEach((selectedFile) => {
       selectedFile.errors.forEach((err: any) => {
@@ -36,11 +35,15 @@ const Dropzone = ({ file, setFile, onFileCapture }: { file: any; setFile: any; o
   );
 };
 
-const DropzoneMobile = ({ file, setFile, onFileCapture }: { file: any; setFile: any; onFileCapture: any }) => {
+const DropzoneMobile = ({ files, setFiles }: { files: any; setFiles: Dispatch<SetStateAction<any[]>> }) => {
   const onDrop: any = useCallback((acceptedFiles: string[], fileRejections: any[]) => {
     if (acceptedFiles.length > 0) {
-      setFile(acceptedFiles[0]);
-      onFileCapture(acceptedFiles[0]);
+      setFiles((files) => {
+        const newFiles = [...files.concat(acceptedFiles)];
+        const paths = newFiles.map((o) => o.path);
+        const uniqueFiles = newFiles.filter(({ path }, index) => !paths.includes(path, index + 1));
+        return uniqueFiles;
+      });
     }
     fileRejections.forEach((selectedFile) => {
       selectedFile.errors.forEach((err: any) => {
@@ -70,11 +73,6 @@ const DropzoneMobile = ({ file, setFile, onFileCapture }: { file: any; setFile: 
 
 export { Dropzone, DropzoneMobile };
 
-
-
-
-
-
 // import React, {useState} from 'react';
 // import {useDropzone} from 'react-dropzone';
 
@@ -86,7 +84,7 @@ export { Dropzone, DropzoneMobile };
 //     fileRejections,
 //     getRootProps,
 //     getInputProps
-//   } = useDropzone({    
+//   } = useDropzone({
 //     maxFiles:2,
 //    onDrop: acceptedFiles => {
 //       if (acceptedFiles.length === 0) {
@@ -106,10 +104,8 @@ export { Dropzone, DropzoneMobile };
 //       {file.path} - {file.size} bytes
 //     </li>
 //   ));
-  
-  
 
-//   const fileRejectionItems = fileRejections.map(({ file, errors  }) => { 
+//   const fileRejectionItems = fileRejections.map(({ file, errors  }) => {
 //    return (
 //      <li key={file.path}>
 //           {file.path} - {file.size} bytes
@@ -118,9 +114,8 @@ export { Dropzone, DropzoneMobile };
 //          </ul>
 
 //      </li>
-//    ) 
+//    )
 //   });
-  
 
 //   return (
 //     <section className="container">
