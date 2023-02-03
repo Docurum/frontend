@@ -41,8 +41,8 @@ export default function CreateTopic() {
   };
 
   return (
-    <div className="flex flex-col items-start mt-2 w-full lg:w-1/2 h-[90vh] overflow-x-hidden scrollbar custom-scrollbar">
-      <div className="flex flex-col px-2">
+    <div className="flex flex-col items-start w-full lg:w-1/2 h-[90vh] overflow-x-hidden scrollbar custom-scrollbar">
+      <div className="flex flex-col px-2 mb-20">
         <div className="text-2xl font-bold mt-4 mb-2 text-blue-600">Start a New Topic</div>
         <input
           className="p-4 h-12 outline-none text-lg bg-gray-50 rounded-md shadow-md w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] text-gray-700"
@@ -54,15 +54,29 @@ export default function CreateTopic() {
         <Editor formValues={formValues} setFormValues={setFormValues} />
         <div className="flex flex-col mt-4 gap-y-3">
           <DropzoneMobile files={files} setFiles={setFiles} />
-          <div className="hidden w-full max-lg:grid grid-cols-1 sm:grid-cols-2 gap-2 justify-center items-center text-center">
-            {files.map((file) => {
-              const isImageFile = file.type.split("/")[0] === "image";
-              console.log(isImageFile);
-
-              if (isImageFile) {
+          <div className="flex pr-6 w-screen overflow-x-scroll scrollbar custom-scrollbar mb-4">
+            <div className="flex gap-x-2">
+              {files.map((file) => {
+                const isImageFile = file.type.split("/")[0] === "image";
+                if (isImageFile) {
+                  return (
+                    <div key={file.path} className="flex relative w-56 h-36 rounded-lg text-black font-medium" style={{ backgroundImage: `${URL.createObjectURL(file)}` }}>
+                      <img src={URL.createObjectURL(file)} alt={file.name} className="absolute -z-10 w-56 h-36 opacity-40 rounded-lg" />
+                      <p className="justify-start p-4 truncate">{file.name}</p>
+                      <p className="absolute bottom-4 left-4 truncate">{`${(file.size / (1024 * 1024)).toFixed(2)} MB`}</p>
+                      <button
+                        className="absolute bottom-4 right-4 shrink-0"
+                        onClick={() => {
+                          deleteFile(file);
+                        }}
+                      >
+                        <MdDeleteForever size={25} />
+                      </button>
+                    </div>
+                  );
+                }
                 return (
-                  <div key={file.path} className="flex relative h-36 rounded-lg text-black font-medium" style={{ backgroundImage: `${URL.createObjectURL(file)}` }}>
-                    <img src={URL.createObjectURL(file)} alt={file.name} className="absolute -z-10 h-36 w-full opacity-40 rounded-lg" />
+                  <div key={file.path} className="flex relative w-56 h-36 rounded-lg text-white font-medium bg-gray-600">
                     <p className="justify-start p-4 truncate">{file.name}</p>
                     <p className="absolute bottom-4 left-4 truncate">{`${(file.size / (1024 * 1024)).toFixed(2)} MB`}</p>
                     <button
@@ -75,26 +89,12 @@ export default function CreateTopic() {
                     </button>
                   </div>
                 );
-              }
-              return (
-                <div key={file.path} className="flex relative h-36 rounded-lg text-white font-medium bg-gray-600">
-                  <p className="justify-start p-4 truncate">{file.name}</p>
-                  <p className="absolute bottom-4 left-4 truncate">{`${(file.size / (1024 * 1024)).toFixed(2)} MB`}</p>
-                  <button
-                    className="absolute bottom-4 right-4 shrink-0"
-                    onClick={() => {
-                      deleteFile(file);
-                    }}
-                  >
-                    <MdDeleteForever size={25} />
-                  </button>
-                </div>
-              );
-            })}
+              })}
+            </div>
           </div>
         </div>
         <div
-          className="flex mt-4 mb-6 flex-row items-center justify-center h-10 w-20 bg-blue-600 rounded-md"
+          className="flex flex-row items-center justify-center h-10 w-20 bg-blue-600 rounded-md"
           onClick={() => {
             console.log(formValues);
           }}
