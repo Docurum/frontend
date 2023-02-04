@@ -4,10 +4,15 @@ import { toast } from "react-hot-toast";
 import { BsPaperclip } from "react-icons/bs";
 import { GiPlainArrow } from "react-icons/gi";
 
-const Dropzone = ({ files, setFiles }: { files: any; setFiles: any }) => {
+const Dropzone = ({ setFiles }: { setFiles: Dispatch<SetStateAction<any[]>> }) => {
   const onDrop: any = useCallback((acceptedFiles: string[], fileRejections: any[]) => {
     if (acceptedFiles.length > 0) {
-      setFiles(acceptedFiles[0]);
+      setFiles((files) => {
+        const newFiles = [...files.concat(acceptedFiles)];
+        const paths = newFiles.map((o) => o.path);
+        const uniqueFiles = newFiles.filter(({ path }, index) => !paths.includes(path, index + 1));
+        return uniqueFiles;
+      });
     }
     fileRejections.forEach((selectedFile) => {
       selectedFile.errors.forEach((err: any) => {
@@ -23,7 +28,7 @@ const Dropzone = ({ files, setFiles }: { files: any; setFiles: any }) => {
 
   const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({ onDrop, multiple: true, maxSize: 10485760 });
   return (
-    <div className="hidden lg:flex flex-grow my-4 px-4">
+    <div className="hidden lg:flex my-4 px-4">
       <div {...getRootProps()} className="w-full h-80 rounded-2xl p-2 hover:cursor-pointer text-center focus:outline-none">
         <input {...getInputProps()} />
         <div className="flex flex-col gap-y-5 items-center justify-center border-2 border-gray-400 rounded-xl border-dashed h-full text-xl">
@@ -35,7 +40,7 @@ const Dropzone = ({ files, setFiles }: { files: any; setFiles: any }) => {
   );
 };
 
-const DropzoneMobile = ({ files, setFiles }: { files: any; setFiles: Dispatch<SetStateAction<any[]>> }) => {
+const DropzoneMobile = ({ setFiles }: { setFiles: Dispatch<SetStateAction<any[]>> }) => {
   const onDrop: any = useCallback((acceptedFiles: string[], fileRejections: any[]) => {
     if (acceptedFiles.length > 0) {
       setFiles((files) => {
@@ -72,4 +77,3 @@ const DropzoneMobile = ({ files, setFiles }: { files: any; setFiles: Dispatch<Se
 };
 
 export { Dropzone, DropzoneMobile };
-

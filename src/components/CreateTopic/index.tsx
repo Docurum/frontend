@@ -4,6 +4,7 @@ import { useState } from "react";
 import { MdDeleteForever } from "react-icons/md";
 import BottomNavBar from "../BottomNavBar";
 import { DropzoneMobile } from "../Dropzone";
+import classNames from "classnames";
 const Editor = dynamic(() => import("../RichText"), {
   ssr: false,
 });
@@ -53,30 +54,14 @@ export default function CreateTopic() {
         />
         <Editor formValues={formValues} setFormValues={setFormValues} />
         <div className="flex flex-col mt-4 gap-y-3">
-          <DropzoneMobile files={files} setFiles={setFiles} />
+          <DropzoneMobile setFiles={setFiles} />
           <div className="flex pr-6 w-screen overflow-x-scroll scrollbar custom-scrollbar mb-4">
             <div className="flex gap-x-2">
               {files.map((file) => {
                 const isImageFile = file.type.split("/")[0] === "image";
-                if (isImageFile) {
-                  return (
-                    <div key={file.path} className="flex relative w-56 h-36 rounded-lg text-black font-medium" style={{ backgroundImage: `${URL.createObjectURL(file)}` }}>
-                      <img src={URL.createObjectURL(file)} alt={file.name} className="absolute -z-10 w-56 h-36 opacity-40 rounded-lg" />
-                      <p className="justify-start p-4 truncate">{file.name}</p>
-                      <p className="absolute bottom-4 left-4 truncate">{`${(file.size / (1024 * 1024)).toFixed(2)} MB`}</p>
-                      <button
-                        className="absolute bottom-4 right-4 shrink-0"
-                        onClick={() => {
-                          deleteFile(file);
-                        }}
-                      >
-                        <MdDeleteForever size={25} />
-                      </button>
-                    </div>
-                  );
-                }
                 return (
-                  <div key={file.path} className="flex relative w-56 h-36 rounded-lg text-white font-medium bg-gray-600">
+                  <div key={file.path} className={classNames(["flex relative w-36 h-24 rounded-lg font-medium"], [isImageFile ? "text-black" : "text-white bg-gray-600"])}>
+                    {isImageFile && <img src={URL.createObjectURL(file)} alt={file.name} className="absolute -z-10 w-36 h-24 opacity-40 rounded-lg" />}
                     <p className="justify-start p-4 truncate">{file.name}</p>
                     <p className="absolute bottom-4 left-4 truncate">{`${(file.size / (1024 * 1024)).toFixed(2)} MB`}</p>
                     <button
