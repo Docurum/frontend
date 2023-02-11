@@ -18,10 +18,10 @@ const Home: NextPage = () => {
           <div className="text-xl sm:text-3xl font-bold text-black">doc</div>
           <div className="text-xl sm:text-3xl font-bold text-blue-600">urum</div>
         </div>
+        <div className="hidden sm:flex">
+          <SearchBar />
+        </div>
         <div className="flex flex-row items-center">
-          <div className="hidden sm:flex">
-            <SearchBar />
-          </div>
           <div className="hidden max-sm:flex mr-5" onClick={() => router.push("/search")}>
             <IoIosSearch size={28} />
           </div>
