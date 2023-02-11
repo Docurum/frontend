@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/Chart/index.jsx", "src/components/UserProgressGraph/index.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/Chart/index.jsx", "src/components/UserProgressGraph/index.jsx", "src/components/RichText/index.jsx"],
   "exclude": ["node_modules"]
 }
