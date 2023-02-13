@@ -1,6 +1,6 @@
 const list = [
   {
-    id: 0,
+    id: "0",
     title: "Diabetics",
     description:
       "Diabetes is a chronic (long-lasting) health condition that affects how your body turns food into energy. Your body breaks down most of the food you eat into sugar (glucose) and releases it into your bloodstream. When your blood sugar goes up, it signals your pancreas to release insulin.",
@@ -14,7 +14,7 @@ const list = [
     shares: "1.2k",
   },
   {
-    id: 1,
+    id: "1",
     title: "Cancer",
     description: "Cancer is a group of diseases characterized by the uncontrolled growth and spread of abnormal cells. If left untreated, cancer can cause serious illness and death.",
     author: "Samantha Smith",
@@ -27,7 +27,7 @@ const list = [
     shares: "11k",
   },
   {
-    id: 2,
+    id: "2",
     title: "Heart Disease",
     description: "Heart disease is a broad term that refers to any type of disorder that affects the heart. It is a leading cause of death worldwide.",
     author: "John Doe",
@@ -40,7 +40,7 @@ const list = [
     shares: "7.1k",
   },
   {
-    id: 3,
+    id: "3",
     title: "Stroke",
     description:
       "A stroke is a serious, life-threatening medical condition that occurs when the blood supply to part of the brain is cut off. Symptoms of a stroke include weakness, numbness, and difficulty speaking or understanding speech.",
@@ -54,7 +54,7 @@ const list = [
     shares: "5k",
   },
   {
-    id: 4,
+    id: "4",
     title: "Asthma",
     description: "Asthma is a chronic respiratory disease characterized by inflammation of the airways and difficulty breathing. Symptoms include coughing, wheezing, and shortness of breath.",
     author: "Mike Smith",
@@ -67,7 +67,7 @@ const list = [
     shares: "3.1k",
   },
   {
-    id: 5,
+    id: "5",
     title: "Influenza",
     description: "Influenza, also known as the flu, is a highly contagious respiratory illness caused by the influenza virus. Symptoms include fever, cough, sore throat, and body aches.",
     author: "Emma Watson",
@@ -80,7 +80,7 @@ const list = [
     shares: "1.3k",
   },
   {
-    id: 6,
+    id: "6",
     title: "Chronic Obstructive Pulmonary Disease (COPD)",
     description:
       "Chronic obstructive pulmonary disease (COPD) is a chronic inflammatory lung disease that causes obstructed airflow from the lungs. Symptoms include breathing difficulty, cough, mucus (sputum) production and wheezing",
@@ -94,7 +94,7 @@ const list = [
     shares: "1.2k",
   },
   {
-    id: 7,
+    id: "7",
     title: "Diabetics",
     description:
       "Diabetes is a chronic (long-lasting) health condition that affects how your body turns food into energy. Your body breaks down most of the food you eat into sugar (glucose) and releases it into your bloodstream. When your blood sugar goes up, it signals your pancreas to release insulin.",
@@ -108,7 +108,7 @@ const list = [
     shares: "1.2k",
   },
   {
-    id: 8,
+    id: " 8",
     title: "Cancer",
     description: "Cancer is a group of diseases characterized by the uncontrolled growth and spread of abnormal cells. If left untreated, cancer can cause serious illness and death.",
     author: "Samantha Smith",
@@ -121,7 +121,7 @@ const list = [
     shares: "1.2k",
   },
   {
-    id: 9,
+    id: " 9",
     title: "Heart Disease",
     description: "Heart disease is a broad term that refers to any type of disorder that affects the heart. It is a leading cause of death worldwide.",
     author: "John Doe",
@@ -134,7 +134,7 @@ const list = [
     shares: "1.2k",
   },
   {
-    id: 10,
+    id: "10",
     title: "Stroke",
     category: ["blood", "cardiology", "sick"],
     description:
@@ -148,7 +148,7 @@ const list = [
     shares: "1.2k",
   },
   {
-    id: 11,
+    id: "11",
     title: "Asthma",
     description: "Asthma is a chronic respiratory disease characterized by inflammation of the airways and difficulty breathing. Symptoms include coughing, wheezing, and shortness of breath.",
     author: "Mike Smith",
@@ -161,7 +161,7 @@ const list = [
     shares: "1.2k",
   },
   {
-    id: 12,
+    id: "12",
     title: "Influenza",
     description: "Influenza, also known as the flu, is a highly contagious respiratory illness caused by the influenza virus. Symptoms include fever, cough, sore throat, and body aches.",
     author: "Emma Watson",
@@ -174,7 +174,7 @@ const list = [
     shares: "1.2k",
   },
   {
-    id: 13,
+    id: "13",
     title: "Chronic Obstructive Pulmonary Disease (COPD)",
     description:
       "Chronic obstructive pulmonary disease (COPD) is a chronic inflammatory lung disease that causes obstructed airflow from the lungs. Symptoms include breathing difficulty, cough, mucus (sputum) production and wheezing",

@@ -5,6 +5,10 @@ import { MdDeleteForever } from "react-icons/md";
 import BottomNavBar from "../BottomNavBar";
 import { DropzoneMobile } from "../Dropzone";
 import classNames from "classnames";
+import { AiOutlinePlus } from "react-icons/ai";
+import { HealthCategory, HealthUIComp } from "../HealthCategory";
+import * as Dialog from "@radix-ui/react-dialog";
+
 const Editor = dynamic(() => import("../RichText"), {
   ssr: false,
 });
@@ -52,6 +56,34 @@ export default function CreateTopic() {
           name="title"
           placeholder="Add Title"
         />
+
+        <Dialog.Root>
+          <Dialog.Trigger className="outline-none">
+            <div className="flex flex-row mt-5 hover:cursor-pointer bg-slate-50 w-[130px] items-center justify-around p-2 rounded-md shadow-md shadow-slate-200">
+              <AiOutlinePlus color="rgba(108, 122, 137, 0.8)" className="shrink-0 h-5 w-5" />
+              <div className="text-slate-400">Add Category</div>
+            </div>
+          </Dialog.Trigger>
+          <Dialog.Portal>
+            <Dialog.Overlay />
+            <Dialog.Content className="p-4 h-96 w-[300px] sm:w-[400px] rounded-md bg-white shadow-md shadow-slate-200 fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+              <input
+                className=" h-12 outline-none w-[260px] sm:w-[360px] text-lg bg-gray-50 rounded-md shadow-md text-gray-700"
+                onChange={handleChange}
+                type="text"
+                name="category_search"
+                placeholder="    Search catories here ..."
+              />
+              <div className="mt-4">
+                <HealthUIComp category="liver" />
+              </div>
+              <Dialog.Close />
+            </Dialog.Content>
+          </Dialog.Portal>
+        </Dialog.Root>
+        <div className="mt-2">
+          <HealthCategory category={["liver", "lungs", "heart"]} />
+        </div>
         <Editor formValues={formValues} setFormValues={setFormValues} />
         <div className="flex flex-col mt-4 gap-y-3">
           <DropzoneMobile setFiles={setFiles} />

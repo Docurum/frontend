@@ -13,9 +13,10 @@ import classNames from "classnames";
 import HealthCategory from "../HealthCategory";
 import BottomNavBar from "../BottomNavBar";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { useRouter } from "next/router";
 
 interface IQandCardProps {
-  id: number;
+  id: string;
   title: string;
   description: string;
   author: string;
@@ -57,7 +58,7 @@ const QandASection = () => {
             description={d.description}
             author={d.author}
             commentCount={d.commentCount}
-            id={0}
+            id={index.toString()}
             createdAt={0}
             updatedAt={0}
           />
@@ -76,11 +77,21 @@ interface IQandCardProps {
   upvote: number;
   shares: string;
   category: string[];
+  id: string;
 }
 
-const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCount, views, upvote, shares, category }) => {
+const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCount, views, upvote, shares, category, id }) => {
+  const router = useRouter();
   return (
-    <div className="shadow-md shadow-blue-200 mx-2 mt-2 rounded-md">
+    <div
+      className="shadow-md shadow-blue-200 mx-2 mt-2 rounded-md"
+      onClick={() =>
+        router.push({
+          pathname: "/topic/[id]",
+          query: { id: id },
+        })
+      }
+    >
       <div className="basis-1 flex flex-row">
         <div className="hidden flex-col mt-8 mx-4 items-center sm:flex">
           <div className="hover:cursor-pointer">

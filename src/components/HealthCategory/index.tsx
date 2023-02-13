@@ -38,7 +38,7 @@ const HealthCategory: FC<IHeathCategoryProps> = ({ category }) => {
   return (
     <div className="flex flex-row">
       {category.map((cat, index) => {
-        return <UIComp key={index} category={cat} />;
+        return <HealthUIComp key={index} category={cat} />;
       })}
     </div>
   );
@@ -48,7 +48,7 @@ interface UIProps {
   category: string;
 }
 
-const UIComp: FC<UIProps> = ({ category }) => {
+const HealthUIComp: FC<UIProps> = ({ category }) => {
   const [color, setColor] = useState(getColor(category));
   const c = getColor(category);
   if (category === "liver") {
@@ -110,4 +110,4 @@ const UIComp: FC<UIProps> = ({ category }) => {
   }
 };
 
-export default HealthCategory;
+export { HealthCategory, HealthUIComp };
