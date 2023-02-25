@@ -41,7 +41,7 @@ export default function SearchPage() {
                   description={d.description}
                   author={d.author}
                   commentCount={d.commentCount}
-                  id={0}
+                  id={index.toString()}
                   createdAt={0}
                   updatedAt={0}
                 />
