@@ -10,7 +10,7 @@ import { FC, useState } from "react";
 import { list } from "../../../constants";
 import styles from "./index.module.css";
 import classNames from "classnames";
-import HealthCategory from "../HealthCategory";
+import {HealthCategory} from "../HealthCategory";
 import BottomNavBar from "../BottomNavBar";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
