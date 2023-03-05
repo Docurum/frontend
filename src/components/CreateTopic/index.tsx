@@ -1,16 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import dynamic from "next/dynamic";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { MdDeleteForever, MdOutlineRadioButtonUnchecked } from "react-icons/md";
 import BottomNavBar from "../BottomNavBar";
 import { DropzoneMobile } from "../Dropzone";
+import { getSignedUrl, S3RequestPresigner } from "@aws-sdk/s3-request-presigner";
 import { list } from "../../../constants";
 import classNames from "classnames";
 import { AiOutlinePlus, AiFillCheckCircle } from "react-icons/ai";
 import { HealthCategory, HealthUIComp } from "../HealthCategory";
 import * as Dialog from "@radix-ui/react-dialog";
+import { S3Client, AbortMultipartUploadCommand, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
-const Editor = dynamic(() => import("../RichText"), {
+const Editor = dynamic(() => import("../RichText").then((mod) => mod.RichTextExample), {
   ssr: false,
 });
 
@@ -91,10 +93,60 @@ export default function CreateTopic() {
   };
 
   const [files, setFiles] = useState<any[]>([]);
-  // console.log(files);
+
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
 
   const [categoryIncludedIndex, setCategoryIncludedIndex] = useState<string[]>([]);
   const [categoryItems, setCategoryItems] = useState<string[]>([]);
+
+  const uploadFile = useCallback(async () => {
+    const client = new S3Client({
+      region: "ap-south-1",
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+      },
+    });
+    let uploadObs: any[] = [];
+
+    files.forEach(async (file) => {
+      if (!uploadedFiles.includes(files)) {
+        const command = new PutObjectCommand({
+          Bucket: "docurum-forum-assets",
+          Key: file.name,
+          Body: file,
+          ACL: "public-read",
+        });
+
+        try {
+          await client.send(command);
+          uploadObs.push(file);
+
+          const url = `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${file.path}`;
+          let data = uploadedFiles;
+          let ob = {
+            ...file,
+            path: url,
+          };
+          data.push(ob);
+          setUploadedFiles(data);
+          // console.log("Asset s3 url:", url);
+        } catch (error) {
+          console.log("Error: ", error);
+        }
+      }
+    });
+    return uploadObs;
+  }, [files, uploadedFiles]);
+
+  useEffect(() => {
+    uploadFile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
+
+  useEffect(() => {
+    console.log("Use files:", uploadedFiles);
+  }, [files, uploadedFiles]);
 
   const deleteFile = (file: any) => {
     setFiles((files) => {
@@ -192,18 +244,31 @@ export default function CreateTopic() {
               {files.map((file) => {
                 const isImageFile = file.type.split("/")[0] === "image";
                 return (
-                  <div key={file.path} className={classNames(["flex relative w-36 h-24 rounded-lg font-medium"], [isImageFile ? "text-black" : "text-white bg-gray-600"])}>
-                    {isImageFile && <img src={URL.createObjectURL(file)} alt={file.name} className="absolute -z-10 w-36 h-24 opacity-40 rounded-lg" />}
-                    <p className="justify-start p-4 truncate">{file.name}</p>
-                    <p className="absolute bottom-4 left-4 truncate">{`${(file.size / (1024 * 1024)).toFixed(2)} MB`}</p>
-                    <button
-                      className="absolute bottom-4 right-4 shrink-0"
-                      onClick={() => {
-                        deleteFile(file);
-                      }}
-                    >
-                      <MdDeleteForever size={25} />
-                    </button>
+                  <div key={file.path} className="flex flex-col items-center justify-center">
+                    <div className={classNames(["flex relative w-36 h-24 rounded-lg font-medium"], [isImageFile ? "text-black" : "text-white bg-gray-600"])}>
+                      {isImageFile && <img src={URL.createObjectURL(file)} alt={file.name} className="absolute -z-10 w-36 h-24 opacity-40 rounded-lg" />}
+                      <p className="justify-start p-4 truncate">{file.name}</p>
+                      <p className="absolute bottom-4 left-4 truncate">{`${(file.size / (1024 * 1024)).toFixed(2)} MB`}</p>
+                      <button
+                        className="absolute bottom-4 right-4 shrink-0"
+                        onClick={() => {
+                          deleteFile(file);
+                        }}
+                      >
+                        <MdDeleteForever size={25} />
+                      </button>
+                    </div>
+
+                    {/* {!uploadedFiles.includes(file) && (
+                      <div className="absolute">
+                        <div className="flex items-center justify-center">
+                          <div
+                            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-600 border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                            role="status"
+                          ></div>
+                        </div>
+                      </div>
+                    )} */}
                   </div>
                 );
               })}
@@ -213,7 +278,7 @@ export default function CreateTopic() {
         <div
           className="flex flex-row items-center justify-center h-10 w-20 bg-blue-600 rounded-md"
           onClick={() => {
-            // console.log(formValues);
+            uploadFile();
           }}
         >
           <div className="text-white font-bold text-lg">Post</div>

@@ -1,9 +1,12 @@
+/* eslint-disable @next/next/no-img-element */
 import classNames from "classnames";
 import isHotkey from "is-hotkey";
 import { FC, useCallback, useMemo, useState } from "react";
 import { BaseEditor, Descendant, Editor, Element as SlateElement, Transforms, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import { Editable, Slate, useSlate, withReact } from "slate-react";
+import { DropzoneCommentArea, DropzoneMobile } from "../Dropzone";
+import { MdDeleteForever } from "react-icons/md";
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -72,6 +75,92 @@ const RichTextExample: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
         }}
       />
     </Slate>
+  );
+};
+
+const RichTextCommentArea: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
+  const renderElement = useCallback((props: any) => <Element {...props} />, []);
+  const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
+  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+
+  const [descVal, setDescVal] = useState(initialValue);
+  const [files, setFiles] = useState<any[]>([]);
+
+  const deleteFile = (file: any) => {
+    setFiles((files) => {
+      const newFiles = files.filter((f) => f.path !== file.path);
+      return newFiles;
+    });
+  };
+
+  return (
+    <div className="flex flex-col">
+      <Slate
+        editor={editor}
+        value={descVal}
+        onChange={(val) => {
+          setDescVal(val);
+          setFormValues({ ...formValues, description: val });
+        }}
+      >
+        {/* <div className="flex flex-row  border-b-[1px] border-slate-500 mb-5 p-2"> */}
+        {/* <BlockButton format="heading-one" icon="looks_one" />
+         <BlockButton format="heading-two" icon="looks_two" />
+        <BlockButton format="block-quote" icon="format_quote" />
+        <BlockButton format="numbered-list" icon="format_list_numbered" />
+        <BlockButton format="bulleted-list" icon="format_list_bulleted" />
+        <BlockButton format="left" icon="format_align_left" />
+        <BlockButton format="center" icon="format_align_center" />
+        <BlockButton format="right" icon="format_align_right" />
+        <BlockButton format="justify" icon="format_align_justify" /> */}
+        {/* </div> */}
+        <Editable
+          className="mt-1 p-4 max-h-96 h-30 overflow-x-hidden overflow-y-scroll custom-scrollbar scrollbar items-start justify-start outline-none text-lg rounded-md w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[40vw] text-gray-700"
+          renderElement={renderElement}
+          renderLeaf={renderLeaf}
+          placeholder="What's on your mind ?"
+          spellCheck
+          aria-atomic
+          autoFocus
+          onKeyDown={(event) => {
+            for (let hotkey in HOTKEYS) {
+              if (isHotkey(hotkey, event as any)) {
+                event.preventDefault();
+                const mark = (HOTKEYS as any)[hotkey];
+                toggleMark(editor, mark);
+              }
+            }
+          }}
+        />
+        <div className="flex flex-row mt-4 p-2">
+          <MarkButton format="bold" text="B" icon="format_bold" />
+          <MarkButton format="italic" text="I" icon="format_italic" />
+          <MarkButton format="underline" text="U" icon="format_underlined" />
+          {/* <MarkButton format="code" text="<>" icon="code" /> */}
+          <DropzoneCommentArea setFiles={setFiles} />
+        </div>
+      </Slate>
+      <div className="flex gap-x-2">
+        {files.map((file) => {
+          const isImageFile = file.type.split("/")[0] === "image";
+          return (
+            <div key={file.path} className={classNames(["flex relative w-36 h-24 rounded-lg font-medium"], [isImageFile ? "text-black" : "text-white bg-gray-600"])}>
+              {isImageFile && <img src={URL.createObjectURL(file)} alt={file.name} className="absolute -z-10 w-36 h-24 opacity-40 rounded-lg" />}
+              <p className="justify-start p-4 truncate">{file.name}</p>
+              <p className="absolute bottom-4 left-4 truncate">{`${(file.size / (1024 * 1024)).toFixed(2)} MB`}</p>
+              <button
+                className="absolute bottom-4 right-4 shrink-0"
+                onClick={() => {
+                  deleteFile(file);
+                }}
+              >
+                <MdDeleteForever size={25} />
+              </button>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 
@@ -262,4 +351,4 @@ const initialValue: Descendant[] | any[] = [
   // },
 ];
 
-export default RichTextExample;
+export { RichTextExample, RichTextCommentArea };
