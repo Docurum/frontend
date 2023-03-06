@@ -5,6 +5,7 @@ import { MdOutlineExplore } from "react-icons/md";
 import { RiQuestionMark, RiQuestionAnswerLine } from "react-icons/ri";
 import { MdLocalHospital } from "react-icons/md";
 import { useRouter } from "next/router";
+import Consult from "../Consult";
 
 export default function LeftLane() {
   const [index, setIndex] = useState(0);
@@ -40,17 +41,7 @@ export default function LeftLane() {
             <div className={`text-md ${index === 3 ? "text-blue-600" : "text-slate-500"} font-bold ml-2`}>My Answers</div>
           </div>
         </div>
-        <div className="h-96 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
-          <div className="z-1 absolute h-32 bg-green-100 w-full rounded-lg"></div>
-          <div className="absolute z-2 w-full items-end flex flex-col">
-            <Image src="/female_doctor.png" alt="female doctor" height={200} width={170} />
-          </div>
-          <div className="flex flex-row justify-center items-center z-3 absolute h-12 bg-green-500 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200">
-            <MdLocalHospital size={28} color="white" />
-            <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">Consult a doctor</div>
-            <div className="text-white hidden text-md lg:text-[16px] ml-1 font-bold text-center max-lg:flex">Consult</div>
-          </div>
-        </div>
+        <Consult />
       </div>
     </div>
   );
