@@ -78,7 +78,11 @@ const RichTextExample: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
   );
 };
 
-const RichTextCommentArea: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
+const RichTextCommentArea: FC<{
+  formValues: any;
+  setFormValues: any;
+  isCommentSelected: boolean;
+}> = ({ formValues, setFormValues, isCommentSelected }) => {
   const renderElement = useCallback((props: any) => <Element {...props} />, []);
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
@@ -115,7 +119,7 @@ const RichTextCommentArea: FC<IRichTextProps> = ({ formValues, setFormValues }) 
         <BlockButton format="justify" icon="format_align_justify" /> */}
         {/* </div> */}
         <Editable
-          className="mt-1 p-4 max-h-96 h-30 overflow-x-hidden overflow-y-scroll custom-scrollbar scrollbar items-start justify-start outline-none text-lg rounded-md w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[40vw] text-gray-700"
+          className="mt-1 p-4 max-h-96 h-30 overflow-x-hidden overflow-y-scroll custom-scrollbar scrollbar items-start justify-start outline-none text-lg rounded-md w-[80vw] sm:w-[80vw] md:w-[65vw] lg:w-[45vw] text-gray-700"
           renderElement={renderElement}
           renderLeaf={renderLeaf}
           placeholder="What's on your mind ?"
@@ -132,13 +136,23 @@ const RichTextCommentArea: FC<IRichTextProps> = ({ formValues, setFormValues }) 
             }
           }}
         />
-        <div className="flex flex-row mt-4 p-2">
-          <MarkButton format="bold" text="B" icon="format_bold" />
-          <MarkButton format="italic" text="I" icon="format_italic" />
-          <MarkButton format="underline" text="U" icon="format_underlined" />
-          {/* <MarkButton format="code" text="<>" icon="code" /> */}
-          <DropzoneCommentArea setFiles={setFiles} />
-        </div>
+
+        {isCommentSelected ? (
+          <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-row p-2">
+              <MarkButton format="bold" text="B" icon="format_bold" />
+              <MarkButton format="italic" text="I" icon="format_italic" />
+              <MarkButton format="underline" text="U" icon="format_underlined" />
+              {/* <MarkButton format="code" text="<>" icon="code" /> */}
+              <DropzoneCommentArea setFiles={setFiles} />
+            </div>
+            <div className="mx-4 flex flex-row items-center justify-center shrink-0 h-8 sm:h-10 w-16 sm:w-20 bg-blue-400 rounded-lg" onClick={() => {}}>
+              <div className="text-white font-bold text-md sm:text-lg">Reply</div>
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
       </Slate>
       <div className="flex gap-x-2">
         {files.map((file) => {

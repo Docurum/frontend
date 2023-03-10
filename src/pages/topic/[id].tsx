@@ -4,7 +4,7 @@ import LeftLane from "../../components/LeftLane";
 import { QandACard, QandASectionHome } from "../../components/QandASection";
 import { list } from "../../../constants";
 import RightLane from "../../components/RightLane";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../components/RichText").then((mod) => mod.RichTextCommentArea), {
@@ -16,8 +16,24 @@ const Topic = () => {
   const { id } = router.query;
   const [topic, setTopic] = useState(list[parseInt(id as string)]);
   const [formValues, setFormValues] = useState({});
+  const commentRef = useRef(null);
 
   const [isCommentSelected, setIsCommentSelected] = useState(false);
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  });
+
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Element;
+    const commentElement = commentRef.current as unknown as Element;
+    if (commentElement && !commentElement.contains(target)) {
+      setIsCommentSelected(false);
+    }
+  };
 
   useEffect(() => {
     let unique_id = router.query.id?.toString();
@@ -47,9 +63,9 @@ const Topic = () => {
                 updatedAt={0}
               />
             )}
-            <div className="flex flex-col shadow-md shadow-blue-200 mx-2 mt-4 rounded-md">
+            <div ref={commentRef} className="flex flex-col shadow-md shadow-blue-200 mx-2 mt-4 rounded-md" onClick={() => setIsCommentSelected(true)}>
               {isCommentSelected && (
-                <div className="flex flex-row ml-4 mt-1 items-center">
+                <div className="flex flex-row ml-16 mt-1 items-center">
                   <div className="text-md font-semibold">Replying to </div>
                   {topic && <div className="ml-1 text-md text-blue-600 font-semibold">@{topic.author}</div>}
                 </div>
@@ -64,11 +80,13 @@ const Topic = () => {
                   name="comment"
                   placeholder="Share your thoughts here . . ."
                 /> */}
-                <Editor formValues={formValues} setFormValues={setFormValues} />
+                <Editor isCommentSelected={isCommentSelected} formValues={formValues} setFormValues={setFormValues} />
 
-                <div className="mx-4 flex flex-row items-center justify-center h-10 w-20 bg-blue-400 rounded-2xl" onClick={() => {}}>
-                  <div className="text-white font-bold text-lg">Reply</div>
-                </div>
+                {/* {!isCommentSelected && (
+                  <div className="mx-4 hidden sm:flex flex-row items-center justify-center shrink-0 h-10 w-20 bg-blue-400 rounded-2xl" onClick={() => {}}>
+                    <div className="text-white font-bold text-lg">Reply</div>
+                  </div>
+                )} */}
               </div>
             </div>
           </div>
