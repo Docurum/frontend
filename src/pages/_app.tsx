@@ -6,6 +6,8 @@ import { destroyCookie, setCookie } from "nookies";
 import { useEffect, useState } from "react";
 import GoogleOneTapLogin from "react-google-one-tap-login";
 import { Toaster, toast, useToasterStore } from "react-hot-toast";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import "../styles/globals.css";
 import capsEveryFirstLetter from "../utils/capsEveryFirstLetter";
@@ -16,6 +18,8 @@ const ssp = Source_Sans_Pro({
   weight: ["400"],
   variable: "--ssp-font",
 });
+
+const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -69,8 +73,11 @@ export default function App({ Component, pageProps }: AppProps) {
           googleAccountConfigs={{ client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string }}
         />
       )}
-      <Toaster position="bottom-right" reverseOrder={false} toastOptions={{ duration: 5000 }} />
-      <Component {...pageProps} />
+      <QueryClientProvider client={queryClient}>
+        <Toaster position="bottom-right" reverseOrder={false} toastOptions={{ duration: 5000 }} />
+        <Component {...pageProps} />
+        <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
+      </QueryClientProvider>
     </main>
   );
 }

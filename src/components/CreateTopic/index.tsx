@@ -11,6 +11,7 @@ import { AiOutlinePlus, AiFillCheckCircle } from "react-icons/ai";
 import { HealthCategory, HealthUIComp } from "../HealthCategory";
 import * as Dialog from "@radix-ui/react-dialog";
 import { S3Client, AbortMultipartUploadCommand, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { createId } from "@paralleldrive/cuid2";
 
 const Editor = dynamic(() => import("../RichText").then((mod) => mod.RichTextExample), {
   ssr: false,
@@ -103,8 +104,8 @@ export default function CreateTopic() {
     const client = new S3Client({
       region: "ap-south-1",
       credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+        accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY!,
+        secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
       },
     });
     let uploadObs: any[] = [];
@@ -113,7 +114,7 @@ export default function CreateTopic() {
       if (!uploadedFiles.includes(files)) {
         const command = new PutObjectCommand({
           Bucket: "docurum-forum-assets",
-          Key: file.name,
+          Key: createId() + "." + file.name.split(".")[1],
           Body: file,
           ACL: "public-read",
         });

@@ -2,10 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import classNames from "classnames";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
+import { loginUser } from "../../api";
 import Logo from "../../components/Logo/Logo";
 import SEO from "../../components/SEO";
 import loginSchema from "../../schemas/loginSchema";
@@ -42,6 +45,7 @@ const LeftHalf = () => {
 
 const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const router = useRouter();
 
   const {
     reset,
@@ -61,6 +65,39 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
 
   const onSubmit: SubmitHandler<loginSchemaType> = async (formData) => {
     console.table(formData);
+    try {
+      const response = await loginUser(formData);
+
+      const { data } = response;
+      if (response.status === 200) {
+        localStorage.setItem("token", data.message.accessToken);
+        toast.success("Login Successful", { id: data.message });
+        router.replace("/home");
+      } else if (response.status !== 200) {
+        toast.success(data.message, { id: data.message });
+      }
+
+      reset();
+      // As reset will fallback to defaultValues
+      // so they have to be cleared explicitly
+      setValue("emailOrUsername", "");
+      setShowPassword(false);
+    } catch (err: any) {
+      if (err.response) {
+        const errorMessage = err.response.data.message;
+        if (Array.isArray(errorMessage)) {
+          errorMessage.forEach((error: { message: string; path: any }) => {
+            setError(error.path[0], {
+              message: error.message,
+            });
+          });
+        } else {
+          toast.error(errorMessage, { id: errorMessage });
+        }
+      } else {
+        toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
+      }
+    }
     reset();
     // As reset will fallback to defaultValues
     // so they have to be cleared explicitly

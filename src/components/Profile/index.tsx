@@ -13,6 +13,9 @@ import styles from "./index.module.css";
 import { QandASection } from "../QandASection";
 import BottomNavBar from "../BottomNavBar";
 import { BADGE, Badge, GoldBadge, SilverBadge } from "../ProfileRightSection";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "../../api";
+
 const myLoader = () => {
   return `https://pbs.twimg.com/profile_images/1618078888537755648/Mpg3WTOG_400x400.jpg`;
 };
@@ -22,6 +25,21 @@ const Chart = dynamic(() => import("../Chart"), {
 });
 
 export default function Profile() {
+  const { isLoading, data, isError } = useQuery({
+    queryKey: ["profile"],
+    queryFn: getUser,
+    select: (data) => data as any,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Oops! Something went wrong. Try refreshing</div>;
+  }
+
+  console.log(data);
   return (
     <div className={classNames([styles["scrollbar"]], ["mt-2 flex flex-col w-full lg:w-2/4 lg:max-w-1/2 h-[90vh] overflow-y-scroll scrollbar"])}>
       <div className="flex flex-row justify-between items-center">
@@ -40,7 +58,7 @@ export default function Profile() {
           </div>
           <div className="flex flex-col mt-4">
             <div className="flex flex-row items-center">
-              <div className="text-xl font-bold text-slate-700">Dr. Arnab Bhattacharya</div>
+              <div className="text-xl font-bold text-slate-700">Dr. {data?.data?.message?.user?.name}</div>
               <div className="ml-1">
                 <MdVerified size={25} color={"green"} className="shrink-0" />
               </div>
