@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Lottie from "react-lottie-player";
@@ -16,8 +17,8 @@ import { BADGE, Badge, GoldBadge, SilverBadge } from "../ProfileRightSection";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "../../api";
 
-const myLoader = () => {
-  return `https://pbs.twimg.com/profile_images/1618078888537755648/Mpg3WTOG_400x400.jpg`;
+const myLoader = (imageUrl: any) => {
+  return imageUrl;
 };
 
 const Chart = dynamic(() => import("../Chart"), {
@@ -45,12 +46,11 @@ export default function Profile() {
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row">
           <div className="max-sm:w-28 max-sm:h-28 rounded-2xl m-4 shrink-0 hover:cursor-pointer">
-            <Image
+            <img
               style={{
                 borderRadius: "20px",
               }}
-              loader={myLoader}
-              src={"https://avatars.dicebear.com/api/personas/her.svg"}
+              src={data.data.message.user.picture}
               alt={"avatar"}
               height={30}
               width={160}
