@@ -44,7 +44,7 @@ export default function App({ Component, pageProps }: AppProps) {
       if (val !== null) {
         toast.error("Session expired! Please Login");
       }
-      router.replace("/login");
+      // router.replace("/login");
     }
     if (isJWTValid()) {
       // router.replace("/salesOrderDetail");

@@ -11,7 +11,10 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.282.0",
     "@aws-sdk/s3-request-presigner": "^3.282.0",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@hookform/resolvers": "^2.9.10",
+    "@mui/material": "^5.11.14",
     "@next/font": "^13.1.1",
     "@paralleldrive/cuid2": "^2.2.0",
     "@radix-ui/react-dialog": "^1.0.2",
