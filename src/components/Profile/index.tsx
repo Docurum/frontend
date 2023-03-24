@@ -110,7 +110,22 @@ export default function Profile() {
     });
   }, []);
 
-  const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({ onDrop, multiple: false, maxSize: 10485760 });
+  const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({
+    onDrop,
+    multiple: false,
+    maxSize: 10485760,
+    validator: (file) => {
+      const fileFormat = file.name.split(".")[1];
+      if (fileFormat === "jpg" || fileFormat === "png" || fileFormat === "jpeg") {
+        return null;
+      }
+
+      return {
+        code: "file-invalid-type",
+        message: "Only jpg/png files supported!",
+      };
+    },
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
