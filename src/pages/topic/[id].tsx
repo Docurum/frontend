@@ -36,6 +36,8 @@ const Topic = () => {
   };
 
   useEffect(() => {
+    console.log(router.query,'id');
+    
     let unique_id = router.query.id?.toString();
     setTopic(list[parseInt(unique_id!)]);
     console.log("Router :", router.query);

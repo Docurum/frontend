@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import dynamic from "next/dynamic";
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useEffect, useState } from "react";
 import { MdDeleteForever, MdOutlineRadioButtonUnchecked } from "react-icons/md";
 import BottomNavBar from "../BottomNavBar";
 import { DropzoneMobile } from "../Dropzone";
@@ -16,8 +16,11 @@ import { createId } from "@paralleldrive/cuid2";
 const Editor = dynamic(() => import("../RichText").then((mod) => mod.RichTextExample), {
   ssr: false,
 });
-
-export default function CreateTopic() {
+interface ICreateTopicProps{
+files:any[],
+setFiles:Dispatch<SetStateAction<any[]>>
+}
+const CreateTopic:FC<ICreateTopicProps>=({files,setFiles})=> {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const initialCatList = [
@@ -93,7 +96,6 @@ export default function CreateTopic() {
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const [files, setFiles] = useState<any[]>([]);
 
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
 
@@ -241,7 +243,7 @@ export default function CreateTopic() {
         <div className="flex flex-col mt-4 gap-y-3">
           <DropzoneMobile setFiles={setFiles} />
           <div className="flex pr-6 w-screen overflow-x-scroll scrollbar custom-scrollbar mb-4">
-            <div className="flex gap-x-2">
+            <div className="hidden max-lg:flex gap-x-2">
               {files.map((file) => {
                 const isImageFile = file.type.split("/")[0] === "image";
                 return (
@@ -289,3 +291,4 @@ export default function CreateTopic() {
     </div>
   );
 }
+export default CreateTopic
