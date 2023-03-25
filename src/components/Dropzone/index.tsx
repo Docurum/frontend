@@ -4,7 +4,15 @@ import { toast } from "react-hot-toast";
 import { BsPaperclip } from "react-icons/bs";
 import { GiPlainArrow } from "react-icons/gi";
 
-const Dropzone = ({ setFiles }: { setFiles: Dispatch<SetStateAction<any[]>> }) => {
+const Dropzone = ({
+  setFiles,
+  className = "w-full h-80 rounded-2xl p-2 hover:cursor-pointer text-center focus:outline-none",
+  title = "Drop your files here",
+}: {
+  setFiles: Dispatch<SetStateAction<any[]>>;
+  className?: string;
+  title?: string;
+}) => {
   const onDrop: any = useCallback((acceptedFiles: string[], fileRejections: any[]) => {
     if (acceptedFiles.length > 0) {
       setFiles((files) => {
@@ -29,11 +37,11 @@ const Dropzone = ({ setFiles }: { setFiles: Dispatch<SetStateAction<any[]>> }) =
   const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({ onDrop, multiple: true, maxSize: 10485760 });
   return (
     <div className="hidden lg:flex my-4 px-4">
-      <div {...getRootProps()} className="w-full h-80 rounded-2xl p-2 hover:cursor-pointer text-center focus:outline-none">
+      <div {...getRootProps()} className={className}>
         <input {...getInputProps()} />
-        <div className="flex flex-col gap-y-5 items-center justify-center border-2 border-gray-400 rounded-xl border-dashed h-full text-xl">
+        <div className="flex flex-col gap-y-2 items-center justify-center border-2 border-gray-400 rounded-xl border-dashed h-full text-md text-slate-500 font-bold">
           <GiPlainArrow size={60} className="fill-gray-300" />
-          <p>Drop your files here</p>
+          <p>{title}</p>
         </div>
       </div>
     </div>

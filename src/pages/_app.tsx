@@ -13,6 +13,19 @@ import "../styles/globals.css";
 import capsEveryFirstLetter from "../utils/capsEveryFirstLetter";
 import cookieOptions from "../utils/cookieOptions";
 
+function isJWTValid() {
+  const token = localStorage.getItem("token");
+  if (token) {
+    const tokenDecodablePart = token.split(".")[1];
+    const decoded = JSON.parse(Buffer.from(tokenDecodablePart, "base64").toString());
+    const currentTime = Date.now() / 1000;
+    if (decoded.exp > currentTime) {
+      return true;
+    }
+  }
+  return false;
+}
+
 const ssp = Source_Sans_Pro({
   subsets: ["latin"],
   weight: ["400"],
@@ -24,6 +37,21 @@ const queryClient = new QueryClient();
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const [isWindowInit, setIsWindowInit] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isJWTValid()) {
+      let val = localStorage.getItem("token");
+      if (val !== null) {
+        toast.error("Session expired! Please Login");
+      }
+      // router.replace("/login");
+    }
+    if (isJWTValid()) {
+      // router.replace("/salesOrderDetail");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (window) {

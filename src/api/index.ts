@@ -34,3 +34,15 @@ export const getUser = () => {
     return e;
   }
 };
+
+export const updateProfilePicture = (data: { picture: string }) => {
+  try {
+    let api = axios.create({
+      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
+      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
+    });
+    return api.put("/user/update-picture", data);
+  } catch (e) {
+    return e;
+  }
+};

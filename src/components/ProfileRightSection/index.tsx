@@ -3,13 +3,15 @@ import goldTrophy from "../../animations/Gold_Trophy.json";
 import silverTrophy from "../../animations/SilverTrophy.json";
 import bronzeTrophy from "../../animations/Bronze_Trophy.json";
 import { FC, useState } from "react";
+import CreateClinic from "../CreateClinic";
 
 const ProfileRightSection = () => {
   return (
     <div className="hidden  lg:flex flex-col  w-1/4 items-center mt-4 mb-10">
-      <GoldBadge />
+      <CreateClinic />
+      {/* <GoldBadge />
       <SilverBadge />
-      <Badge name={BADGE.BRONZE} number={13} list={["Critic", "Nice Question"]} />
+      <Badge name={BADGE.BRONZE} number={13} list={["Critic", "Nice Question"]} /> */}
     </div>
   );
 };
