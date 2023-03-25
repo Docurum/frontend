@@ -25,23 +25,13 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
-
-const createClinic = (data: any) => {
-  try {
-    let api = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
-    });
-    return api.post("/clinic/create-clinic", data);
-  } catch (e) {
-    return e as any;
-  }
-};
+import { createClinic, GetClinicsQuery } from "../../api/clinic";
 
 export default function CreateClinic() {
   const [files, setFiles] = useState<any[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
   const uploadedImages: React.MutableRefObject<any[]> = useRef([]);
+  const uploadedImageFiles: React.MutableRefObject<any[]> = useRef([]);
   const logoImage: React.MutableRefObject<string> = useRef("");
   const [logoFiles, setLogoFiles] = useState<any[]>([]);
 
@@ -82,6 +72,8 @@ export default function CreateClinic() {
       };
     },
   });
+
+  const getClinics = GetClinicsQuery();
 
   const {
     reset,
@@ -124,7 +116,7 @@ export default function CreateClinic() {
 
     files.forEach(async (file) => {
       let keyName = createId() + "." + file.name.split(".")[1];
-      if (!uploadedFiles.includes(files)) {
+      if (!uploadedImageFiles.current.includes(files)) {
         const command = new PutObjectCommand({
           Bucket: "docurum-forum-assets",
           Key: keyName,
@@ -139,10 +131,8 @@ export default function CreateClinic() {
           await client.send(command);
           uploadedImages.current.push(payload.picture);
 
-          const url = `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${file.path}`;
-          let data = uploadedFiles;
-          data.push(file);
-          setUploadedFiles(data);
+          uploadedImageFiles.current.push(file);
+          setUploadedFiles(uploadedImageFiles.current);
           // console.log("Asset s3 url:", url);
         } catch (error) {
           console.log("Error: ", error);
@@ -200,13 +190,14 @@ export default function CreateClinic() {
   const onSubmit: SubmitHandler<z.infer<typeof clinicSchema>> = async (formData) => {
     formData.displayImages = uploadedImages.current;
     formData.logo = logoImage.current;
-    uploadedImages.current.forEach((img, index) => {
-      console.log("Image ", index, " :", img);
-    });
-    console.log("Formdata images", formData.displayImages);
-    console.table(formData);
+    // uploadedImages.current.forEach((img, index) => {
+    //   console.log("Image ", index, " :", img);
+    // });
+    // console.log("Formdata images", formData.displayImages);
+    // console.table(formData);
     try {
       const { data } = await createClinic(formData);
+      getClinics.refetch();
       toast.success(data.message, { id: data.message });
       reset();
       // As reset will fallback to defaultValues

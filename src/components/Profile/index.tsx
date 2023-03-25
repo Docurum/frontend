@@ -3,12 +3,12 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Lottie from "react-lottie-player";
 import lungsAnimation from "../../animations/lungs.json";
-import { MdVerified } from "react-icons/md";
+import { MdDelete, MdEdit, MdEmail, MdLocationOn, MdVerified } from "react-icons/md";
 import { FcGraduationCap } from "react-icons/fc";
-import { AiFillMedicineBox } from "react-icons/ai";
+import { AiFillMedicineBox, AiOutlinePlus } from "react-icons/ai";
 import { ImProfile } from "react-icons/im";
-import { BsGlobe } from "react-icons/bs";
-import { FC, useCallback, useEffect, useState } from "react";
+import { BsFillTelephoneFill, BsGlobe } from "react-icons/bs";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDropzone } from "react-dropzone";
 import classNames from "classnames";
@@ -23,6 +23,11 @@ import { createId } from "@paralleldrive/cuid2";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import Consult from "../Consult";
 import CreateClinic from "../CreateClinic";
+import Logo from "../Logo/Logo";
+import { CiEdit } from "react-icons/ci";
+import axios from "axios";
+import clinicSchema from "../../schemas/clinicSchema";
+import { deleteClinic, GetClinicsQuery, IClinicType } from "../../api/clinic";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -34,8 +39,8 @@ const Chart = dynamic(() => import("../Chart"), {
 
 export default function Profile() {
   const [files, setFiles] = useState<any[]>([]);
-  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
-  const uploadFile = useCallback(async () => {
+  const profileImage = useRef("");
+  const uploadFile = async () => {
     const client = new S3Client({
       region: "ap-south-1",
       credentials: {
@@ -43,42 +48,28 @@ export default function Profile() {
         secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
       },
     });
-    let uploadObs: any[] = [];
+    if (files.length > 0) {
+      let keyName = createId() + "." + files[0].name.split(".")[1];
+      const command = new PutObjectCommand({
+        Bucket: "docurum-forum-assets",
+        Key: keyName,
+        Body: files[0],
+        ACL: "public-read",
+      });
+      let payload = {
+        picture: `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${keyName}`,
+      };
 
-    files.forEach(async (file) => {
-      let keyName = createId() + "." + file.name.split(".")[1];
-      if (!uploadedFiles.includes(files)) {
-        const command = new PutObjectCommand({
-          Bucket: "docurum-forum-assets",
-          Key: keyName,
-          Body: file,
-          ACL: "public-read",
-        });
-        let payload = {
-          picture: `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${keyName}`,
-        };
-
-        try {
-          await client.send(command);
-          uploadObs.push(file);
-          await updateProfilePicture(payload);
-
-          const url = `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${file.path}`;
-          let data = uploadedFiles;
-          let ob = {
-            ...file,
-            path: url,
-          };
-          data.push(ob);
-          setUploadedFiles(data);
-          // console.log("Asset s3 url:", url);
-        } catch (error) {
-          console.log("Error: ", error);
-        }
+      try {
+        await client.send(command);
+        await updateProfilePicture(payload);
+        profileImage.current = payload.picture;
+        setFiles([]);
+      } catch (error) {
+        console.log("Error: ", error);
       }
-    });
-    return uploadObs;
-  }, [files, uploadedFiles]);
+    }
+  };
 
   useEffect(() => {
     uploadFile();
@@ -88,6 +79,8 @@ export default function Profile() {
     queryFn: getUser,
     select: (data) => data as any,
   });
+
+  const clinics = GetClinicsQuery();
 
   const onDrop: any = useCallback((acceptedFiles: string[], fileRejections: any[]) => {
     if (acceptedFiles.length > 0) {
@@ -148,11 +141,11 @@ export default function Profile() {
                 <CgProfile size={80} color="gray" />
               </div>
             ) : (
-              <img
+              <Image
                 style={{
                   borderRadius: "20px",
                 }}
-                src={data.data.message.user.picture}
+                src={profileImage.current === "" ? data.data.message.user.picture : profileImage.current}
                 alt={""}
                 height={30}
                 width={160}
@@ -179,6 +172,7 @@ export default function Profile() {
           <Lottie animationData={lungsAnimation} play />
         </div>
       </div>
+
       <div className="hidden max-sm:flex flex-col ml-4">
         <DoctorDetails />
       </div>
@@ -187,6 +181,91 @@ export default function Profile() {
         <GoldBadge />
         <SilverBadge />
         <Badge name={BADGE.BRONZE} number={13} list={["Critic", "Nice Question"]} />
+      </div>
+      <div className="shadow-md w-[98.5%] shadow-blue-200 mx-2 mt-2 rounded-md">
+        <div className="flex flex-col">
+          <div className="flex flex-row p-4 items-center justify-between">
+            <div className="text-blue-600 text-xl font-bold">Clinic</div>
+            <div className="flex flex-row bg-blue-600 px-3 py-2 rounded-lg shadow-md shadow-blue-400 hover:cursor-pointer">
+              <AiOutlinePlus size={25} color="white" />
+              <div className="text-white text-md font-bold ml-1">Add Clinic</div>
+            </div>
+          </div>
+          {clinics.isLoading ? (
+            <></>
+          ) : (
+            clinics.data?.map((clinic: IClinicType, index: number) => {
+              return (
+                <div key={index} className="flex flex-col shadow-lg w-[96.5%] shadow-blue-300 mx-4 mt-2 rounded-md p-4 mb-4">
+                  <div className="flex flex-row items-center justify-between">
+                    <div className="flex flex-row items-center">
+                      {clinic.logo === "" || clinic.logo === null ? (
+                        <div className="flex flex-row items-center justify-center w-12 h-12 bg-slate-200 rounded-2xl">
+                          <Logo color="#808080" className="h-6 w-6" />
+                        </div>
+                      ) : (
+                        <div className="flex flex-row items-center justify-center max-w-16 h-12 bg-slate-200 rounded-2xl">
+                          <Image alt="clinic-logo" src={clinic.logo!} width={48} height={48} className="max-w-16 h-12" />
+                        </div>
+                      )}
+
+                      <div className="text-blue-600 text-xl ml-2 font-bold">{clinic.name}</div>
+                    </div>
+                    <div className="flex flex-row">
+                      <div className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer">
+                        <MdEdit size={25} color="gray" />
+                        {/* <div className="text-white text-md font-bold ml-2">Edit</div> */}
+                      </div>
+                      <div
+                        className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer"
+                        onClick={async () => {
+                          try {
+                            const { data } = await deleteClinic(clinic.id);
+                            toast.success(data.message, { id: data.message });
+                            clinics.refetch();
+                          } catch (err) {
+                            toast.error("Unable to delete.", { id: clinic.id });
+                          }
+                        }}
+                      >
+                        <MdDelete size={25} color="red" />
+                        {/* <div className="text-white text-md font-bold ml-2">Edit</div> */}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="h-[2px] bg-slate-300 mt-4"></div>
+                  <div className="flex flex-row mt-4 ml-2">
+                    <MdLocationOn size={25} color="red" />
+                    <div className="text-slate-500 text-md ml-6 font-bold">
+                      {clinic.address}, {clinic.city}, {clinic.state}, {clinic.country}, {clinic.pincode}
+                    </div>
+                  </div>
+                  <div className="flex flex-row mt-4 ml-3 items-center">
+                    <BsFillTelephoneFill size={20} color="green" />
+                    <div className="text-slate-500 text-md ml-6 font-bold">{clinic.phoneNumber}</div>
+                  </div>
+                  <div className="flex flex-row mt-4 ml-3 items-center">
+                    <MdEmail size={22} color="gray" />
+                    <div className="text-slate-500 text-md ml-6 font-bold">{clinic.email}</div>
+                  </div>
+                  <div className="flex ml-4 overflow-x-scroll scrollbar custom-scrollbar mt-4">
+                    <div className="flex gap-x-1">
+                      {clinic.displayImages.map((file, index) => {
+                        return (
+                          <div key={index} className="flex flex-col items-center justify-center">
+                            <div className={classNames(["flex relative w-48 h-28 rounded-lg font-medium"])}>
+                              <Image src={file} alt={file} width={220} height={100} className="absolute -z-10 w-48 h-28 rounded-lg" />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
 
       {/* <div className="hidden sm:block">
