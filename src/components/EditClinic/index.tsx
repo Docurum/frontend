@@ -255,7 +255,7 @@ const userId=data.id
                 <div className="flex flex-col w-1/3 items-center h-full justify-between">
                   <div className="flex flex-col w-full items-center">
                     <Lottie animationData={clinicSetupAnimation} play className="w-96 h-84" />
-                    <div className="text-2xl font-bold text-blue-600">Add your clinic</div>
+                    <div className="text-2xl font-bold text-blue-600">Edit your clinic</div>
                     <div className="text-lg text-slate-500 text-center mx-8 my-2">Please fill out the required details, we are happy to see you here 😄</div>
                   </div>
                   <div className="flex flex-row items-center mb-4">
