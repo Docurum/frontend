@@ -28,6 +28,7 @@ import { CiEdit } from "react-icons/ci";
 import axios from "axios";
 import clinicSchema from "../../schemas/clinicSchema";
 import { deleteClinic, GetClinicsQuery, IClinicType } from "../../api/clinic";
+import EditClinic from "../../components/EditClinic"
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -39,6 +40,7 @@ const Chart = dynamic(() => import("../Chart"), {
 
 export default function Profile() {
   const [files, setFiles] = useState<any[]>([]);
+  const [active,setactive]=useState<boolean>(false)
   const profileImage = useRef("");
   const uploadFile = async () => {
     const client = new S3Client({
@@ -108,8 +110,9 @@ export default function Profile() {
     multiple: false,
     maxSize: 10485760,
     validator: (file) => {
-      const fileFormat = file.name.split(".")[1];
-      if (fileFormat === "jpg" || fileFormat === "png" || fileFormat === "jpeg") {
+      const isImageFile = file.type.split("/")[0] === "image";
+      // const fileFormat = file.name.split(".")[1];
+      if (isImageFile) {
         return null;
       }
 
@@ -127,7 +130,6 @@ export default function Profile() {
   if (isError) {
     return <div>Oops! Something went wrong. Try refreshing</div>;
   }
-
   console.log(data);
   return (
     <div className={classNames([styles["scrollbar"]], ["mt-2 flex flex-col w-full lg:w-2/4 lg:max-w-1/2 h-[90vh] overflow-y-scroll scrollbar"])}>
@@ -213,7 +215,9 @@ export default function Profile() {
                     </div>
                     <div className="flex flex-row">
                       <div className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer">
-                        <MdEdit size={25} color="gray" />
+                       
+                          <EditClinic data={clinic} />
+                        
                         {/* <div className="text-white text-md font-bold ml-2">Edit</div> */}
                       </div>
                       <div

@@ -52,6 +52,18 @@ const createClinic = (data: any) => {
   }
 };
 
+const editClinicById=(id:string,data:any)=>{
+try{
+       let api = axios.create({
+      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
+      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
+    });
+      return api.put(`/clinic/edit-clinic/${id}`,data);
+}catch(e){
+      return e as any;
+
+};
+}
 const GetClinicsQuery = () =>
   useQuery({
     queryKey: ["get-clinics"],
@@ -63,5 +75,5 @@ const GetClinicsQuery = () =>
     },
   });
 
-export { getClinics, deleteClinic, GetClinicsQuery, createClinic };
+export { getClinics, deleteClinic, GetClinicsQuery, createClinic,editClinicById };
 export type { IClinicType };
