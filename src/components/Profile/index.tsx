@@ -28,6 +28,7 @@ import { CiEdit } from "react-icons/ci";
 import axios from "axios";
 import clinicSchema from "../../schemas/clinicSchema";
 import { deleteClinic, GetClinicsQuery, IClinicType } from "../../api/clinic";
+import { useRouter } from "next/router";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -70,6 +71,7 @@ export default function Profile() {
       }
     }
   };
+  const router = useRouter();
 
   useEffect(() => {
     uploadFile();
@@ -128,7 +130,6 @@ export default function Profile() {
     return <div>Oops! Something went wrong. Try refreshing</div>;
   }
 
-  console.log(data);
   return (
     <div className={classNames([styles["scrollbar"]], ["mt-2 flex flex-col w-full lg:w-2/4 lg:max-w-1/2 h-[90vh] overflow-y-scroll scrollbar"])}>
       <div className="flex flex-row justify-between items-center">
@@ -196,7 +197,16 @@ export default function Profile() {
           ) : (
             clinics.data?.map((clinic: IClinicType, index: number) => {
               return (
-                <div key={index} className="flex flex-col shadow-lg w-[96.5%] shadow-blue-300 mx-4 mt-2 rounded-md p-4 mb-4">
+                <div
+                  key={index}
+                  onClick={() =>
+                    router.push({
+                      pathname: "/clinic/[id]",
+                      query: { id: clinic.id },
+                    })
+                  }
+                  className="flex flex-col shadow-lg w-[96.5%] shadow-blue-300 mx-4 mt-2 rounded-md p-4 mb-4"
+                >
                   <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-row items-center">
                       {clinic.logo === "" || clinic.logo === null ? (
