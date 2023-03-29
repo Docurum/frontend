@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 import { MdDeleteForever, MdOutlineRadioButtonUnchecked } from "react-icons/md";
 import BottomNavBar from "../BottomNavBar";
@@ -13,6 +14,8 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { S3Client, AbortMultipartUploadCommand, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { createId } from "@paralleldrive/cuid2";
 import CategoriesDialog from "../CategoriesDialog";
+import { GetCategoriesById } from "../../api/forum";
+import Logo from "../Logo/Logo";
 
 const Editor = dynamic(() => import("../RichText").then((mod) => mod.RichTextExample), {
   ssr: false,
@@ -45,8 +48,10 @@ export default function CreateTopic() {
 
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
 
-  const [categoryIncludedIndex, setCategoryIncludedIndex] = useState<string[]>([]);
+  const [categoryIncludedId, setCategoryIncludedId] = useState<string[]>([]);
   const [categoryItems, setCategoryItems] = useState<string[]>([]);
+
+  const getCategory = GetCategoriesById({ id: categoryIncludedId });
 
   const uploadFile = useCallback(async () => {
     const client = new S3Client({
@@ -115,9 +120,34 @@ export default function CreateTopic() {
           name="title"
           placeholder="Add Title"
         />
-        <CategoriesDialog />
+        <CategoriesDialog categoryIncludedId={categoryIncludedId} setCategoryIncludedId={setCategoryIncludedId} />
         <div className="mt-2">
-          <HealthCategory category={categoryItems} />
+          <div className="flex flex-row custom-scrollbar scrollbar overflow-y-scroll mt-2">
+            {getCategory.data?.map((item, index) => {
+              return (
+                <div key={index} className="flex flex-row mb-2 mr-2 items-center">
+                  <div
+                    className="flex w-min h-14 flex-row p-2 rounded-lg items-center shadow-md"
+                    style={{
+                      backgroundColor: `${item.color}`,
+                      boxShadow: `3px 4px 7px  ${item.color}`,
+                    }}
+                  >
+                    {item.imageUrl === "" ? (
+                      <div className="flex flex-row items-center justify-center w-12 h-12">
+                        <Logo color="#808080" className="h-10 w-10" />
+                      </div>
+                    ) : (
+                      <div className="flex flex-row items-center justify-center w-10 h-10">
+                        <Image alt="logo-img" src={item.imageUrl} height="30" width="25" className="rounded-2xl" />
+                      </div>
+                    )}
+                    <div className="font-bold mr-2">{item.name}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
         <Editor formValues={formValues} setFormValues={setFormValues} />
         <div className="flex flex-col mt-4 gap-y-3">
