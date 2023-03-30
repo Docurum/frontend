@@ -24,7 +24,7 @@ export default function StartTopicPage() {
         <AppBar />
         <div className="flex flex-row h-[90vh]">
           <LeftLane />
-          <CreateTopic />
+          <CreateTopic files={files} setFiles={setFiles} />
           <div className="hidden lg:flex flex-grow flex-col">
             <Dropzone setFiles={setFiles} />
             <div className="hidden lg:flex overflow-y-scroll scrollbar custom-scrollbar mb-4 items-center justify-center">

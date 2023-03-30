@@ -12,7 +12,7 @@ const API = axios.create({
 //   headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
 // });
 
-type APIResponse = Promise<AxiosResponse<{ message: any; status: string }>>;
+export type APIResponse = Promise<AxiosResponse<{ message: any; status: string }>>;
 
 export const registerUser = (data: registerSchemaType): APIResponse => API.post("/auth/register", data);
 export const loginUser = (data: loginSchemaType): APIResponse => API.post("/auth/login", data);

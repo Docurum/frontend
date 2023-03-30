@@ -10,27 +10,16 @@ import { FC, useState } from "react";
 import { list } from "../../../constants";
 import styles from "./index.module.css";
 import classNames from "classnames";
-import {HealthCategory} from "../HealthCategory";
+import { HealthCategory } from "../HealthCategory";
 import BottomNavBar from "../BottomNavBar";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
-
-interface IQandCardProps {
-  id: string;
-  title: string;
-  description: string;
-  author: string;
-  commentCount: number;
-  category: string[];
-  upvote: number;
-  createdAt: number;
-  updatedAt: number;
-  views: string;
-  shares: string;
-}
+import { GetCategoriesById, GetSearchTopics } from "../../api/forum";
+import { ReadOnlyRichText } from "../RichText";
+import { RxCross2 } from "react-icons/rx";
+import Logo from "../Logo/Logo";
 
 const QandASectionHome = () => {
-  const [qaList, updateQandAList] = useState<Array<IQandCardProps>>(list);
   return (
     <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
       <QandASection />
@@ -43,25 +32,15 @@ const QandASectionHome = () => {
 };
 
 const QandASection = () => {
-  const [qAndAList, updateQandAList] = useState(list);
+  const topics = GetSearchTopics({ name: "" });
+  if (topics.isLoading) {
+    return <div>Loading ...</div>;
+  }
   return (
     <div className="flex flex-col mb-4">
-      {qAndAList.map((d: any, index: number) => {
+      {topics.data?.map((d, index: number) => {
         return (
-          <QandACard
-            key={index}
-            category={d.category}
-            shares={d.shares}
-            upvote={d.upvote}
-            views={d.views}
-            title={d.title}
-            description={d.description}
-            author={d.author}
-            commentCount={d.commentCount}
-            id={index.toString()}
-            createdAt={0}
-            updatedAt={0}
-          />
+          <QandACard key={index} category={d.categories} shares={""} upvote={123} views={""} title={d.title} description={d.description} author={d.user} commentCount={123} id={d.id} createdAt={""} />
         );
       })}
     </div>
@@ -70,17 +49,23 @@ const QandASection = () => {
 
 interface IQandCardProps {
   title: string;
-  description: string;
-  author: string;
+  description: any[];
+  author: {
+    name: string;
+    username: string;
+    id: string;
+  };
   commentCount: number;
   views: string;
   upvote: number;
   shares: string;
   category: string[];
   id: string;
+  createdAt: string;
 }
 
 const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCount, views, upvote, shares, category, id }) => {
+  const categoryQuery = GetCategoriesById({ id: category });
   const router = useRouter();
   return (
     <div
@@ -151,9 +136,35 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
               </DropdownMenu.Portal>
             </DropdownMenu.Root>
           </div>
-          <HealthCategory category={category} />
-          <div className="hidden text-md text-gray-600 mt-2 mr-6 font-bold sm:block">{description.length < 300 ? description : description.substring(0, 300) + "..."}</div>
-          <div className="hidden text-md text-gray-600 text-sm mt-2 mr-6 font-bold max-sm:block">{description.length < 200 ? description : description.substring(0, 200) + "..."}</div>
+          <div className="flex flex-row custom-scrollbar scrollbar overflow-x-scroll mt-2">
+            {categoryQuery.data?.map((item, index) => {
+              return (
+                <div key={index} className="flex flex-row mb-2 mr-2 items-center">
+                  <div
+                    className="flex w-min h-10 flex-row p-2 rounded-lg items-center shadow-md"
+                    style={{
+                      backgroundColor: `${item.color}`,
+                      boxShadow: `3px 3px 4px  ${item.color}`,
+                    }}
+                  >
+                    {item.imageUrl === "" ? (
+                      <div className="flex flex-row items-center justify-center w-10 h-10">
+                        <Logo color="#808080" className="h-10 w-10" />
+                      </div>
+                    ) : (
+                      <div className="flex flex-row items-center justify-center w-10 h-10">
+                        <Image alt="logo-img" src={item.imageUrl} height="30" width="25" className="rounded-2xl" />
+                      </div>
+                    )}
+                    <div className="font-bold mr-1">{item.name}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {/* <div className="hidden text-md text-gray-600 mt-2 mr-6 font-bold sm:block">{description.length < 300 ? description : description.substring(0, 300) + "..."}</div>
+          <div className="hidden text-md text-gray-600 text-sm mt-2 mr-6 font-bold max-sm:block">{description.length < 200 ? description : description.substring(0, 200) + "..."}</div> */}
+          <ReadOnlyRichText data={description} />
           <div className="h-[2px] bg-gray-400 mr-8 mt-4"></div>
           <div className="flex flex-row my-4 items-center justify-between mr-8">
             <div className="hidden flex-row  items-center max-sm:flex">
@@ -171,7 +182,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
                 <Image src={`https://avatars.dicebear.com/api/personas/abc.svg`} alt="avatar" height={30} width={30} />
               </div>
               <div className="font-bold text-gray-600 ml-4">Posted by </div>
-              <div className="font-bold text-blue-600 ml-1 hover:cursor-pointer">Dr. {author}</div>
+              <div className="font-bold text-blue-600 ml-1 hover:cursor-pointer">Dr. {author?.name}</div>
             </div>
             <div className="flex flex-row">
               <div className="flex flex-row items-center mr-4">

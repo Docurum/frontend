@@ -1,34 +1,32 @@
 /* eslint-disable @next/next/no-img-element */
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
-import { MdDeleteForever, MdOutlineRadioButtonUnchecked } from "react-icons/md";
+import { Dispatch, FC, SetStateAction, useCallback, useEffect, useRef, useState } from "react";
+import { MdDeleteForever } from "react-icons/md";
 import BottomNavBar from "../BottomNavBar";
 import { DropzoneMobile } from "../Dropzone";
-import { getSignedUrl, S3RequestPresigner } from "@aws-sdk/s3-request-presigner";
-import { list } from "../../../constants";
 import classNames from "classnames";
-import { AiOutlinePlus, AiFillCheckCircle } from "react-icons/ai";
-import { HealthCategory, HealthUIComp } from "../HealthCategory";
-import * as Dialog from "@radix-ui/react-dialog";
-import { S3Client, AbortMultipartUploadCommand, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { RxCross2 } from "react-icons/rx";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { createId } from "@paralleldrive/cuid2";
 import CategoriesDialog from "../CategoriesDialog";
-import { GetCategoriesById } from "../../api/forum";
+import { createTopic, GetCategoriesById } from "../../api/forum";
 import Logo from "../Logo/Logo";
+import toast from "react-hot-toast";
 
 const Editor = dynamic(() => import("../RichText").then((mod) => mod.RichTextExample), {
   ssr: false,
 });
 
-export default function CreateTopic() {
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-
+const CreateTopic: FC<{
+  files: any[];
+  setFiles: Dispatch<SetStateAction<any[]>>;
+}> = ({ files, setFiles }) => {
   const initialValues = {
     title: "",
-    description: {},
-    imageUrl: "",
+    description: [] as any[],
+    assetUrl: [] as any[],
+    categories: [] as any[],
   };
 
   const intialErrors = {
@@ -38,22 +36,23 @@ export default function CreateTopic() {
   };
 
   const [formValues, setFormValues] = useState(initialValues);
+  const uploadedImages: React.MutableRefObject<any[]> = useRef([]);
+  const uploadedImageFiles: React.MutableRefObject<any[]> = useRef([]);
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
-  const [files, setFiles] = useState<any[]>([]);
-
-  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
-
   const [categoryIncludedId, setCategoryIncludedId] = useState<string[]>([]);
-  const [categoryItems, setCategoryItems] = useState<string[]>([]);
 
   const getCategory = GetCategoriesById({ id: categoryIncludedId });
 
-  const uploadFile = useCallback(async () => {
+  const uploadFile = async () => {
+    if (uploadedImages.current.length >= files.length) {
+      uploadedImages.current = [];
+    }
+
     const client = new S3Client({
       region: "ap-south-1",
       credentials: {
@@ -61,37 +60,30 @@ export default function CreateTopic() {
         secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
       },
     });
-    let uploadObs: any[] = [];
 
     files.forEach(async (file) => {
-      if (!uploadedFiles.includes(files)) {
+      let keyName = createId() + "." + file.name.split(".")[1];
+      if (!uploadedImageFiles.current.includes(files)) {
         const command = new PutObjectCommand({
           Bucket: "docurum-forum-assets",
-          Key: createId() + "." + file.name.split(".")[1],
+          Key: keyName,
           Body: file,
           ACL: "public-read",
         });
+        let payload = {
+          picture: `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${keyName}`,
+        };
 
         try {
           await client.send(command);
-          uploadObs.push(file);
-
-          const url = `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${file.path}`;
-          let data = uploadedFiles;
-          let ob = {
-            ...file,
-            path: url,
-          };
-          data.push(ob);
-          setUploadedFiles(data);
-          // console.log("Asset s3 url:", url);
+          uploadedImages.current.push(payload.picture);
+          uploadedImageFiles.current.push(file);
         } catch (error) {
           console.log("Error: ", error);
         }
       }
     });
-    return uploadObs;
-  }, [files, uploadedFiles]);
+  };
 
   useEffect(() => {
     uploadFile();
@@ -99,14 +91,37 @@ export default function CreateTopic() {
   }, [files]);
 
   useEffect(() => {
-    console.log("Use files:", uploadedFiles);
-  }, [files, uploadedFiles]);
+    getCategory.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categoryIncludedId]);
 
   const deleteFile = (file: any) => {
     setFiles((files) => {
       const newFiles = files.filter((f) => f.path !== file.path);
       return newFiles;
     });
+  };
+
+  const submit = async () => {
+    const values = formValues;
+    values.assetUrl = uploadedImages.current;
+    values.categories = categoryIncludedId;
+
+    try {
+      const { data } = await createTopic(values);
+      toast.success(data.message, { id: data.message });
+      values.title = "";
+      values.description = [];
+      values.assetUrl = [];
+      values.categories = [];
+      setFiles([]);
+      uploadedImages.current = [];
+      uploadedImageFiles.current = [];
+      setCategoryIncludedId([]);
+      setFormValues(values);
+    } catch (e) {
+      toast.error("Something went wrong! Unable to Create topic", { id: "server-conn-fail" });
+    }
   };
 
   return (
@@ -116,13 +131,14 @@ export default function CreateTopic() {
         <input
           className="p-4 h-12 outline-none text-lg bg-gray-50 rounded-md shadow-md w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] text-gray-700"
           onChange={handleChange}
+          value={formValues.title}
           type="text"
           name="title"
           placeholder="Add Title"
         />
         <CategoriesDialog categoryIncludedId={categoryIncludedId} setCategoryIncludedId={setCategoryIncludedId} />
         <div className="mt-2">
-          <div className="flex flex-row custom-scrollbar scrollbar overflow-y-scroll mt-2">
+          <div className="flex flex-row custom-scrollbar scrollbar overflow-x-scroll mt-2">
             {getCategory.data?.map((item, index) => {
               return (
                 <div key={index} className="flex flex-row mb-2 mr-2 items-center">
@@ -143,6 +159,18 @@ export default function CreateTopic() {
                       </div>
                     )}
                     <div className="font-bold mr-2">{item.name}</div>
+                    <div
+                      className="hover:cursor-pointer mr-2"
+                      onClick={() => {
+                        let catList = categoryIncludedId;
+                        if (catList.includes(item.id)) {
+                          catList = catList.filter((c) => c !== item.id);
+                        }
+                        setCategoryIncludedId([...catList]);
+                      }}
+                    >
+                      <RxCross2 size={20} />
+                    </div>
                   </div>
                 </div>
               );
@@ -152,7 +180,7 @@ export default function CreateTopic() {
         <Editor formValues={formValues} setFormValues={setFormValues} />
         <div className="flex flex-col mt-4 gap-y-3">
           <DropzoneMobile setFiles={setFiles} />
-          <div className="flex pr-6 w-screen overflow-x-scroll scrollbar custom-scrollbar mb-4">
+          <div className="max-lg:flex hidden pr-6 w-screen overflow-x-scroll scrollbar custom-scrollbar mb-4">
             <div className="flex gap-x-2">
               {files.map((file) => {
                 const isImageFile = file.type.split("/")[0] === "image";
@@ -188,16 +216,13 @@ export default function CreateTopic() {
             </div>
           </div>
         </div>
-        <div
-          className="flex flex-row items-center justify-center h-10 w-20 bg-blue-600 rounded-md"
-          onClick={() => {
-            uploadFile();
-          }}
-        >
+        <div className="flex flex-row items-center justify-center h-10 w-20 bg-blue-600 rounded-md hover:cursor-pointer" onClick={() => submit()}>
           <div className="text-white font-bold text-lg">Post</div>
         </div>
       </div>
       <BottomNavBar />
     </div>
   );
-}
+};
+
+export default CreateTopic;

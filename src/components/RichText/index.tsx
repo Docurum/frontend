@@ -33,7 +33,7 @@ const RichTextExample: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
   return (
     <Slate
       editor={editor}
-      value={descVal}
+      value={formValues.description}
       onChange={(val) => {
         setDescVal(val);
         setFormValues({ ...formValues, description: val });
@@ -74,6 +74,18 @@ const RichTextExample: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
           }
         }}
       />
+    </Slate>
+  );
+};
+
+const ReadOnlyRichText: FC<{
+  data: any[];
+}> = ({ data }) => {
+  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+
+  return (
+    <Slate editor={editor} value={data}>
+      <Editable readOnly className="text-md text-gray-600 mt-2 pr-6 font-bold items-start justify-start outline-none w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw]" />
     </Slate>
   );
 };
@@ -365,4 +377,4 @@ const initialValue: Descendant[] | any[] = [
   // },
 ];
 
-export { RichTextExample, RichTextCommentArea };
+export { RichTextExample, RichTextCommentArea, ReadOnlyRichText };
