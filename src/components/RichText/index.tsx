@@ -1,12 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 import classNames from "classnames";
 import isHotkey from "is-hotkey";
-import { FC, useCallback, useMemo, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { BaseEditor, Descendant, Editor, Element as SlateElement, Transforms, createEditor } from "slate";
 import { withHistory } from "slate-history";
 import { Editable, Slate, useSlate, withReact } from "slate-react";
 import { DropzoneCommentArea, DropzoneMobile } from "../Dropzone";
 import { MdDeleteForever } from "react-icons/md";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { createId } from "@paralleldrive/cuid2";
+import toast from "react-hot-toast";
+import { createComment } from "../../api/forum/commentService";
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -33,7 +37,7 @@ const RichTextExample: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
   return (
     <Slate
       editor={editor}
-      value={descVal}
+      value={formValues.description}
       onChange={(val) => {
         setDescVal(val);
         setFormValues({ ...formValues, description: val });
@@ -78,23 +82,98 @@ const RichTextExample: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
   );
 };
 
+const ReadOnlyRichText: FC<{
+  data: any[];
+}> = ({ data }) => {
+  const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+
+  return (
+    <Slate editor={editor} value={data}>
+      <Editable readOnly className="text-md text-gray-600 mt-2 pr-6 font-bold items-start justify-start outline-none w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw]" />
+    </Slate>
+  );
+};
+
 const RichTextCommentArea: FC<{
   formValues: any;
   setFormValues: any;
   isCommentSelected: boolean;
-}> = ({ formValues, setFormValues, isCommentSelected }) => {
+  topicId: string;
+}> = ({ formValues, setFormValues, isCommentSelected, topicId }) => {
   const renderElement = useCallback((props: any) => <Element {...props} />, []);
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
   const [descVal, setDescVal] = useState(initialValue);
   const [files, setFiles] = useState<any[]>([]);
+  const uploadedImages: React.MutableRefObject<any[]> = useRef([]);
+  const uploadedImageFiles: React.MutableRefObject<any[]> = useRef([]);
+
+  const uploadFile = async () => {
+    if (uploadedImages.current.length >= files.length) {
+      uploadedImages.current = [];
+    }
+
+    const client = new S3Client({
+      region: "ap-south-1",
+      credentials: {
+        accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY!,
+        secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
+      },
+    });
+
+    files.forEach(async (file) => {
+      let keyName = createId() + "." + file.name.split(".")[1];
+      if (!uploadedImageFiles.current.includes(files)) {
+        const command = new PutObjectCommand({
+          Bucket: "docurum-forum-assets",
+          Key: keyName,
+          Body: file,
+          ACL: "public-read",
+        });
+        let payload = {
+          picture: `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${keyName}`,
+        };
+
+        try {
+          await client.send(command);
+          uploadedImages.current.push(payload.picture);
+          uploadedImageFiles.current.push(file);
+        } catch (error) {
+          console.log("Error: ", error);
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    uploadFile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
 
   const deleteFile = (file: any) => {
     setFiles((files) => {
       const newFiles = files.filter((f) => f.path !== file.path);
       return newFiles;
     });
+  };
+
+  const submit = async () => {
+    try {
+      const { data } = await createComment({
+        topicId: topicId,
+        description: formValues,
+        assetUrl: uploadedImages.current,
+      });
+      toast.success(data.message, { id: data.message });
+      setFiles([]);
+      uploadedImages.current = [];
+      uploadedImageFiles.current = [];
+      setDescVal(initialValue);
+      setFormValues([]);
+    } catch (e) {
+      toast.error("Something went wrong! Unable to Create topic", { id: "server-conn-fail" });
+    }
   };
 
   return (
@@ -104,25 +183,14 @@ const RichTextCommentArea: FC<{
         value={descVal}
         onChange={(val) => {
           setDescVal(val);
-          setFormValues({ ...formValues, description: val });
+          setFormValues(val);
         }}
       >
-        {/* <div className="flex flex-row  border-b-[1px] border-slate-500 mb-5 p-2"> */}
-        {/* <BlockButton format="heading-one" icon="looks_one" />
-         <BlockButton format="heading-two" icon="looks_two" />
-        <BlockButton format="block-quote" icon="format_quote" />
-        <BlockButton format="numbered-list" icon="format_list_numbered" />
-        <BlockButton format="bulleted-list" icon="format_list_bulleted" />
-        <BlockButton format="left" icon="format_align_left" />
-        <BlockButton format="center" icon="format_align_center" />
-        <BlockButton format="right" icon="format_align_right" />
-        <BlockButton format="justify" icon="format_align_justify" /> */}
-        {/* </div> */}
         <Editable
           className="mt-1 p-4 max-h-96 h-30 overflow-x-hidden overflow-y-scroll custom-scrollbar scrollbar items-start justify-start outline-none text-lg rounded-md w-[80vw] sm:w-[80vw] md:w-[65vw] lg:w-[45vw] text-gray-700"
           renderElement={renderElement}
           renderLeaf={renderLeaf}
-          placeholder="What's on your mind ?"
+          placeholder="Share your thoughts . . . "
           spellCheck
           aria-atomic
           autoFocus
@@ -146,7 +214,7 @@ const RichTextCommentArea: FC<{
               {/* <MarkButton format="code" text="<>" icon="code" /> */}
               <DropzoneCommentArea setFiles={setFiles} />
             </div>
-            <div className="mx-4 flex flex-row items-center justify-center shrink-0 h-8 sm:h-10 w-16 sm:w-20 bg-blue-400 rounded-lg" onClick={() => {}}>
+            <div className={classNames(["mx-4 flex flex-row items-center justify-center shrink-0 h-8 sm:h-10 w-16 sm:w-20 bg-blue-600 rounded-lg"], [""])} onClick={() => submit()}>
               <div className="text-white font-bold text-md sm:text-lg">Reply</div>
             </div>
           </div>
@@ -365,4 +433,4 @@ const initialValue: Descendant[] | any[] = [
   // },
 ];
 
-export { RichTextExample, RichTextCommentArea };
+export { RichTextExample, RichTextCommentArea, ReadOnlyRichText };

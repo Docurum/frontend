@@ -25,10 +25,11 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createClinic, editClinicById, GetClinicsQuery } from "../../api/clinic";
+import { createClinic, editClinicById, GetClinicsQuery, IClinicType } from "../../api/clinic";
 
-const  EditClinic: FC<any> =({data,active})=> {
-  const show = active
+const  EditClinic: FC<{
+  data :IClinicType
+}> =({data})=> {
 const userId=data.id
 
   const [open, setOpen] =useState(true);
@@ -180,6 +181,23 @@ const userId=data.id
       }
     }
   };
+useEffect(() => {
+  uploadedImages.current=data.displayImages;
+  logoImage.current=data.logo;
+  const url = data.displayImages[0]
+const fileName = 'myFile.jpg'
+
+fetch(url)
+  .then(async response => {
+    const contentType = response.headers.get('content-type') 
+    const blob = await response.blob()
+    let filePropertyBag = { contentType } as FilePropertyBag
+    const file = new File([blob], fileName, filePropertyBag)  
+    setUploadedFiles([file])
+    // access file here
+  })
+
+},[]);
 
   useEffect(() => {
     uploadFile();
