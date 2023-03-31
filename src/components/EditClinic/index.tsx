@@ -1,13 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
 import { MdDeleteForever, MdEdit, MdLocalHospital } from "react-icons/md";
-import Image from "next/image";
 import * as Dialog from "@radix-ui/react-dialog";
 import Lottie from "react-lottie-player";
-import clinicAnimation from "../../animations/Clinic_report.json";
 import clinicSetupAnimation from "../../animations/clinic.json";
 import Logo from "../Logo/Logo";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { DialogActions, TextField } from "@mui/material";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { FiUpload } from "react-icons/fi";
 import { Dropzone } from "../Dropzone";
 import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from "react";
@@ -22,10 +19,9 @@ import { MdOutlineCancel } from "react-icons/md";
 import classNames from "classnames";
 import { createId } from "@paralleldrive/cuid2";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { useDropzone } from "react-dropzone";
-import axios from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createClinic, editClinicById, GetClinicsQuery, IClinicType } from "../../api/clinic";
+import { useDropzone } from "react-dropzone"
+import { editClinicById, GetClinicsQuery, IClinicType } from "../../api/clinic";
+import { TextField } from "@mui/material";
 
 const  EditClinic: FC<{
   data :IClinicType
@@ -208,30 +204,16 @@ fetch(url)
   }, [logoFiles.length]);
 
   const [type, setType] = useState<string>("");
-
+const clinics = GetClinicsQuery();
   const onSubmit: SubmitHandler<z.infer<typeof clinicSchema>> = async (formData) => {
     formData.displayImages = uploadedImages.current;
     formData.logo = logoImage.current;
-    // uploadedImages.current.forEach((img, index) => {
-    //   console.log("Image ", index, " :", img);
-    // });
-    // console.log("Formdata images", formData.displayImages);
-    // console.table(formData);
+ 
     try {
       const { data } = await editClinicById(userId,formData);
       getClinics.refetch();
       toast.success(data.message, { id: data.message });
-      reset();
-      // As reset will fallback to defaultValues
-      // so they have to be cleared explicitly
-      setValue("name", "");
-      setValue("email", "");
-      setValue("logo", "");
-      setType("");
-      uploadedImages.current = [];
-      logoImage.current = "";
-      setFiles([]);
-      setOpen(false);
+   
     } catch (err: any) {
       if (err.response) {
         const errorMessage = err.response.data.message;

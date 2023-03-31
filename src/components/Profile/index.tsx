@@ -200,13 +200,13 @@ export default function Profile() {
             clinics.data?.map((clinic: IClinicType, index: number) => {
               return (
                 <div
-                  key={index}
-                  onClick={() =>
-                    router.push({
-                      pathname: "/clinic/[id]",
-                      query: { id: clinic.id },
-                    })
-                  }
+                  // key={index}
+                  // onClick={() =>
+                  //   router.push({
+                  //     pathname: "/clinic/[id]",
+                  //     query: { id: clinic.id },
+                  //   })
+                  // }
                   className="flex flex-col shadow-lg w-[96.5%] shadow-blue-300 mx-4 mt-2 rounded-md p-4 mb-4"
                 >
                   <div className="flex flex-row items-center justify-between">
