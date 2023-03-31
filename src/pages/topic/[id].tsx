@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { GetTopicByIdQuery } from "../../api/forum";
+import { GetCommentByTopicIdQuery } from "../../api/forum/commentService";
+import { CommentSection } from "../../components/CommentSection";
 const Editor = dynamic(() => import("../../components/RichText").then((mod) => mod.RichTextCommentArea), {
   ssr: false,
 });
@@ -15,7 +17,7 @@ const Editor = dynamic(() => import("../../components/RichText").then((mod) => m
 const Topic = () => {
   const router = useRouter();
   const [topicId, setTopicId] = useState("");
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState([]);
   const commentRef = useRef(null);
 
   const [isCommentSelected, setIsCommentSelected] = useState(false);
@@ -66,12 +68,12 @@ const Topic = () => {
               <QandACard
                 category={getTopicQuery.data?.categories!}
                 shares={""}
-                upvote={13}
+                votes={getTopicQuery.data?.votes!}
                 views={""}
                 title={getTopicQuery.data?.title!}
                 description={getTopicQuery.data?.description!}
                 author={getTopicQuery.data?.user!}
-                commentCount={12}
+                commentCount={getTopicQuery.data?.commentCount!}
                 id={getTopicQuery.data?.id!}
                 createdAt={getTopicQuery.data?.createdAt!}
               />
@@ -80,20 +82,14 @@ const Topic = () => {
               {isCommentSelected && (
                 <div className="flex flex-row ml-16 mt-1 items-center">
                   <div className="text-md font-semibold">Replying to </div>
-                  {!getTopicQuery.isLoading && <div className="ml-1 text-md text-blue-600 font-semibold">@{!getTopicQuery.data?.user.name}</div>}
+                  {!getTopicQuery.isLoading && <div className="ml-1 text-md text-blue-600 font-semibold">@{getTopicQuery.data?.user.username}</div>}
                 </div>
               )}
               <div className="flex flex-row items-center my-2">
                 <div className="border-2 border-gray-400 rounded-2xl shrink-0 ml-4 mr-2">
                   <Image src={`https://avatars.dicebear.com/api/personas/arnab_ball.svg`} alt="avatar" height={30} width={30} />
                 </div>
-                {/* <input
-                  className=" p-4 h-12  outline-none text-lg rounded-md w-[80vw] sm:w-[75vw] md:w-[60vw] lg:w-[40vw] text-gray-700"
-                  onChange={() => {}}
-                  name="comment"
-                  placeholder="Share your thoughts here . . ."
-                /> */}
-                <Editor isCommentSelected={isCommentSelected} formValues={formValues} setFormValues={setFormValues} />
+                <Editor topicId={topicId} isCommentSelected={isCommentSelected} formValues={formValues} setFormValues={setFormValues} />
 
                 {/* {!isCommentSelected && (
                   <div className="mx-4 hidden sm:flex flex-row items-center justify-center shrink-0 h-10 w-20 bg-blue-400 rounded-2xl" onClick={() => {}}>
@@ -102,6 +98,7 @@ const Topic = () => {
                 )} */}
               </div>
             </div>
+            <CommentSection topicId={topicId} />
           </div>
           <RightLane />
         </div>

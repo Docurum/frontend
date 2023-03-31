@@ -28,16 +28,17 @@ interface ITopicType {
   title: string;
   description: Array<any>;
   assetUrl: string[];
-  upvotes: string[];
-  downvotes: string[];
-  views: string[];
-  shares: string[];
-  commentCount: string[];
+  upvotes: number;
+  votes: number;
+  downvotes: number;
+  views: number;
+  shares: number;
+  commentCount: number;
   user: {
     id: string;
     name: string;
     username: string;
-    pictureUrl: string;
+    picture: string;
   };
   categories: string[];
   createdAt: string;
@@ -54,6 +55,22 @@ const createCategory = (data: any) => {
 const createTopic = (data: any) => {
   try {
     return AuthAPI().post("/forum/create-topic", data);
+  } catch (e) {
+    return e as any;
+  }
+};
+
+const upvoteTopic = (data: { id: string }) => {
+  try {
+    return AuthAPI().get(`/forum/upvote-topic/${data.id}`);
+  } catch (e) {
+    return e as any;
+  }
+};
+
+const downvoteTopic = (data: { id: string }) => {
+  try {
+    return AuthAPI().get(`/forum/downvote-topic/${data.id}`);
   } catch (e) {
     return e as any;
   }
@@ -147,4 +164,4 @@ const GetTopicByIdQuery = (id: string) =>
     },
   });
 
-export { createCategory, checkCategoryExists, createTopic, GetSearchCategoriesByName, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery };
+export { createCategory, checkCategoryExists, createTopic, upvoteTopic, downvoteTopic, GetSearchCategoriesByName, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery };

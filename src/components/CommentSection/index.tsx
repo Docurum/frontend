@@ -1,67 +1,48 @@
-import { AiOutlineArrowDown, AiOutlineArrowUp, AiOutlinePlus } from "react-icons/ai";
-import { FaLungs, FaRegCommentAlt, FaSave } from "react-icons/fa";
+import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 import { GoGraph } from "react-icons/go";
-import { BsFillShareFill, BsSave } from "react-icons/bs";
-import { HiDotsVertical } from "react-icons/hi";
-import { MdOutlineReportProblem, MdOutlineBlock } from "react-icons/md";
-import { IoIosNotificationsOutline } from "react-icons/io";
+import { BsFillShareFill } from "react-icons/bs";
 import Image from "next/image";
-import { FC, useState } from "react";
-import { list } from "../../../constants";
-import styles from "./index.module.css";
-import classNames from "classnames";
-import { HealthCategory } from "../HealthCategory";
-import BottomNavBar from "../BottomNavBar";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { useRouter } from "next/router";
-import { downvoteTopic, GetCategoriesById, GetSearchTopics, upvoteTopic } from "../../api/forum";
+import { FC } from "react";
 import { ReadOnlyRichText } from "../RichText";
-import { RxCross2 } from "react-icons/rx";
-import Logo from "../Logo/Logo";
 import toast from "react-hot-toast";
+import { downvoteComment, GetCommentByTopicIdQuery, upvoteComment } from "../../api/forum/commentService";
 
-const QandASectionHome = () => {
-  return (
-    <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
-      <QandASection />
-      <div className="hidden max-lg:flex z-5 flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
-        <AiOutlinePlus size={30} color="white" />
-      </div>
-      <BottomNavBar />
-    </div>
-  );
-};
+// const QandASectionHome = () => {
+//   return (
+//     <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
+//       <QandASection />
+//       <div className="hidden max-lg:flex z-5 flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
+//         <AiOutlinePlus size={30} color="white" />
+//       </div>
+//       <BottomNavBar />
+//     </div>
+//   );
+// };
 
-const QandASection = () => {
-  const topics = GetSearchTopics({ name: "" });
-  if (topics.isLoading) {
-    return <div>Loading ...</div>;
+const CommentSection: FC<{
+  topicId: string;
+}> = ({ topicId }) => {
+  const commentsQuery = GetCommentByTopicIdQuery(topicId);
+
+  if (commentsQuery.isLoading) {
+    return <div>Comments Loading ...</div>;
   }
+
+  if (commentsQuery.isError) {
+    return <div>Unable to load comments ...</div>;
+  }
+
   return (
     <div className="flex flex-col mb-4">
-      {topics.data?.map((d, index: number) => {
-        return (
-          <QandACard
-            key={index}
-            category={d.categories}
-            shares={""}
-            votes={d.votes}
-            views={""}
-            title={d.title}
-            description={d.description}
-            author={d.user}
-            commentCount={d.commentCount}
-            id={d.id}
-            createdAt={""}
-          />
-        );
+      {commentsQuery.data?.map((d, index: number) => {
+        return <CommentCard topicId={topicId} key={index} shares={""} votes={d.votes} views={""} description={d.description} author={d.user} id={d.id} createdAt={""} />;
       })}
     </div>
   );
 };
 
-interface IQandCardProps {
-  title: string;
+interface ICommentCardProps {
+  topicId: string;
   description: any[];
   author: {
     name: string;
@@ -69,22 +50,17 @@ interface IQandCardProps {
     id: string;
     picture: string;
   };
-  commentCount: number;
   views: string;
   votes: number;
   shares: string;
-  category: string[];
   id: string;
   createdAt: string;
 }
 
-const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCount, views, votes, shares, category, id }) => {
-  const categoryQuery = GetCategoriesById({ id: category });
-  const router = useRouter();
-
+const CommentCard: FC<ICommentCardProps> = ({ topicId, description, author, views, votes, shares, id }) => {
   const upvote = async () => {
     try {
-      const { data } = await upvoteTopic({ id: id });
+      const { data } = await upvoteComment({ id: id });
       toast.success(data.message, { id: data.message });
     } catch (e) {
       toast.error("Something went wrong", { id: `Error ${id}` });
@@ -93,7 +69,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
 
   const downvote = async () => {
     try {
-      const { data } = await downvoteTopic({ id: id });
+      const { data } = await downvoteComment({ id: id });
       toast.success(data.message, { id: data.message });
     } catch (e) {
       toast.error("Something went wrong", { id: `Error ${id}` });
@@ -102,7 +78,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   return (
     <div className="shadow-md shadow-blue-200 mx-2 mt-2 rounded-md">
       <div className="basis-1 flex flex-row">
-        <div className="hidden flex-col mt-8 mx-4 items-center sm:flex">
+        <div className="hidden flex-col mt-6 mx-4 items-center sm:flex">
           <div className="hover:cursor-pointer" onClick={upvote}>
             <AiOutlineArrowUp size={30} color={votes > 0 ? "#2548f5" : "gray"} />
           </div>
@@ -111,17 +87,9 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
             <AiOutlineArrowDown size={30} color={votes < 0 ? "red" : "gray"} />
           </div>
         </div>
-        <div className="flex flex-col mt-6 max-sm:ml-4">
-          <div
-            onClick={() =>
-              router.push({
-                pathname: "/topic/[id]",
-                query: { id: id },
-              })
-            }
-          >
-            <div className="flex flex-row items-center justify-between mr-8">
-              <div className="text-xl font-bold hover:cursor-pointer">{title}</div>
+        <div className="flex flex-col mt-4 max-sm:ml-4">
+          <div>
+            {/* <div className="flex flex-row items-center justify-between mr-8">
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger className="outline-none">
                   <div className="hover:cursor-pointer">
@@ -167,33 +135,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
                   </DropdownMenu.Content>
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
-            </div>
-            <div className="flex flex-row custom-scrollbar scrollbar overflow-x-scroll mt-2">
-              {categoryQuery.data?.map((item, index) => {
-                return (
-                  <div key={index} className="flex flex-row mb-2 mr-2 items-center">
-                    <div
-                      className="flex w-min h-10 flex-row p-2 rounded-lg items-center shadow-md"
-                      style={{
-                        backgroundColor: `${item.color}`,
-                        boxShadow: `3px 3px 4px  ${item.color}`,
-                      }}
-                    >
-                      {item.imageUrl === "" ? (
-                        <div className="flex flex-row items-center justify-center w-10 h-10">
-                          <Logo color="#808080" className="h-10 w-10" />
-                        </div>
-                      ) : (
-                        <div className="flex flex-row items-center justify-center w-10 h-10">
-                          <Image alt="logo-img" src={item.imageUrl} height="30" width="25" className="rounded-2xl" />
-                        </div>
-                      )}
-                      <div className="font-bold mr-1">{item.name}</div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            </div> */}
 
             {/* <div className="hidden text-md text-gray-600 mt-2 mr-6 font-bold sm:block">{description.length < 300 ? description : description.substring(0, 300) + "..."}</div>
           <div className="hidden text-md text-gray-600 text-sm mt-2 mr-6 font-bold max-sm:block">{description.length < 200 ? description : description.substring(0, 200) + "..."}</div> */}
@@ -212,24 +154,19 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
             </div>
             <div className="hidden flex-row items-center sm:flex">
               <div className="border-2 border-gray-400 rounded-2xl">
-                {/* <Image src={`https://avatars.dicebear.com/api/personas/${author}.svg`} alt="avatar" height={30} width={30} /> */}
                 {!author.picture ? (
                   <Image src={`https://avatars.dicebear.com/api/personas/${author?.username}.svg`} alt="avatar" height={30} width={30} />
                 ) : (
                   <Image src={author.picture} alt="avatar" height={30} width={30} className="rounded-full" />
                 )}
               </div>
-              <div className="font-bold text-gray-600 ml-4">Posted by </div>
-              <div className="font-bold text-blue-600 ml-1 hover:cursor-pointer">Dr. {author?.name}</div>
+              <div className="font-bold text-sm text-gray-600 ml-4">Posted by </div>
+              <div className="font-bold text-sm text-blue-600 ml-1 hover:cursor-pointer">Dr. {author?.name}</div>
             </div>
             <div className="flex flex-row">
               <div className="flex flex-row items-center mr-4">
                 <GoGraph size={20} color="gray" />
                 <div className="ml-1 font-bold text-gray-400 text-sm">{views}</div>
-              </div>
-              <div className="flex flex-row items-center mr-4 hover:cursor-pointer">
-                <FaRegCommentAlt size={20} color="gray" />
-                <div className="ml-1 font-bold text-gray-400 text-sm">{commentCount}</div>
               </div>
               <div className="flex flex-row items-center hover:cursor-pointer">
                 <BsFillShareFill size={20} color="gray" />
@@ -243,4 +180,4 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   );
 };
 
-export { QandASection, QandASectionHome, QandACard };
+export { CommentSection, CommentCard };
