@@ -32,7 +32,13 @@ const ssp = Source_Sans_Pro({
   variable: "--ssp-font",
 });
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 3000, // 5 minutes
+    },
+  },
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   const router = useRouter();

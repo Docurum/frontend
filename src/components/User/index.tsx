@@ -5,30 +5,23 @@ import Lottie from "react-lottie-player";
 import lungsAnimation from "../../animations/lungs.json";
 import { MdDelete, MdEdit, MdEmail, MdLocationOn, MdVerified } from "react-icons/md";
 import { FcGraduationCap } from "react-icons/fc";
-import { AiFillMedicineBox, AiOutlinePlus } from "react-icons/ai";
+import { AiFillMedicineBox } from "react-icons/ai";
 import { ImProfile } from "react-icons/im";
 import { BsFillTelephoneFill, BsGlobe } from "react-icons/bs";
-import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
-import { useDropzone } from "react-dropzone";
 import classNames from "classnames";
 import styles from "./index.module.css";
-import { QandASection } from "../QandASection";
+import { QandASection, UserQandASection } from "../QandASection";
 import BottomNavBar from "../BottomNavBar";
 import { BADGE, Badge, GoldBadge, SilverBadge } from "../ProfileRightSection";
 import { useQuery } from "@tanstack/react-query";
+import { getUser } from "../../api";
 import { CgProfile } from "react-icons/cg";
-import { createId } from "@paralleldrive/cuid2";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import Consult from "../Consult";
-import CreateClinic from "../CreateClinic";
 import Logo from "../Logo/Logo";
-import { CiEdit } from "react-icons/ci";
-import axios from "axios";
-import clinicSchema from "../../schemas/clinicSchema";
-import { deleteClinic, GetClinicsQuery, IClinicType } from "../../api/clinic";
+import { deleteClinic, GetClinicByUsernameQuery, GetClinicsQuery, IClinicType } from "../../api/clinic";
 import { useRouter } from "next/router";
-import { GetUserQuery, updateProfilePicture } from "../../api/user";
+import { FC, useEffect } from "react";
+import { GetUserByUsernameQuery } from "../../api/user";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -38,85 +31,19 @@ const Chart = dynamic(() => import("../Chart"), {
   ssr: false,
 });
 
-export default function Profile() {
-  const [files, setFiles] = useState<any[]>([]);
-  const profileImage = useRef("");
-  const uploadFile = async () => {
-    const client = new S3Client({
-      region: "ap-south-1",
-      credentials: {
-        accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY!,
-        secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
-      },
-    });
-    if (files.length > 0) {
-      let keyName = createId() + "." + files[0].name.split(".")[1];
-      const command = new PutObjectCommand({
-        Bucket: "docurum-forum-assets",
-        Key: keyName,
-        Body: files[0],
-        ACL: "public-read",
-      });
-      let payload = {
-        picture: `https://docurum-forum-assets.s3.ap-south-1.amazonaws.com/${keyName}`,
-      };
-
-      try {
-        await client.send(command);
-        await updateProfilePicture(payload);
-        profileImage.current = payload.picture;
-        setFiles([]);
-      } catch (error) {
-        console.log("Error: ", error);
-      }
-    }
-  };
+const User: FC<{
+  username: string;
+}> = ({ username }) => {
   const router = useRouter();
 
+  const userQuery = GetUserByUsernameQuery(username);
+
+  const clinics = GetClinicByUsernameQuery(username);
+
   useEffect(() => {
-    uploadFile();
-  }, [files]);
-  const userQuery = GetUserQuery();
-
-  const clinics = GetClinicsQuery();
-
-  const onDrop: any = useCallback((acceptedFiles: string[], fileRejections: any[]) => {
-    if (acceptedFiles.length > 0) {
-      setFiles((files) => {
-        const newFiles = [...files.concat(acceptedFiles)];
-        const paths = newFiles.map((o) => o.path);
-        const uniqueFiles = newFiles.filter(({ path }, index) => !paths.includes(path, index + 1));
-        return uniqueFiles;
-      });
-    }
-    fileRejections.forEach((selectedFile) => {
-      selectedFile.errors.forEach((err: any) => {
-        if (err.code === "file-too-large") {
-          toast.error("File is larger than 10 MB", { id: "Large-File" });
-        }
-        if (err.code === "file-invalid-type") {
-          toast.error("Invalid file type", { id: "Invalid-File" });
-        }
-      });
-    });
-  }, []);
-
-  const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({
-    onDrop,
-    multiple: false,
-    maxSize: 10485760,
-    validator: (file) => {
-      const fileFormat = file.name.split(".")[1];
-      if (fileFormat === "jpg" || fileFormat === "png" || fileFormat === "jpeg") {
-        return null;
-      }
-
-      return {
-        code: "file-invalid-type",
-        message: "Only jpg/png files supported!",
-      };
-    },
-  });
+    userQuery.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   if (userQuery.isLoading) {
     return <div>Loading...</div>;
@@ -130,9 +57,7 @@ export default function Profile() {
     <div className={classNames([styles["scrollbar"]], ["mt-2 flex flex-col w-full lg:w-2/4 lg:max-w-1/2 h-[90vh] overflow-y-scroll scrollbar"])}>
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row">
-          <div {...getRootProps()} className="flex flex-row h-40 max-sm:w-28 max-sm:h-28 rounded-2xl m-4 shrink-0 hover:cursor-pointer">
-            <input {...getInputProps()} />
-
+          <div className="flex flex-row h-40 max-sm:w-28 max-sm:h-28 rounded-2xl m-4 shrink-0 hover:cursor-pointer">
             {!userQuery.data.picture ? (
               <div className="flex flex-row max-sm:w-28 max-sm:h-28 rounded-2xl shrink-0 bg-slate-100 w-36 h-36 hover:cursor-pointer items-center justify-center">
                 <CgProfile size={80} color="gray" />
@@ -142,7 +67,7 @@ export default function Profile() {
                 style={{
                   borderRadius: "20px",
                 }}
-                src={profileImage.current === "" ? userQuery.data.picture : profileImage.current}
+                src={userQuery.data.picture}
                 alt={""}
                 height={30}
                 width={160}
@@ -173,7 +98,6 @@ export default function Profile() {
       <div className="hidden max-sm:flex flex-col ml-4">
         <DoctorDetails />
       </div>
-      {/* <CreateClinic /> */}
       <div className="hidden max-sm:grid grid-cols-2 items-center mt-4 mb-2">
         <GoldBadge />
         <SilverBadge />
@@ -183,10 +107,6 @@ export default function Profile() {
         <div className="flex flex-col">
           <div className="flex flex-row p-4 items-center justify-between">
             <div className="text-blue-600 text-xl font-bold">Clinic</div>
-            <div className="flex flex-row bg-blue-600 px-3 py-2 rounded-lg shadow-md shadow-blue-400 hover:cursor-pointer">
-              <AiOutlinePlus size={25} color="white" />
-              <div className="text-white text-md font-bold ml-1">Add Clinic</div>
-            </div>
           </div>
           {clinics.isLoading ? (
             <></>
@@ -195,12 +115,12 @@ export default function Profile() {
               return (
                 <div
                   key={index}
-                  onClick={() =>
-                    router.push({
-                      pathname: "/clinic/[id]",
-                      query: { id: clinic.id },
-                    })
-                  }
+                  // onClick={() =>
+                  //   router.push({
+                  //     pathname: "/clinic/[id]",
+                  //     query: { id: clinic.id },
+                  //   })
+                  // }
                   className="flex flex-col shadow-lg w-[96.5%] shadow-blue-300 mx-4 mt-2 rounded-md p-4 mb-4"
                 >
                   <div className="flex flex-row items-center justify-between">
@@ -216,27 +136,6 @@ export default function Profile() {
                       )}
 
                       <div className="text-blue-600 text-xl ml-2 font-bold">{clinic.name}</div>
-                    </div>
-                    <div className="flex flex-row">
-                      <div className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer">
-                        <MdEdit size={25} color="gray" />
-                        {/* <div className="text-white text-md font-bold ml-2">Edit</div> */}
-                      </div>
-                      <div
-                        className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer"
-                        onClick={async () => {
-                          try {
-                            const { data } = await deleteClinic(clinic.id);
-                            toast.success(data.message, { id: data.message });
-                            clinics.refetch();
-                          } catch (err) {
-                            toast.error("Unable to delete.", { id: clinic.id });
-                          }
-                        }}
-                      >
-                        <MdDelete size={25} color="red" />
-                        {/* <div className="text-white text-md font-bold ml-2">Edit</div> */}
-                      </div>
                     </div>
                   </div>
                   <div className="h-[2px] bg-slate-300 mt-4"></div>
@@ -277,7 +176,7 @@ export default function Profile() {
       {/* <div className="hidden sm:block">
         <Chart display="Hello chart" />
       </div> */}
-      <QandASection />
+      <UserQandASection username={username} />
       {/* <div className="flex flex-row  items-center mb-10">
         <GoldBadge />
         <SilverBadge />
@@ -286,7 +185,7 @@ export default function Profile() {
       <BottomNavBar />
     </div>
   );
-}
+};
 
 const DoctorDetails = () => {
   return (
@@ -310,3 +209,5 @@ const DoctorDetails = () => {
     </>
   );
 };
+
+export default User;

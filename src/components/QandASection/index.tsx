@@ -6,7 +6,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import { MdOutlineReportProblem, MdOutlineBlock } from "react-icons/md";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import Image from "next/image";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { list } from "../../../constants";
 import styles from "./index.module.css";
 import classNames from "classnames";
@@ -14,7 +14,7 @@ import { HealthCategory } from "../HealthCategory";
 import BottomNavBar from "../BottomNavBar";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
-import { downvoteTopic, GetCategoriesById, GetSearchTopics, upvoteTopic } from "../../api/forum";
+import { downvoteTopic, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery, GetTopicByUsernameQuery, upvoteTopic } from "../../api/forum";
 import { ReadOnlyRichText } from "../RichText";
 import { RxCross2 } from "react-icons/rx";
 import Logo from "../Logo/Logo";
@@ -60,6 +60,46 @@ const QandASection = () => {
   );
 };
 
+const UserQandASection: FC<{
+  username: string;
+}> = ({ username }) => {
+  const topics = GetTopicByUsernameQuery(username);
+
+  useEffect(() => {
+    topics.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
+  if (topics.isLoading) {
+    return <div>Loading ...</div>;
+  }
+
+  if (topics.isError) {
+    return <div>SomeThing went wrong ...</div>;
+  }
+  return (
+    <div className="flex flex-col mb-4">
+      {Array.isArray(topics.data) &&
+        topics.data?.map((d, index: number) => {
+          return (
+            <QandACard
+              key={index}
+              category={d.categories}
+              shares={""}
+              votes={d.votes}
+              views={""}
+              title={d.title}
+              description={d.description}
+              author={d.user}
+              commentCount={d.commentCount}
+              id={d.id}
+              createdAt={""}
+            />
+          );
+        })}
+    </div>
+  );
+};
+
 interface IQandCardProps {
   title: string;
   description: any[];
@@ -82,9 +122,12 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   const categoryQuery = GetCategoriesById({ id: category });
   const router = useRouter();
 
+  const getTopicQuery = GetTopicByIdQuery(id);
+
   const upvote = async () => {
     try {
       const { data } = await upvoteTopic({ id: id });
+      getTopicQuery.refetch();
       toast.success(data.message, { id: data.message });
     } catch (e) {
       toast.error("Something went wrong", { id: `Error ${id}` });
@@ -94,6 +137,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   const downvote = async () => {
     try {
       const { data } = await downvoteTopic({ id: id });
+      getTopicQuery.refetch();
       toast.success(data.message, { id: data.message });
     } catch (e) {
       toast.error("Something went wrong", { id: `Error ${id}` });
@@ -210,10 +254,17 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
                 <AiOutlineArrowDown size={25} color={votes < 0 ? "red" : "gray"} />
               </div>
             </div>
-            <div className="hidden flex-row items-center sm:flex">
+            <div
+              className="hidden flex-row items-center sm:flex hover:cursor-pointer"
+              onClick={() =>
+                router.push({
+                  pathname: "/user/[username]",
+                  query: { username: author.username },
+                })
+              }
+            >
               <div className="border-2 border-gray-400 rounded-2xl">
-                {/* <Image src={`https://avatars.dicebear.com/api/personas/${author}.svg`} alt="avatar" height={30} width={30} /> */}
-                {!author.picture ? (
+                {!author || !author.picture ? (
                   <Image src={`https://avatars.dicebear.com/api/personas/${author?.username}.svg`} alt="avatar" height={30} width={30} />
                 ) : (
                   <Image src={author.picture} alt="avatar" height={30} width={30} className="rounded-full" />
@@ -243,4 +294,4 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   );
 };
 
-export { QandASection, QandASectionHome, QandACard };
+export { QandASection, QandASectionHome, QandACard, UserQandASection };

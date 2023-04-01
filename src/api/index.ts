@@ -22,27 +22,3 @@ export const verifyEmail = (token: string): APIResponse => API.get(`/auth/email-
 export const sendForgotPasswordMail = (data: { email: string }): APIResponse => API.post("/auth/forgot-password", data);
 export const checkResetPasswordTokenExists = (token: string): APIResponse => API.get(`/auth/reset-password/${token}`);
 export const resetPassword = (data: { token: string; password: string; confirmPassword: string }): APIResponse => API.post("/auth/reset-password", data);
-
-export const getUser = () => {
-  try {
-    let api = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
-    });
-    return api.get("/user/get-user");
-  } catch (e) {
-    return e;
-  }
-};
-
-export const updateProfilePicture = (data: { picture: string }) => {
-  try {
-    let api = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
-    });
-    return api.put("/user/update-picture", data);
-  } catch (e) {
-    return e;
-  }
-};

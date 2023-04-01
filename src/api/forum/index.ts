@@ -2,7 +2,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { APIResponse } from "..";
 
-const AuthAPI = () => {
+export const AuthAPI = () => {
   if (typeof window !== "undefined") {
     return axios.create({
       baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
@@ -119,6 +119,18 @@ const getTopicById = (id: string) => {
   }
 };
 
+const getTopicByUsername = (username: string) => {
+  try {
+    console.log("Get topic by username: ", username);
+    if (!username) {
+      throw new Error();
+    }
+    return AuthAPI().get(`/forum/get-topic-by-username/${username}`);
+  } catch (e) {
+    return e as any;
+  }
+};
+
 const GetSearchCategoriesByName = (data: { name: string }) =>
   useQuery({
     queryKey: ["search-categories-name"],
@@ -164,4 +176,15 @@ const GetTopicByIdQuery = (id: string) =>
     },
   });
 
-export { createCategory, checkCategoryExists, createTopic, upvoteTopic, downvoteTopic, GetSearchCategoriesByName, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery };
+const GetTopicByUsernameQuery = (username: string) =>
+  useQuery({
+    queryKey: ["get-topic-by-username", username],
+    queryFn: () => getTopicByUsername(username),
+    select: (data: any) => {
+      const resp = data.data.message;
+      console.log("User Topics: ", data.data.message);
+      return resp as Array<ITopicType>;
+    },
+  });
+
+export { createCategory, checkCategoryExists, createTopic, upvoteTopic, downvoteTopic, GetSearchCategoriesByName, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery, GetTopicByUsernameQuery };
