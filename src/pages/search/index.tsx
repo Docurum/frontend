@@ -29,7 +29,7 @@ export default function SearchPage() {
         </div>
         <div className="flex flex-row h-[90vh]">
           <div className="flex flex-col w-[100vw]">
-            {searchList.map((d, index) => {
+            {/* {searchList.map((d, index) => {
               return (
                 <QandACard
                   key={index}
@@ -46,7 +46,7 @@ export default function SearchPage() {
                   updatedAt={0}
                 />
               );
-            })}
+            })} */}
           </div>
           <BottomNavBar />
         </div>
