@@ -10,7 +10,8 @@ import { MdDeleteForever } from "react-icons/md";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { createId } from "@paralleldrive/cuid2";
 import toast from "react-hot-toast";
-import { createComment } from "../../api/forum/commentService";
+import { GetCommentByTopicIdQuery, createComment } from "../../api/forum/commentService";
+import { GetTopicByIdQuery } from "../../api/forum";
 
 const HOTKEYS = {
   "mod+b": "bold",
@@ -34,10 +35,14 @@ const RichTextExample: FC<IRichTextProps> = ({ formValues, setFormValues }) => {
 
   const [descVal, setDescVal] = useState(initialValue);
 
+  useEffect(() => {
+    setDescVal(initialValue);
+  }, []);
+
   return (
     <Slate
       editor={editor}
-      value={formValues.description}
+      value={descVal}
       onChange={(val) => {
         setDescVal(val);
         setFormValues({ ...formValues, description: val });
@@ -104,6 +109,9 @@ const RichTextCommentArea: FC<{
   const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
 
+  const getTopicQuery = GetTopicByIdQuery(topicId);
+  const commentsQuery = GetCommentByTopicIdQuery(topicId);
+
   const [descVal, setDescVal] = useState(initialValue);
   const [files, setFiles] = useState<any[]>([]);
   const uploadedImages: React.MutableRefObject<any[]> = useRef([]);
@@ -165,6 +173,8 @@ const RichTextCommentArea: FC<{
         description: formValues,
         assetUrl: uploadedImages.current,
       });
+      getTopicQuery.refetch();
+      commentsQuery.refetch();
       toast.success(data.message, { id: data.message });
       setFiles([]);
       uploadedImages.current = [];

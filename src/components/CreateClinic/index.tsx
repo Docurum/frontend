@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import { MdDeleteForever, MdLocalHospital } from "react-icons/md";
 import Image from "next/image";

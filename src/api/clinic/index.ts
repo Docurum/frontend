@@ -1,6 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+const AuthAPI = () => {
+  if (typeof window !== "undefined") {
+    return axios.create({
+      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
+      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
+    });
+  } else {
+    return axios.create({
+      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
+      headers: { authorization: `Bearer }`, "Content-Type": "application/json" },
+    });
+  }
+};
+
 interface IClinicType {
   id: string;
   name: string;
@@ -18,11 +32,7 @@ interface IClinicType {
 
 const getClinics = () => {
   try {
-    let api = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
-    });
-    return api.get("/clinic/get-clinics");
+    return AuthAPI().get("/clinic/get-clinics");
   } catch (e) {
     return e;
   }
@@ -30,11 +40,7 @@ const getClinics = () => {
 
 const deleteClinic = (id: string) => {
   try {
-    let api = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
-    });
-    return api.delete(`/clinic/delete-clinic/${id}`);
+    return AuthAPI().delete(`/clinic/delete-clinic/${id}`);
   } catch (e) {
     return e as any;
   }
@@ -42,11 +48,7 @@ const deleteClinic = (id: string) => {
 
 const createClinic = (data: any) => {
   try {
-    let api = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
-    });
-    return api.post("/clinic/create-clinic", data);
+    return AuthAPI().post("/clinic/create-clinic", data);
   } catch (e) {
     return e as any;
   }
@@ -66,14 +68,21 @@ try{
 }
 const getClinicById = (id: string) => {
   try {
-    let api = axios.create({
-      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
-      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
-    });
     if (id === null || id === "") {
       throw new Error();
     }
-    return api.get(`/clinic/get-clinic/${id}`);
+    return AuthAPI().get(`/clinic/get-clinic/${id}`);
+  } catch (e) {
+    return e as any;
+  }
+};
+
+const getClinicByUsername = (username: string) => {
+  try {
+    if (!username) {
+      throw new Error();
+    }
+    return AuthAPI().get(`/clinic/get-clinic-by-username/${username}`);
   } catch (e) {
     return e as any;
   }
@@ -96,10 +105,20 @@ const GetClinicByIdQuery = (id: string) =>
     queryFn: () => getClinicById(id),
     select: (data: any) => {
       const resp = data.data.message;
-      console.log(data);
       return resp as IClinicType;
     },
   });
 
-export { getClinics, deleteClinic, GetClinicsQuery, GetClinicByIdQuery,  editClinicById ,createClinic, getClinicById };
+export { getClinics, deleteClinic, GetClinicsQuery, GetClinicByIdQuery, GetClinicByUsernameQuery, editClinicById ,createClinic, getClinicById };
+const GetClinicByUsernameQuery = (username: string) =>
+  useQuery({
+    queryKey: ["get-clinic-by-username", username],
+    queryFn: () => getClinicByUsername(username),
+    select: (data: any) => {
+      const resp = data.data.message;
+      return resp as Array<IClinicType>;
+    },
+  });
+
+
 export type { IClinicType };

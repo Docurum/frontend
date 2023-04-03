@@ -84,12 +84,12 @@ const ProfileDropdownMenu = () => {
               <div className="ml-4 text-md font-bold text-slate-700">Profile</div>
             </div>
           </DropdownMenu.Item>
-          <DropdownMenu.Item className="outline-none">
+          <DropdownMenu.Item   onClick={() => router.push("/edit")} className="outline-none">
             <div className="flex flex-row items-start w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer ">
               <div>
                 <CiEdit size={25} color="gray" />
               </div>
-              <div className="ml-4 text-md font-bold text-slate-700">Edit</div>
+              <div  className="ml-4 text-md font-bold text-slate-700">Edit</div>
             </div>
           </DropdownMenu.Item>
 

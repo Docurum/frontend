@@ -5,88 +5,39 @@ import classNames from "classnames";
 import { FC, useState } from "react";
 import styles from "./index.module.css";
 import { useRouter } from "next/router";
+import { GetRecommendedUserQuery, GetUserQuery } from "../../api/user";
 
 export default function RightLane() {
   const router = useRouter();
-  const list = [
-    {
-      id: 0,
-      name: "Dr. Jonny Bhattacharya",
-      upvote: "13.7k",
-    },
-    {
-      id: 1,
-      name: "Dr. Mia Chakraborty",
-      upvote: "7.1k",
-    },
-    {
-      id: 2,
-      name: "Dr. Pinaki Malkova",
-      upvote: "17.4k",
-    },
-    {
-      id: 3,
-      name: "Dr. Sagnik Ghosh",
-      upvote: "321k",
-    },
-    {
-      id: 4,
-      name: "Dr. Daddy Kapat",
-      upvote: "73k",
-    },
-    {
-      id: 5,
-      name: "Dr. Vivek Sharma",
-      upvote: "131k",
-    },
-    {
-      id: 0,
-      name: "Dr. Jonny Bhattacharya",
-      upvote: "13.7k",
-    },
-    {
-      id: 1,
-      name: "Dr. Mia Chakraborty",
-      upvote: "7.1k",
-    },
-    {
-      id: 2,
-      name: "Dr. Pinaki Malkova",
-      upvote: "17.4k",
-    },
-    {
-      id: 3,
-      name: "Dr. Sagnik Ghosh",
-      upvote: "321k",
-    },
-    {
-      id: 4,
-      name: "Dr. Daddy Kapat",
-      upvote: "73k",
-    },
-    {
-      id: 5,
-      name: "Dr. Vivek Sharma",
-      upvote: "131k",
-    },
-  ];
 
-  const [doctorsList, setdoctorsList] = useState(list);
+  const recommendedUserQuery = GetRecommendedUserQuery();
+  const userQuery = GetUserQuery();
+
+  if (recommendedUserQuery.isLoading) {
+    return <div>Loading ...</div>;
+  }
+
+  if (recommendedUserQuery.isError) {
+    return <div>Something went wrong...</div>;
+  }
+
   return (
     <div className="hidden flex-col items-center lg:flex xl:w-3/12">
       <div onClick={() => router.push("/start-topic")} className="flex flex-row bg-blue-600 shadow-blue-200 shadow-md rounded-lg w-[80%] mt-[5%] p-3 items-center justify-center hover:cursor-pointer">
         <AiOutlinePlus size={25} color="white" />
         <div className="text-white text-md font-bold ml-2">Start a New Topic</div>
       </div>
-      <div className="flex flex-col w-[80%] h-[50vh] shadow-slate-200 shadow-md mt-6 rounded-lg">
+      <div className="flex flex-col w-[80%] max-h-[50vh] shadow-slate-200 shadow-md mt-6 rounded-lg">
         <div className=" font-bold my-4 text-md text-gray-700 ml-4">Top Contributors</div>
         <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll overflow-x-hidden scrollbar"])}>
-          {doctorsList.map((d, index) => {
-            return <Contributors name={d.name} votes={d.upvote} key={index} />;
+          {recommendedUserQuery.data.map((d, index) => {
+            return <Contributors name={d.name} imageUrl={d.picture} username={d.username} key={index} />;
           })}
         </div>
         <div className="h-1 bg-slate-300 mx-4 mb-4"></div>
-        <Contributors name="Dr. Pinaki Bhattacharjee" votes="34k" />
+        {userQuery.isLoading ? <div>User loading..</div> : <></>}
+        {userQuery.isError ? <div>Something went wrong..</div> : <></>}
+        {userQuery.isSuccess ? <Contributors name={userQuery.data.name} username={userQuery.data.username} imageUrl={userQuery.data.picture} /> : <></>}
       </div>
       <div className="flex flex-row mt-4 ml-10 w-[80%] items-start justify-start">
         <div className="flex flex-col">
@@ -106,25 +57,39 @@ export default function RightLane() {
 }
 
 interface IContributors {
+  username: string;
   name: string;
-  votes: string;
+  imageUrl: string;
 }
 
-const Contributors: FC<IContributors> = ({ name, votes }) => {
+const Contributors: FC<IContributors> = ({ name, imageUrl, username }) => {
+  const router = useRouter();
   return (
-    <div className="flex flex-row justify-between mx-4 mb-4">
+    <div
+      className="flex flex-row justify-between mx-4 mb-4 hover:cursor-pointer"
+      onClick={() =>
+        router.push({
+          pathname: "/user/[username]",
+          query: { username: username },
+        })
+      }
+    >
       <div className="flex flex-row items-center">
         <div className="border-2 border-gray-400 rounded-2xl shrink-0">
-          <Image src={`https://avatars.dicebear.com/api/personas/${name}.svg`} alt={"avatar"} height={30} width={30} className="" />
+          {imageUrl ? (
+            <Image src={imageUrl} alt={"avatar"} height={30} width={30} className="rounded-full" />
+          ) : (
+            <Image src={`https://avatars.dicebear.com/api/personas/${name}.svg`} alt={"avatar"} height={30} width={30} className="" />
+          )}
         </div>
         <div className="font-bold text-blue-600 ml-2 hover:cursor-pointer text-[15px]">{name}</div>
       </div>
-      <div className="flex flex-row items-center">
+      {/* <div className="flex flex-row items-center">
         <div className="text-md font-bold text-slate-500 mr-1">{votes}</div>
         <div className="hover:cursor-pointer">
           <AiOutlineArrowUp size={12} color={"#2563eb"} />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

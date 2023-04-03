@@ -20,6 +20,7 @@ import { GetClinicByIdQuery } from "../../api/clinic";
 const ClinicAppBar: FC<{
   clinicId: string;
 }> = ({ clinicId }) => {
+  
   const router = useRouter();
   const clinicById = GetClinicByIdQuery(clinicId);
   if (clinicById.isLoading) {
@@ -78,6 +79,8 @@ const NotificationDropdownMenu = () => {
 };
 
 const ProfileDropdownMenu = () => {
+
+
   const router = useRouter();
 
   return (
@@ -103,7 +106,7 @@ const ProfileDropdownMenu = () => {
               <div>
                 <CiEdit size={25} color="gray" />
               </div>
-              <div className="ml-4 text-md font-bold text-slate-700">Edit</div>
+              <div onClick={() => router.push("/profile")}className="ml-4 text-md font-bold text-slate-700">Edit</div>
             </div>
           </DropdownMenu.Item>
 

@@ -58,9 +58,11 @@ interface ICommentCardProps {
 }
 
 const CommentCard: FC<ICommentCardProps> = ({ topicId, description, author, views, votes, shares, id }) => {
+  const commentsQuery = GetCommentByTopicIdQuery(topicId);
   const upvote = async () => {
     try {
       const { data } = await upvoteComment({ id: id });
+      commentsQuery.refetch();
       toast.success(data.message, { id: data.message });
     } catch (e) {
       toast.error("Something went wrong", { id: `Error ${id}` });
@@ -70,25 +72,27 @@ const CommentCard: FC<ICommentCardProps> = ({ topicId, description, author, view
   const downvote = async () => {
     try {
       const { data } = await downvoteComment({ id: id });
+      commentsQuery.refetch();
       toast.success(data.message, { id: data.message });
     } catch (e) {
       toast.error("Something went wrong", { id: `Error ${id}` });
     }
   };
   return (
-    <div className="shadow-md shadow-blue-200 mx-2 mt-2 rounded-md">
-      <div className="basis-1 flex flex-row">
-        <div className="hidden flex-col mt-6 mx-4 items-center sm:flex">
-          <div className="hover:cursor-pointer" onClick={upvote}>
-            <AiOutlineArrowUp size={30} color={votes > 0 ? "#2548f5" : "gray"} />
-          </div>
-          <div className="text-lg font-bold">{votes}</div>
-          <div className="hover:cursor-pointer" onClick={downvote}>
-            <AiOutlineArrowDown size={30} color={votes < 0 ? "red" : "gray"} />
-          </div>
-        </div>
-        <div className="flex flex-col mt-4 max-sm:ml-4">
+    <div className="mx-2 mt-2">
+      <div className="flex flex-row">
+        <div className="shadow-md shadow-blue-200  flex flex-col pl-6 mt-4 rounded-md">
           <div>
+            <div className="flex-row items-center flex mt-2">
+              <div className=" shadow-md rounded-2xl h-8 w-8 sm:h-9 sm:w-9 mr-2">
+                {!author.picture ? (
+                  <Image src={`https://avatars.dicebear.com/api/personas/${author?.username}.svg`} alt="avatar" height={30} width={30} />
+                ) : (
+                  <Image src={author.picture} alt="avatar" height={40} width={40} className="rounded-full" />
+                )}
+              </div>
+              <div className="font-bold text-lg text-blue-600 hover:cursor-pointer">Dr. {author?.name}</div>
+            </div>
             {/* <div className="flex flex-row items-center justify-between mr-8">
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger className="outline-none">
@@ -143,7 +147,7 @@ const CommentCard: FC<ICommentCardProps> = ({ topicId, description, author, view
           </div>
           <div className="h-[2px] bg-gray-400 mr-8 mt-4"></div>
           <div className="flex flex-row my-4 items-center justify-between mr-8">
-            <div className="hidden flex-row  items-center max-sm:flex">
+            <div className="flex-row  items-center flex">
               <div className="hover:cursor-pointer" onClick={upvote}>
                 <AiOutlineArrowUp size={25} color={votes > 0 ? "#2548f5" : "gray"} />
               </div>
@@ -152,17 +156,7 @@ const CommentCard: FC<ICommentCardProps> = ({ topicId, description, author, view
                 <AiOutlineArrowDown size={25} color={votes < 0 ? "red" : "gray"} />
               </div>
             </div>
-            <div className="hidden flex-row items-center sm:flex">
-              <div className="border-2 border-gray-400 rounded-2xl">
-                {!author.picture ? (
-                  <Image src={`https://avatars.dicebear.com/api/personas/${author?.username}.svg`} alt="avatar" height={30} width={30} />
-                ) : (
-                  <Image src={author.picture} alt="avatar" height={30} width={30} className="rounded-full" />
-                )}
-              </div>
-              <div className="font-bold text-sm text-gray-600 ml-4">Posted by </div>
-              <div className="font-bold text-sm text-blue-600 ml-1 hover:cursor-pointer">Dr. {author?.name}</div>
-            </div>
+
             <div className="flex flex-row">
               <div className="flex flex-row items-center mr-4">
                 <GoGraph size={20} color="gray" />
