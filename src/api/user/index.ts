@@ -21,7 +21,7 @@ interface IUser {
   username: string;
   picture: string;
   bio: string;
-  phone: string;
+  phoneNumber: string;
   dob: string;
 }
 
