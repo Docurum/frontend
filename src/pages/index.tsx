@@ -46,7 +46,7 @@ const Home: NextPage = () => {
               Join now
             </div>
           </div>
-          <div className="flex flex-col w-[50vw] mt-10 mx-20 max-h-[60vh] custom-scrollbar overflow-y-scroll">
+          <div className="flex flex-col w-[73vw] mt-10 mx-[5vw] max-h-[60vh] custom-scrollbar overflow-y-scroll">
             <QandASection />
           </div>
         </div>

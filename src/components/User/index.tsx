@@ -15,7 +15,6 @@ import { QandASection, UserQandASection } from "../QandASection";
 import BottomNavBar from "../BottomNavBar";
 import { BADGE, Badge, GoldBadge, SilverBadge } from "../ProfileRightSection";
 import { useQuery } from "@tanstack/react-query";
-import { getUser } from "../../api";
 import { CgProfile } from "react-icons/cg";
 import Logo from "../Logo/Logo";
 import { deleteClinic, GetClinicByUsernameQuery, GetClinicsQuery, IClinicType } from "../../api/clinic";
