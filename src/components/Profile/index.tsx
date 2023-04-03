@@ -188,6 +188,12 @@ export default function Profile() {
               <AiOutlinePlus size={25} color="white" />
               <div className="text-white text-md font-bold ml-1">Add Clinic</div>
             </div>
+            <div  onClick={()=>{
+              router.push('/verify-credentials')
+            }} className="flex flex-row bg-blue-600 px-3 py-2 rounded-lg shadow-md shadow-blue-400 hover:cursor-pointer">
+              <AiOutlinePlus size={25} color="white" />
+              <div className="text-white text-md font-bold ml-1">verfiy credentials</div>
+            </div>
           </div>
           {clinics.isLoading ? (
             <></>
