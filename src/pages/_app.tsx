@@ -47,18 +47,23 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     if (!isJWTValid()) {
+      // if (typeof window !== "undefined" && router.pathname !== "/") {
       let val = localStorage.getItem("token");
       if (val !== null) {
         toast.error("Session expired! Please Login");
       }
-      router.replace("/login");
+      if (val === null) {
+        toast.success("Please Login");
+      }
+      //   router.replace("/login");
+      // }
     }
     if (isJWTValid()) {
-      router.replace("/home");
+      // router.replace("/home");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router.pathname]);
 
   useEffect(() => {
     if (window) {

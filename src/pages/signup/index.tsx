@@ -96,7 +96,8 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
         } else {
           toast.error(errorMessage, { id: errorMessage });
         }
-      } else {       toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
+      } else {
+        toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
       }
     }
   };
@@ -131,7 +132,7 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       </Link>
       <div className="text-3xl font-bold text-center">Create your account</div>
       <div className="text-gray-500 text-center">Enter the fields below to get started</div>
-      <button
+      {/* <button
         className="flex w-full max-w-md bg-white items-center justify-center gap-x-3 font-semibold text-lg py-2 rounded-lg shadow border border-gray-300 hover:bg-gray-100"
         onClick={() => {
           window.location.href = getGoogleOAuthURL("signup");
@@ -139,14 +140,14 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       >
         <FcGoogle size={30} />
         <span>Sign in with Google</span>
-      </button>
+      </button> */}
       <div className="relative mb-4 mt-2 w-full max-w-md">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-gray-400"></div>
         </div>
-        <div className="relative flex justify-center">
+        {/* <div className="relative flex justify-center">
           <span className="px-6 text-gray-700 bg-white">or</span>
-        </div>
+        </div> */}
       </div>
       <div className="w-full max-w-md">
         <form className="bg-white" onSubmit={handleSubmit(onSubmit)}>
