@@ -164,7 +164,7 @@ const GetCategoriesById = (data: { id: Array<string> }) => {
   });
 };
 
-const GetSearchTopics = (data: { name: string; category: string[] }) =>
+const GetSearchTopics = (data: { name: string; categories: string[] }) =>
   useQuery({
     queryKey: ["search-topics-name"],
     queryFn: () => getTopic(data),

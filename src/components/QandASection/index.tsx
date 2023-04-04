@@ -30,8 +30,7 @@ const QandASectionHome = () => {
 };
 
 const QandASection = () => {
-  let categories: any[] = [];
-  const topics = GetSearchTopics({ name: "", categories: categories });
+  const topics = GetSearchTopics({ name: "", categories: [] });
   if (topics.isLoading) {
     return <div>Loading ...</div>;
   }
