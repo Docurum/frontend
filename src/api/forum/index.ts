@@ -39,6 +39,7 @@ interface ITopicType {
     name: string;
     username: string;
     picture: string;
+    isDoctor: boolean;
   };
   categories: string[];
   createdAt: string;
@@ -81,6 +82,14 @@ const getTopic = (data: any) => {
     return AuthAPI().post("/forum/search-topics", data);
   } catch (e) {
     return e as any;
+  }
+};
+
+const getTopicByUserId = () => {
+  try {
+    return AuthAPI().get("/forum/get-topic-userid");
+  } catch (e) {
+    return e;
   }
 };
 
@@ -155,7 +164,7 @@ const GetCategoriesById = (data: { id: Array<string> }) => {
   });
 };
 
-const GetSearchTopics = (data: { name: string }) =>
+const GetSearchTopics = (data: { name: string; category: string[] }) =>
   useQuery({
     queryKey: ["search-topics-name"],
     queryFn: () => getTopic(data),
@@ -176,6 +185,16 @@ const GetTopicByIdQuery = (id: string) =>
     },
   });
 
+const GetTopicByUserIdQuery = () =>
+  useQuery({
+    queryKey: ["get-topicbyuserid"],
+    queryFn: () => getTopicByUserId(),
+    select: (data: any) => {
+      const resp = data.data.message;
+      return resp as Array<ITopicType>;
+    },
+  });
+
 const GetTopicByUsernameQuery = (username: string) =>
   useQuery({
     queryKey: ["get-topic-by-username", username],
@@ -187,4 +206,16 @@ const GetTopicByUsernameQuery = (username: string) =>
     },
   });
 
-export { createCategory, checkCategoryExists, createTopic, upvoteTopic, downvoteTopic, GetSearchCategoriesByName, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery, GetTopicByUsernameQuery };
+export {
+  createCategory,
+  checkCategoryExists,
+  createTopic,
+  upvoteTopic,
+  downvoteTopic,
+  GetTopicByUserIdQuery,
+  GetSearchCategoriesByName,
+  GetCategoriesById,
+  GetSearchTopics,
+  GetTopicByIdQuery,
+  GetTopicByUsernameQuery,
+};

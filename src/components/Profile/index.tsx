@@ -152,7 +152,9 @@ export default function Profile() {
           </div>
           <div className="flex flex-col mt-4">
             <div className="flex flex-row items-center">
-              <div className="text-xl font-bold text-slate-700">Dr. {userQuery.data.name}</div>
+              <div className="text-xl font-bold text-slate-700">
+                {userQuery.data.isDoctor ?? "Dr. "} {userQuery.data.name}
+              </div>
               <div className="ml-1">
                 <MdVerified size={25} color={"green"} className="shrink-0" />
               </div>

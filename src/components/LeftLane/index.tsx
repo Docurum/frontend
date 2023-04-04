@@ -30,7 +30,13 @@ export default function LeftLane() {
             <MdOutlineExplore size={20} color={`${index === 1 ? "#2563eb" : "gray"}`} />
             <div className={`text-md ${index === 1 ? "text-blue-600" : "text-slate-500"} font-bold ml-2`}>Explore</div>
           </div>
-          <div className={`flex flex-row ${index === 2 ? "bg-blue-50" : "bg-white"}  w-46 xl:w-72 h-10 items-center hover:cursor-pointer mb-4`} onClick={() => setIndex(2)}>
+          <div
+            className={`flex flex-row ${index === 2 ? "bg-blue-50" : "bg-white"}  w-46 xl:w-72 h-10 items-center hover:cursor-pointer mb-4`}
+            onClick={() => {
+              router.push("/my-topics");
+              setIndex(2);
+            }}
+          >
             <div className={`w-1 mr-3 h-10 ${index === 2 ? "bg-blue-600" : "bg-white"}`}></div>
             <RiQuestionMark size={20} color={`${index === 2 ? "#2563eb" : "gray"}`} />
             <div className={`text-md ${index === 2 ? "text-blue-600" : "text-slate-500"} font-bold ml-2`}>My Topics</div>

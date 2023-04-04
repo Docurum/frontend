@@ -7,22 +7,25 @@ import { FaRegCommentAlt } from "react-icons/fa";
 import { BsFillShareFill } from "react-icons/bs";
 import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 import { list } from "../../../constants";
+import { GetSearchTopics } from "../../api/forum";
+import FilterCategoriesDialog from "../FilterCategory";
 
 export default function SearchBar() {
   const ulRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [categoryIncludedId, setCategoryIncludedId] = useState<string[]>([]);
 
-  const [searchList, updateSearchList] = useState(list);
+  const topics = GetSearchTopics({ name: searchInput, categories: categoryIncludedId });
 
   const onInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-    let data: any[] = [];
-    list.forEach((d) => {
-      if (d.title.toLocaleLowerCase().includes(event.target.value.toLowerCase())) {
-        data.push(d);
-      }
-    });
-    updateSearchList(data);
+    setSearchInput(event.target.value);
   };
+
+  useEffect(() => {
+    topics.refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchInput, categoryIncludedId]);
 
   useEffect(() => {
     inputRef.current?.addEventListener("click", (event) => {
@@ -43,16 +46,18 @@ export default function SearchBar() {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-row items-center justify-between bg-gray-200 rounded-md shadow-lg w-[96vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw]">
       <input
-        className="p-4 h-12 outline-none text-lg bg-gray-200 rounded-md shadow-lg w-[92vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw] text-gray-700"
+        className="bg-gray-200 p-4 h-12 outline-none text-lg  text-gray-700"
         type="text"
         name="searchInputController"
         ref={inputRef}
+        value={searchInput}
         placeholder="🔍 Search for topics here"
         onChange={(event) => onInputChange(event)}
       />
-      <div
+      <FilterCategoriesDialog categoryIncludedId={categoryIncludedId} setCategoryIncludedId={setCategoryIncludedId} />
+      {/* <div
         ref={ulRef}
         className={classNames(
           [styles["search-scrollbar"]],
@@ -64,7 +69,7 @@ export default function SearchBar() {
             <SearchCard key={d.id} shares={d.shares} upvote={d.upvote} views={d.views} title={d.title} description={d.description} author={d.author} commentCount={d.commentCount} likes={d.views} />
           );
         })}
-      </div>
+      </div> */}
     </div>
   );
 }
