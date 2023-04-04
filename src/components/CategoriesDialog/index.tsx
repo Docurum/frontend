@@ -148,19 +148,24 @@ const CategoriesDialog: FC<{
 
   const createNewCategory = async (): Promise<void> => {
     try {
-      let data = {
+      let ob = {
         name: categoryName,
         imageUrl: logoImage.current,
         color: color,
       };
-      await createCategory(data);
+      const { data } = await createCategory(ob);
       setCategoryName("");
       logoImage.current = "";
       setColor("");
       setAddingCategory(false);
       setCategoryNameErrors(null);
       setIsCategoryNameAvailable(false);
-      toast.success("Category created successfully", { id: "success-category" });
+      if (data.status === 200) {
+        toast.error(data.message, { id: "error-category" });
+      }
+      if (data.status === 201) {
+        toast.success(data.message, { id: "success-category" });
+      }
     } catch (err) {
       toast.error("Something went wrong| Unable to Create Category", { id: "server-conn-fail" });
     }
