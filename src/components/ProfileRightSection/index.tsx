@@ -12,6 +12,7 @@ import { toast } from "react-hot-toast";
 import { isAppliedDoctor } from "../../api/clinic";
 
 import { promise } from "zod";
+import { MdVerified } from "react-icons/md";
 const ProfileRightSection = () => {
   const router = useRouter();
   let isApplied: any = promise;
@@ -28,23 +29,30 @@ const ProfileRightSection = () => {
   return (
     <div className="hidden  lg:flex flex-col  w-1/4 items-center mt-4 mb-10">
       <CreateClinic />
-      <div className="flex flex-col  w-full items-center mt-1 mb-5">
-        <Lottie animationData={clinicAnimation} play className="h-56 w-60" />
-<div className="absolute 10">
-  
-        <div
-          onClick={() => {
-            checkApplied();
-          }}
-          className="flex mx-20 my-0 flex-row justify-center items-center z-1  h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
-        >
-          <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">
-            Verify Credentials
+      <div className="flex flex-row mt-4">
+      <div className="h-48 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
+        <div className="z-1 absolute w-full h-32 bg-blue-100 rounded-lg"></div>
+        <div className="absolute z-2 w-full justify-end items-end flex flex-col">
+          <Lottie animationData={clinicAnimation} play className="h-56" />
+        </div>
+      
+          <div
+            onClick={() => {
+              checkApplied();
+            }}
+            className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+          >
+              <MdVerified size={25} color={"white"} className="shrink-0" />
+            <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">
+              Doctor Verification
+              
+            </div>
+            
           </div>
         </div>
-</div>
+        </div>
       </div>
-    </div>
+   
   );
 };
 
@@ -145,7 +153,6 @@ const Badge: FC<IBadgeProps> = ({ name, number, list }) => {
           <div className="text-sm text-white mr-1">Nice Question</div>
         </div>
       </div>
-
     </div>
   );
 };
