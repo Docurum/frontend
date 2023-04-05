@@ -2,7 +2,8 @@ import React from 'react'
 import VerfiicationPanel from '../../components/VerificationPanel'
 import AppBar from '../../components/AppBar'
 import LeftLane from '../../components/LeftLane'
-import { ProfileRightSection } from '../../components/ProfileRightSection'
+import MobileVerfiicationPanel from '../../components/MobileVerfiication'
+
 
 function verfiy() {
   return (
@@ -13,7 +14,7 @@ function verfiy() {
      <div className="flex flex-row h-[90vh]">
           <LeftLane />
            <VerfiicationPanel/>
-         
+         <MobileVerfiicationPanel/>
         </div>
   </div>
    </div>

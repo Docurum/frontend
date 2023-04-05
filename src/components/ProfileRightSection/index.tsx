@@ -28,9 +28,10 @@ const ProfileRightSection = () => {
   return (
     <div className="hidden  lg:flex flex-col  w-1/4 items-center mt-4 mb-10">
       <CreateClinic />
-      <div className="hidden  lg:flex flex-col  w-full items-center mt-1 mb-5">
+      <div className="flex flex-col  w-full items-center mt-1 mb-5">
         <Lottie animationData={clinicAnimation} play className="h-56 w-60" />
-
+<div className="absolute 10">
+  
         <div
           onClick={() => {
             checkApplied();
@@ -41,6 +42,7 @@ const ProfileRightSection = () => {
             Verify Credentials
           </div>
         </div>
+</div>
       </div>
     </div>
   );

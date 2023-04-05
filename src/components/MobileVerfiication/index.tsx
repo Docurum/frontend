@@ -86,7 +86,7 @@ const verifyDoctorSchema = z
   })
   .strict();
 export type verifyDoctorSchemaType = z.infer<typeof verifyDoctorSchema>;
-const VerfiicationPanel = () => {
+const MobileVerfiicationPanel = () => {
   const router = useRouter();
   const [uploadType, setUploadType] = useState<string>("");
   const [currentFile, setCurrentFile] = useState<any>(null);
@@ -299,12 +299,12 @@ const VerfiicationPanel = () => {
     uploadFile();
   }, [uploadType, currentFile]);
   return (
-    <div className={classNames([" hidden sm:flex  flex-col w-[75vw]    mt-6 "])}>
+    <div className={classNames(["hidden max-sm:flex  mb-[10vh]  flex-col w-[100vw] h-[90vh]  scrollbar overflow-y-scroll  overflow-x-hidden  p-2  mt-6 "])}>
       <h2 className="text-2xl font-bold">Submit for Verification</h2>
-      <div className="mt-2 w-5/6">
+      <div className="mt-2">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex ">
-            <div className="w-full gap-8 flex flex-col  ">
+          <div className="flex  ">
+            <div className="w-full   gap-8 flex flex-col  ">
               <label className="block">
                 <TextField
                   error={Boolean(errors.medicalCouncil)}
@@ -315,7 +315,7 @@ const VerfiicationPanel = () => {
                   }
                   {...register("medicalCouncil")}
                   type="text"
-                  className="w-96"
+                 className="w-[calc(100%-16px)]"
                   id="Medical Council"
                   required
                   label="Medical Council: *"
@@ -331,7 +331,7 @@ const VerfiicationPanel = () => {
                   }
                   {...register("hospital")}
                   type="text"
-                  className="w-96"
+                   className="w-[calc(100%-16px)]"
                   id="Hospital"
                   label="Hospital *"
                   required
@@ -349,7 +349,7 @@ const VerfiicationPanel = () => {
                   }
                   {...register("qualification")}
                   type="text"
-                  className="w-96"
+                    className="w-[calc(100%-16px)]"
                   id="qualification"
                   label="qualification *"
                   variant="outlined"
@@ -366,7 +366,7 @@ const VerfiicationPanel = () => {
                   type="text"
                   required
                   {...register("title")}
-                  className="w-96"
+                 className="w-[calc(100%-16px)]"
                   id="Title"
                   label="Title *"
                   variant="outlined"
@@ -377,7 +377,7 @@ const VerfiicationPanel = () => {
                 <TextField
                   {...register("speciality")}
                   type="text"
-                  className="w-96"
+                   className="w-[calc(100%-16px)]"
                   required
                   error={Boolean(errors.speciality)}
                   helperText={
@@ -391,17 +391,7 @@ const VerfiicationPanel = () => {
                   placeholder=""
                 />
               </label>
-              <button
-                type="submit"
-                onClick={() => {
-                  handleSubmit(onSubmit);
-                }}
-                className="bg-blue-500 hover:bg-blue-700 w-96 text-white font-bold py-2 px-4 rounded"
-              >
-                Save
-              </button>
-            </div>
-            <div className="w-full gap-8 flex flex-col ">
+               <div className="w-full gap-8 flex flex-col ">
               <label className="block">
                 <TextField
                   required
@@ -411,7 +401,7 @@ const VerfiicationPanel = () => {
                   }
                   {...register("languages")}
                   type="text"
-                  className="w-96"
+                   className="w-[calc(100%-16px)]"
                   id="languages"
                   label="languages *"
                   variant="outlined"
@@ -427,7 +417,7 @@ const VerfiicationPanel = () => {
                   }
                   {...register("contact")}
                   type="text"
-                  className="w-96"
+                   className="w-[calc(100%-16px)]"
                   id="Contact"
                   label="Contact *"
                   variant="outlined"
@@ -446,7 +436,7 @@ const VerfiicationPanel = () => {
                   }
                   {...register("experience")}
                   type="nubmer"
-                  className="w-96"
+                   className="w-[calc(100%-16px)]"
                   id="Experience"
                   label="Experience *"
                   variant="outlined"
@@ -464,7 +454,7 @@ const VerfiicationPanel = () => {
                   {...register("registrationYear")}
                   type="text"
                   required
-                  className="w-96"
+                   className="w-[calc(100%-16px)]"
                   id="registration Year"
                   label="registration Year *"
                   variant="outlined"
@@ -482,7 +472,7 @@ const VerfiicationPanel = () => {
                   }
                   {...register("registrationNumber")}
                   type="text"
-                  className="w-96"
+                  className="w-[calc(100%-16px)]"
                   id="registrationNumber"
                   label="registrationNumber *"
                   variant="outlined"
@@ -490,11 +480,17 @@ const VerfiicationPanel = () => {
                 />
               </label>
 
-              
              
             </div>
+              
+            </div>
+           
 
-            <div className=" flex  items-center justify-center flex-col ">
+          
+            <div></div>
+            
+          </div>
+            <div className=" ">
               <div {...registrationDropZone.getRootProps()} className="">
                 <input {...registrationDropZone.getInputProps()} />
                 {registration.current === "" ? (
@@ -535,38 +531,40 @@ const VerfiicationPanel = () => {
                   <div className="text-sm font-bold ml-1">Upload photoID</div>
                 </div>
               </div>
-              <div
-                {...photoIdDropZone.getRootProps()}
-                className="flex flex-col items-center mt-4"
-              >
-                <input {...photoIdDropZone.getInputProps()} />
-                {photoId.current === "" ? (
+                       <div {...degreeDropZone.getRootProps()} className="w-36">
+                <input {...degreeDropZone.getInputProps()} />
+                {degree.current === "" ? (
                   <div className="flex flex-row items-center justify-center w-28 h-28 bg-slate-200 rounded-2xl">
                     <Logo color="#808080" className="h-12 w-12" />
                   </div>
                 ) : (
                   <img
                     alt="logo-img"
-                    src={photoId.current}
+                    src={degree.current}
                     height="112px"
                     width="112px"
-                    className="rounded-2xl  w-38 h-28"
+                    className="rounded-2xl  w-28 h-28"
                   />
                 )}
-                <div className="flex w-36  flex-row mt-2 items-center ">
+                <div className="flex w-36 flex-row mt-2 items-center ">
                   <FiUpload className="" size={20} />
-                  <div className="text-sm font-bold ml-1">
-                    Upload Registercard
-                  </div>
+                  <div className="text-sm font-bold ml-1">Upload photoID</div>
                 </div>
               </div>
             </div>
-            <div></div>
-          </div>
+            <button
+                type="submit"
+                onClick={() => {
+                  handleSubmit(onSubmit);
+                }}
+                className="mx-3 my-4 bg-blue-500 hover:bg-blue-700 w-96 text-white font-bold py-2 px-4 rounded"
+              >
+                Save
+              </button>
         </form>
       </div>
     </div>
   );
 };
 
-export default VerfiicationPanel;
+export default MobileVerfiicationPanel;
