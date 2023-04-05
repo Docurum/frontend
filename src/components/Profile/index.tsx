@@ -27,9 +27,10 @@ import Logo from "../Logo/Logo";
 import { CiEdit } from "react-icons/ci";
 import axios from "axios";
 import clinicSchema from "../../schemas/clinicSchema";
-import { deleteClinic, GetClinicsQuery, IClinicType } from "../../api/clinic";
+import { deleteClinic, GetClinicsQuery, IClinicType, isAppliedDoctor } from "../../api/clinic";
 import { useRouter } from "next/router";
 import { GetUserQuery, updateProfilePicture } from "../../api/user";
+import EditClinic from "../EditClinic";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -75,9 +76,11 @@ export default function Profile() {
   const router = useRouter();
 
   useEffect(() => {
+
     uploadFile();
   }, [files]);
   const userQuery = GetUserQuery();
+
 
   const clinics = GetClinicsQuery();
 
@@ -152,7 +155,9 @@ export default function Profile() {
           </div>
           <div className="flex flex-col mt-4">
             <div className="flex flex-row items-center">
-              <div className="text-xl font-bold text-slate-700">Dr. {userQuery.data.name}</div>
+              <div className="text-xl font-bold text-slate-700">
+                {userQuery.data.isDoctor ?? "Dr. "} {userQuery.data.name}
+              </div>
               <div className="ml-1">
                 <MdVerified size={25} color={"green"} className="shrink-0" />
               </div>
@@ -188,12 +193,7 @@ export default function Profile() {
               <AiOutlinePlus size={25} color="white" />
               <div className="text-white text-md font-bold ml-1">Add Clinic</div>
             </div>
-            <div  onClick={()=>{
-              router.push('/verify-credentials')
-            }} className="flex flex-row bg-blue-600 px-3 py-2 rounded-lg shadow-md shadow-blue-400 hover:cursor-pointer">
-              <AiOutlinePlus size={25} color="white" />
-              <div className="text-white text-md font-bold ml-1">verfiy credentials</div>
-            </div>
+           
           </div>
           {clinics.isLoading ? (
             <></>
@@ -202,12 +202,12 @@ export default function Profile() {
               return (
                 <div
                   key={index}
-                  onClick={() =>
-                    router.push({
-                      pathname: "/clinic/[id]",
-                      query: { id: clinic.id },
-                    })
-                  }
+                  // onClick={() =>
+                  //   router.push({
+                  //     pathname: "/clinic/[id]",
+                  //     query: { id: clinic.id },
+                  //   })
+                  // }
                   className="flex flex-col shadow-lg w-[96.5%] shadow-blue-300 mx-4 mt-2 rounded-md p-4 mb-4"
                 >
                   <div className="flex flex-row items-center justify-between">
@@ -226,8 +226,7 @@ export default function Profile() {
                     </div>
                     <div className="flex flex-row">
                       <div className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer">
-                        <MdEdit size={25} color="gray" />
-                        {/* <div className="text-white text-md font-bold ml-2">Edit</div> */}
+                   <EditClinic data={clinic} />
                       </div>
                       <div
                         className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer"

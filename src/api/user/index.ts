@@ -23,6 +23,7 @@ interface IUser {
   phoneNumber: string;
   username: string;
   picture: string;
+  isDoctor: boolean;
 }
 
 const getUser = () => {

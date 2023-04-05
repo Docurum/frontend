@@ -5,13 +5,43 @@ import bronzeTrophy from "../../animations/Bronze_Trophy.json";
 import { FC, useState } from "react";
 import CreateClinic from "../CreateClinic";
 
+import clinicAnimation from "../../animations/113974-verified.json";
+import { useRouter } from "next/router";
+
+import { toast } from "react-hot-toast";
+import { isAppliedDoctor } from "../../api/clinic";
+
+import { promise } from "zod";
 const ProfileRightSection = () => {
+  const router = useRouter();
+  let isApplied: any = promise;
+
+  async function checkApplied() {
+    isApplied = await isAppliedDoctor();
+    if (isApplied.data.message.applied) {
+      toast.error("you have alreaady Applied please wait for the approval");
+    } else if (!isApplied.data.message.applied) {
+      router.push("/verify-credentials");
+    }
+  }
+
   return (
     <div className="hidden  lg:flex flex-col  w-1/4 items-center mt-4 mb-10">
       <CreateClinic />
-      {/* <GoldBadge />
-      <SilverBadge />
-      <Badge name={BADGE.BRONZE} number={13} list={["Critic", "Nice Question"]} /> */}
+      <div className="hidden  lg:flex flex-col  w-full items-center mt-1 mb-5">
+        <Lottie animationData={clinicAnimation} play className="h-56 w-60" />
+
+        <div
+          onClick={() => {
+            checkApplied();
+          }}
+          className="flex mx-20 my-0 flex-row justify-center items-center z-1  h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+        >
+          <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">
+            Verify Credentials
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -24,7 +54,9 @@ const GoldBadge = () => {
           <Lottie animationData={goldTrophy} play loop={false} />
         </div>
         <div className="flex flex-col items-start mr-3 mt-2">
-          <div className="text-sm sm:text-md text-slate-600 font-bold">Gold Badge</div>
+          <div className="text-sm sm:text-md text-slate-600 font-bold">
+            Gold Badge
+          </div>
           <div className="text-xl text-[#FFA834] font-bold">3</div>
         </div>
       </div>
@@ -53,7 +85,9 @@ const SilverBadge = () => {
         </div>
 
         <div className="flex flex-col items-start mr-3 mt-2 sm:mt-4">
-          <div className="text-sm sm:text-md text-slate-600 font-bold">Silver Badge</div>
+          <div className="text-sm sm:text-md text-slate-600 font-bold">
+            Silver Badge
+          </div>
           <div className="text-xl sm:text-2xl text-slate-400 font-bold">1</div>
         </div>
       </div>
@@ -93,7 +127,9 @@ const Badge: FC<IBadgeProps> = ({ name, number, list }) => {
           <Lottie animationData={lottieJosn} play loop={false} />
         </div>
         <div className="flex flex-col items-start mr-3 mt-2 sm:mt-4">
-          <div className="text-sm sm:text-md text-slate-600 font-bold">Bronze Badge</div>
+          <div className="text-sm sm:text-md text-slate-600 font-bold">
+            Bronze Badge
+          </div>
           <div className="text-xl sm:text-2xl text-[#CD7F32] font-bold">13</div>
         </div>
       </div>
@@ -107,10 +143,7 @@ const Badge: FC<IBadgeProps> = ({ name, number, list }) => {
           <div className="text-sm text-white mr-1">Nice Question</div>
         </div>
       </div>
-      {/* <div className="ml-6 flex flex-row bg-black rounded-md px-[3px] py-[1px] mt-1 items-center">
-        <div className="bg-[#CD7F32] h-2 w-2 rounded-full mx-1"></div>
-        <div className="text-sm text-white mr-1">Supporter</div>
-      </div> */}
+
     </div>
   );
 };

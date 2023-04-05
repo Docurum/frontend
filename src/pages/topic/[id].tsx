@@ -10,6 +10,7 @@ import dynamic from "next/dynamic";
 import { GetTopicByIdQuery } from "../../api/forum";
 import { GetCommentByTopicIdQuery } from "../../api/forum/commentService";
 import { CommentSection } from "../../components/CommentSection";
+import BottomNavBar from "../../components/BottomNavBar";
 const Editor = dynamic(() => import("../../components/RichText").then((mod) => mod.RichTextCommentArea), {
   ssr: false,
 });
@@ -102,6 +103,7 @@ const Topic = () => {
           </div>
           <RightLane />
         </div>
+        <BottomNavBar />
       </div>
     </div>
   );

@@ -32,12 +32,12 @@ export default function AppBar() {
         <div className="hidden max-sm:flex ml-5" onClick={() => router.push("/search")}>
           <IoIosSearch size={28} />
         </div>
-        <div className="hidden max-sm:flex ml-5 hover:cursor-pointer" onClick={() => router.push("/notifications")}>
+        {/* <div className="hidden max-sm:flex ml-5 hover:cursor-pointer" onClick={() => router.push("/notifications")}>
           <IoIosNotificationsOutline size={30} />
         </div>
         <div className="hidden sm:flex">
           <NotificationDropdownMenu />
-        </div>
+        </div> */}
         <ProfileDropdownMenu />
       </div>
     </div>
@@ -74,7 +74,7 @@ const ProfileDropdownMenu = () => {
         </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
-        <DropdownMenu.Content className="w-36 h-32 flex flex-col items-end  bg-white rounded-md shadow-lg shadow-slate-200" side="bottom" align="end" sideOffset={2}>
+        <DropdownMenu.Content className="w-36 h-[90px] flex flex-col items-end  bg-white rounded-md shadow-lg shadow-slate-200" side="bottom" align="end" sideOffset={2}>
           <div className="items-end mr-[2px] w-0 h-0 border-l-transparent border-l-[6px] border-r-transparent border-r-[6px] border-b-[6px] border-b-slate-100"></div>
           <DropdownMenu.Item className="outline-none" onClick={() => router.push("/profile")}>
             <div className="flex flex-row items-start w-36 pt-2 px-4 py-2 rounded-tr-md rounded-tl-md bg-slate-100 hover:bg-slate-200 hover:cursor-pointer ">
@@ -91,9 +91,15 @@ const ProfileDropdownMenu = () => {
               </div>
               <div className="ml-4 text-md font-bold text-slate-700">Edit</div>
             </div>
-          </DropdownMenu.Item>
+          </DropdownMenu.Item> 
 
-          <DropdownMenu.Item className="outline-none">
+          <DropdownMenu.Item
+            className="outline-none"
+            onClick={() => {
+              localStorage.removeItem("token");
+              router.push("/login");
+            }}
+          >
             <div className="flex flex-row items-start rounded-bl-md rounded-br-md w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer outline-none">
               <div>
                 <IoIosLogOut size={25} color="gray" />

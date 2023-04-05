@@ -14,7 +14,7 @@ import { HealthCategory } from "../HealthCategory";
 import BottomNavBar from "../BottomNavBar";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
-import { downvoteTopic, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery, GetTopicByUsernameQuery, upvoteTopic } from "../../api/forum";
+import { downvoteTopic, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery, GetTopicByUserIdQuery, GetTopicByUsernameQuery, upvoteTopic } from "../../api/forum";
 import { ReadOnlyRichText } from "../RichText";
 import { RxCross2 } from "react-icons/rx";
 import Logo from "../Logo/Logo";
@@ -24,21 +24,18 @@ const QandASectionHome = () => {
   return (
     <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
       <QandASection />
-      <div className="hidden max-lg:flex z-5 flex-row items-center justify-center h-12 w-12 mb-4 mr-4 bg-blue-600 absolute bottom-12 right-0 rounded-full shadow-blue-300 shadow-md hover:cursor-pointer">
-        <AiOutlinePlus size={30} color="white" />
-      </div>
       <BottomNavBar />
     </div>
   );
 };
 
 const QandASection = () => {
-  const topics = GetSearchTopics({ name: "" });
+  const topics = GetSearchTopics({ name: "", categories: [] });
   if (topics.isLoading) {
     return <div>Loading ...</div>;
   }
   return (
-    <div className="flex flex-col mb-4">
+    <div className="flex flex-col mb-12">
       {topics.data?.map((d, index: number) => {
         return (
           <QandACard
@@ -56,6 +53,40 @@ const QandASection = () => {
           />
         );
       })}
+    </div>
+  );
+};
+
+const MyTopicsSection = () => {
+  const topics = GetTopicByUserIdQuery();
+
+  if (topics.isLoading) {
+    return <div>Loading ...</div>;
+  }
+
+  if (topics.isError) {
+    return <div>SomeThing went wrong ...</div>;
+  }
+  return (
+    <div className="flex flex-col mb-4">
+      {Array.isArray(topics.data) &&
+        topics.data?.map((d, index: number) => {
+          return (
+            <QandACard
+              key={index}
+              category={d.categories}
+              shares={""}
+              votes={d.votes}
+              views={""}
+              title={d.title}
+              description={d.description}
+              author={d.user}
+              commentCount={d.commentCount}
+              id={d.id}
+              createdAt={""}
+            />
+          );
+        })}
     </div>
   );
 };
@@ -108,6 +139,7 @@ interface IQandCardProps {
     username: string;
     id: string;
     picture: string;
+    isDoctor: boolean;
   };
   commentCount: number;
   views: string;
@@ -123,11 +155,13 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   const router = useRouter();
 
   const getTopicQuery = GetTopicByIdQuery(id);
+  const topics = GetSearchTopics({ name: "", categories: [] });
 
   const upvote = async () => {
     try {
       const { data } = await upvoteTopic({ id: id });
       getTopicQuery.refetch();
+      topics.refetch();
       toast.success(data.message, { id: data.message });
     } catch (e) {
       toast.error("Something went wrong", { id: `Error ${id}` });
@@ -138,6 +172,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
     try {
       const { data } = await downvoteTopic({ id: id });
       getTopicQuery.refetch();
+      topics.refetch();
       toast.success(data.message, { id: data.message });
     } catch (e) {
       toast.error("Something went wrong", { id: `Error ${id}` });
@@ -271,20 +306,40 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
                 )}
               </div>
               <div className="font-bold text-gray-600 ml-4">Posted by </div>
-              <div className="font-bold text-blue-600 ml-1 hover:cursor-pointer">Dr. {author?.name}</div>
+              <div className="font-bold text-blue-600 ml-1 hover:cursor-pointer">
+                {author?.isDoctor ?? "Dr. "} {author?.name}
+              </div>
             </div>
             <div className="flex flex-row">
-              <div className="flex flex-row items-center mr-4">
+              {/* <div className="flex flex-row items-center mr-4">
                 <GoGraph size={20} color="gray" />
                 <div className="ml-1 font-bold text-gray-400 text-sm">{views}</div>
-              </div>
+              </div> */}
+
               <div className="flex flex-row items-center mr-4 hover:cursor-pointer">
                 <FaRegCommentAlt size={20} color="gray" />
                 <div className="ml-1 font-bold text-gray-400 text-sm">{commentCount}</div>
               </div>
-              <div className="flex flex-row items-center hover:cursor-pointer">
+              {/* <div className="flex flex-row items-center hover:cursor-pointer">
                 <BsFillShareFill size={20} color="gray" />
                 <div className="ml-1 font-bold text-gray-400 text-sm">{shares}</div>
+              </div> */}
+              <div
+                className="hidden flex-row items-center max-sm:flex hover:cursor-pointer ml-2"
+                onClick={() =>
+                  router.push({
+                    pathname: "/user/[username]",
+                    query: { username: author.username },
+                  })
+                }
+              >
+                <div className="border-2 border-gray-400 rounded-2xl">
+                  {!author || !author.picture ? (
+                    <Image src={`https://avatars.dicebear.com/api/personas/${author?.username}.svg`} alt="avatar" height={30} width={30} />
+                  ) : (
+                    <Image src={author.picture} alt="avatar" height={30} width={30} className="rounded-full" />
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -294,4 +349,4 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
   );
 };
 
-export { QandASection, QandASectionHome, QandACard, UserQandASection };
+export { QandASection, QandASectionHome, QandACard, UserQandASection, MyTopicsSection };

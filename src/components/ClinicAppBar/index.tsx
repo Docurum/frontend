@@ -107,7 +107,7 @@ const ProfileDropdownMenu = () => {
             </div>
           </DropdownMenu.Item>
 
-          <DropdownMenu.Item className="outline-none">
+          <DropdownMenu.Item className="outline-none" onClick={() => localStorage.removeItem("token")}>
             <div className="flex flex-row items-start rounded-bl-md rounded-br-md w-36 px-4 py-2 bg-slate-100  hover:bg-slate-200 hover:cursor-pointer outline-none">
               <div>
                 <IoIosLogOut size={25} color="gray" />

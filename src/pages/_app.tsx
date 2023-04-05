@@ -8,6 +8,7 @@ import GoogleOneTapLogin from "react-google-one-tap-login";
 import { Toaster, toast, useToasterStore } from "react-hot-toast";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import NextNProgress from "nextjs-progressbar";
 
 import "../styles/globals.css";
 import capsEveryFirstLetter from "../utils/capsEveryFirstLetter";
@@ -46,18 +47,23 @@ export default function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
     if (!isJWTValid()) {
+      // if (typeof window !== "undefined" && router.pathname !== "/") {
       let val = localStorage.getItem("token");
       if (val !== null) {
         toast.error("Session expired! Please Login");
       }
-      // router.replace("/login");
+      if (val === null) {
+        toast.success("Please Login");
+      }
+      //   router.replace("/login");
+      // }
     }
     if (isJWTValid()) {
-      // router.replace("/salesOrderDetail");
+      // router.replace("/home");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [router.pathname]);
 
   useEffect(() => {
     if (window) {
@@ -90,7 +96,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <main className={ssp.className}>
       {/* Don't show google one tap on signup and login page */}
-      {isWindowInit && !["signup", "login", "email-confirm", "forgot-password", "reset-password", "start-topic"].includes(router.asPath.slice(1).split("/")[0]) && (
+      {/* {isWindowInit && !["signup", "login", "email-confirm", "forgot-password", "reset-password", "start-topic"].includes(router.asPath.slice(1).split("/")[0]) && (
         <GoogleOneTapLogin
           onError={(error) => {
             console.error(error);
@@ -106,9 +112,10 @@ export default function App({ Component, pageProps }: AppProps) {
           }}
           googleAccountConfigs={{ client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string }}
         />
-      )}
+      )} */}
       <QueryClientProvider client={queryClient}>
         <Toaster position="bottom-right" reverseOrder={false} toastOptions={{ duration: 5000 }} />
+        <NextNProgress color="#2548f5" height={5} />
         <Component {...pageProps} />
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
