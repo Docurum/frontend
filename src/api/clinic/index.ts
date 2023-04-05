@@ -37,7 +37,13 @@ const getClinics = () => {
     return e;
   }
 };
-
+const verificationRequest = (data: any) => {
+  try {
+    return AuthAPI().post("/clinic/verify-doctor", data);
+  } catch (e) {
+    return e as any;
+  }
+}
 const deleteClinic = (id: string) => {
   try {
     return AuthAPI().delete(`/clinic/delete-clinic/${id}`);
@@ -45,7 +51,18 @@ const deleteClinic = (id: string) => {
     return e as any;
   }
 };
+const editClinicById=(id:string,data:any)=>{
+try{
+       let api = axios.create({
+      baseURL: `${process.env.NEXT_PUBLIC_BACKEND_URL}/v1/`,
+      headers: { authorization: `Bearer ${localStorage.getItem("token")}`, "Content-Type": "application/json" },
+    });
+      return api.put(`/clinic/edit-clinic/${id}`,data);
+}catch(e){
+      return e as any;
 
+};
+}
 const createClinic = (data: any) => {
   try {
     return AuthAPI().post("/clinic/create-clinic", data);
@@ -64,7 +81,13 @@ const getClinicById = (id: string) => {
     return e as any;
   }
 };
-
+const isAppliedDoctor = () => {
+try {
+  return AuthAPI().get(`/clinic/applied-doctors`);
+}catch(err){
+  return err as any
+}
+}
 const getClinicByUsername = (username: string) => {
   try {
     if (!username) {
@@ -106,5 +129,5 @@ const GetClinicByUsernameQuery = (username: string) =>
     },
   });
 
-export { getClinics, deleteClinic, GetClinicsQuery, GetClinicByIdQuery, createClinic, getClinicById, GetClinicByUsernameQuery };
+export { getClinics,isAppliedDoctor,editClinicById, deleteClinic, GetClinicsQuery, verificationRequest,GetClinicByIdQuery, createClinic, getClinicById, GetClinicByUsernameQuery };
 export type { IClinicType };
