@@ -48,7 +48,7 @@ export default function SearchBar() {
   return (
     <div className="flex flex-row items-center justify-between bg-gray-200 rounded-md shadow-lg w-[96vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw]">
       <input
-        className="bg-gray-200 p-4 h-12 outline-none text-lg  text-gray-700"
+        className="bg-gray-200 rounded-md p-4 h-12 outline-none text-lg w-[85vw] sm:w-[60vw] md:w-[50vw] lg:w-[35vw]  text-gray-700"
         type="text"
         name="searchInputController"
         ref={inputRef}
