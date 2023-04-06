@@ -445,7 +445,7 @@ export default function MobileCreateClinic() {
                 }}
                 className="mx-3 my-4 bg-blue-500 hover:bg-blue-700 w-1/2 text-white font-bold py-2 px-4 rounded"
               >
-                Save Changes
+              Save clinic
               </button>
         </form>
       </div>

@@ -231,7 +231,7 @@ useEffect(() => {
             </div>
          
            { userQuery.data.isDoctor?   <div className="hidden sm:flex flex-col"> <DoctorDetails /></div> : 
-           <div className="flex flex-row justify-center items-center   h-7 bg-gray-200 w-29 lg:w-43 p rounded-lg mb-7 ">
+           <div className="flex flex-row justify-center items-center   h-7 bg-gray-200 w-29 lg:w-43 p-2 my-1 rounded-lg mb-7 ">
               <div className="text-red-500  text-sm lg:text-[15px] ml-1 font-bold text-center ">
      {checkstatuss}
               
@@ -239,7 +239,7 @@ useEffect(() => {
             </div>
           
            }
-            <div className="hidden max-sm:flex flex-col ml-4 w-20 h-20">
+            <div className="hidden max-sm:flex flex-col ml-10 w-20 h-20">
               <Lottie animationData={lungsAnimation} play />
               
             </div>
@@ -249,7 +249,7 @@ useEffect(() => {
             onClick={() => {
               checkApplied();
             }}
-            className="hidden max-sm:flex flex-row justify-center items-center  h-12 bg-blue-600 w-50 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+            className="hidden max-sm:flex flex-row justify-center items-center  h-12 bg-blue-600 w-full p-3 my-2 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
           >
               <MdVerified size={25} color={"white"} className="shrink-0" />
             <div className="text-white  font-bold text-center ">
@@ -414,7 +414,7 @@ useEffect(() => {
                       {clinic.displayImages.map((file, index) => {
                         return (
                           <div
-                            key={index}
+                            
                             className="flex flex-col items-center justify-center"
                           >
                             <div

@@ -299,8 +299,8 @@ const MobileVerfiicationPanel = () => {
     uploadFile();
   }, [uploadType, currentFile]);
   return (
-    <div className={classNames(["hidden max-sm:flex  mb-[10vh]  flex-col w-[100vw] h-[90vh]  scrollbar overflow-y-scroll  overflow-x-hidden  p-2  mt-6 "])}>
-      <h2 className="text-2xl font-bold">Submit for Verification</h2>
+    <div className={classNames(["hidden max-sm:flex  mb-[10vh]  flex-col w-[100vw] h-[90vh]  scrollbar overflow-y-scroll  overflow-x-hidden  p-3 mt-2 "])}>
+      <h2 className="text-2xl font-bold mx-3 p-2">Submit for Verification</h2>
       <div className="mt-2">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex  ">
@@ -490,8 +490,8 @@ const MobileVerfiicationPanel = () => {
             <div></div>
             
           </div>
-            <div className=" ">
-              <div {...registrationDropZone.getRootProps()} className="">
+            <div className=" my-4 flex flex-col items-center  gap-2 ">
+              <div {...registrationDropZone.getRootProps()} className="w-36">
                 <input {...registrationDropZone.getInputProps()} />
                 {registration.current === "" ? (
                   <div className="flex flex-row items-center justify-center w-28 h-28 bg-slate-200 rounded-2xl">
@@ -557,9 +557,9 @@ const MobileVerfiicationPanel = () => {
                 onClick={() => {
                   handleSubmit(onSubmit);
                 }}
-                className="mx-3 my-4 bg-blue-500 hover:bg-blue-700 w-96 text-white font-bold py-2 px-4 rounded"
+                className="mx-7 my-4 bg-blue-500 hover:bg-blue-700 w-4/5 text-white font-bold py-2 px-4 rounded"
               >
-                Save
+                Apply 
               </button>
         </form>
       </div>
