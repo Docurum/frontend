@@ -155,6 +155,7 @@ function Edit() {
                 {...register("dob")}
                 type="date"
                 className={classNames(
+                  
                   ["rounded w-full py-2 px-3 text-gray-700"],
                   ["border border-gray-300 focus:outline-blue-600"]
                 )}

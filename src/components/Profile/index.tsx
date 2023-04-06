@@ -231,9 +231,9 @@ useEffect(() => {
               )}
             </div>
          
-           { userQuery.data.isDoctor?   <DoctorDetails /> : 
-           <div className="flex flex-row justify-center items-center   h-7 bg-yellow-400 w-29 lg:w-43 rounded-lg mb-7 ">
-              <div className="text-stone-900  text-sm lg:text-[15px] ml-1 font-bold text-center ">
+           { userQuery.data.isDoctor?   <div className="hidden sm:flex flex-col"> <DoctorDetails /></div> : 
+           <div className="flex flex-row justify-center items-center   h-7 bg-gray-200 w-29 lg:w-43 p rounded-lg mb-7 ">
+              <div className="text-red-500  text-sm lg:text-[15px] ml-1 font-bold text-center ">
      {checkstatuss}
               
             </div>
@@ -244,7 +244,9 @@ useEffect(() => {
               <Lottie animationData={lungsAnimation} play />
               
             </div>
-         <div
+       {
+        !userQuery.data.isDoctor ? (
+            <div
             onClick={() => {
               checkApplied();
             }}
@@ -257,6 +259,8 @@ useEffect(() => {
             </div>
             
           </div>
+        ) :""
+       }
           </div>
         </div>
 
@@ -455,7 +459,7 @@ useEffect(() => {
 
 const DoctorDetails = () => {
   return (
-    <>
+    <div className="">
       <div className="flex flex-row items-center mt-4">
         <AiFillMedicineBox size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
@@ -480,7 +484,7 @@ const DoctorDetails = () => {
           English, Hindi, Bengali
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

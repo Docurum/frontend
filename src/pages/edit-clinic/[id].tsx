@@ -8,7 +8,7 @@ import {
 } from "../../api/clinic";
 import { useRouter } from "next/router";
 
-function index() {
+function MobileEditClinicPage() {
   const clinics = GetClinicsQuery();
   const [clinicId, setClinicId] = useState("");
   const router = useRouter();
@@ -27,15 +27,20 @@ function index() {
 
   useEffect(() => {
     getclinic.refetch();
-
+   
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clinicId]);
-
+  if(getclinic.isLoading){
+    return <div>Loading...</div>
+  }
+  if(getclinic.isSuccess){
   return (
     <div>
       <MobileEditClinic data={getclinic.data} />
     </div>
   );
+  }
+  
 }
 
-export default index;
+export default MobileEditClinicPage;

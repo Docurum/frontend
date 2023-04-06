@@ -22,11 +22,12 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { useDropzone } from "react-dropzone"
 import { editClinicById, GetClinicsQuery, IClinicType } from "../../api/clinic";
 import { TextField } from "@mui/material";
+import { useRouter } from "next/router";
 
 const  MobileEditClinic: FC<any> =({data})=> {
 const userId=data?.id
 console.log(data,'data');
-
+const router =useRouter()
   const [open, setOpen] =useState(true);
   const [files, setFiles] = useState<any[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
@@ -211,7 +212,9 @@ const clinics = GetClinicsQuery();
     try {
       const { data } = await editClinicById(userId,formdata);
       getClinics.refetch();
+      
       toast.success(data?.message, { id: data?.message });
+      router.push("/profile");
    
     } catch (err: any) {
       if (err.response) {
@@ -254,7 +257,7 @@ useEffect(()=>{
   };
 
   return (
- <div className={classNames(["flex  mb-[10vh]  flex-col w-[100vw] h-[90vh]  scrollbar overflow-y-scroll  overflow-x-hidden  p-2  mt-6 "])}>
+ <div className={classNames(["flex  mb-[10vh]  flex-col w-[100vw] h-[90vh]  scrollbar overflow-y-scroll  overflow-x-hidden  p-1  mt-6 "])}>
       <h2 className="text-2xl p-4 font-bold"> Edit your Clinic</h2>
       <MdEdit className="text-2xl p-4 font-bold" />
       <div className="mt-2 px-3">
@@ -276,7 +279,7 @@ useEffect(()=>{
                          <div className="">
                         <DropdownMenu.Root>
                           <DropdownMenu.Trigger className="outline-none w-[calc(100%-16px)]">
-                            <TextField value={type}   className="w-[calc(100%-16px)]" id="type" label="Clinic Type : *" variant="outlined" />
+                            <TextField value={type}   className="w-[calc(100%-6px)]" id="type" label="Clinic Type : *" variant="outlined" />
                           </DropdownMenu.Trigger>
                           <DropdownMenu.Portal className="">
                             <DropdownMenu.Content className="z-50 outline-none w-[285px] rounded-md p-2 bg-slate-200" sideOffset={1}>
@@ -394,11 +397,11 @@ useEffect(()=>{
 
              
             </div>
-              <div className="flex flex-row ml-4 hover:cursor-pointer">
-                      <div {...getRootProps()} className="flex flex-col items-center mt-4">
+              <div className="flex flex-col p-2 items-baseline  mx-1 ml-1 hover:cursor-pointer">
+                      <div {...getRootProps()} className="flex flex-col p-3 items-center mt-4">
                         <input {...getInputProps()} />
                         {logoImage.current === "" ? (
-                          <div className="flex flex-row items-center justify-center w-28 h-28 bg-slate-200 rounded-2xl">
+                          <div className="flex mx-0 flex-row items-center justify-center w-28 h-28 bg-slate-200 rounded-2xl">
                             <Logo color="#808080" className="h-12 w-12" />
                           </div>
                         ) : (
@@ -410,13 +413,13 @@ useEffect(()=>{
                         </div>
                       </div>
 
-                      {files.length === 0 ? (
-                        <Dropzone setFiles={setFiles} title="Add upto four other clinic images" className="w-[370px] h-[137px] rounded-2xl hover:cursor-pointer text-center focus:outline-none" />
+                      {files.length <4 ? (
+                        <Dropzone setFiles={setFiles} title="Add upto four other clinic images" className="w-[190px] h-[137px] rounded-2xl hover:cursor-pointer text-center focus:outline-none" />
                       ) : (
                         <></>
                       )}
                       {files.length > 0 ? (
-                        <div className="flex ml-4 w-[370px] overflow-x-scroll scrollbar custom-scrollbar mb-4">
+                        <div className="flex w-[370px] overflow-x-scroll scrollbar custom-scrollbar mb-4">
                           <div className="flex gap-x-1">
                             {files.map((file) => {
                               const isImageFile = file.type.split("/")[0] === "image";
@@ -443,23 +446,7 @@ useEffect(()=>{
                       ) : (
                         <></>
                       )}
-                      <div className="flex flex-col ml-4">
-                        <button
-                          type="submit"
-                          onClick={() => {
-                            handleSubmit(onSubmit);
-                          }}
-                          // disabled={isSubmitting || isValidating}
-                          className="flex flex-row items-center justify-center mt-4 h-9 w-28 shadow-lg shadow-blue-300 bg-blue-600 rounded-md"
-                        >
-                          <div className="text-white font-bold text-md">Submit</div>
-                        </button>
-                        {/* <Dialog.Close>
-                          <div className="flex flex-row mt-4 items-center justify-center h-9 w-28 bg-slate-400 rounded-md mr-2">
-                            <div className="text-white font-bold text-md">Cancel</div>
-                          </div>
-                        </Dialog.Close> */}
-                      </div>
+                    
                     </div>
             </div>
            
@@ -474,9 +461,9 @@ useEffect(()=>{
                 onClick={() => {
                   handleSubmit(onSubmit);
                 }}
-                className="mx-3 my-4 bg-blue-500 hover:bg-blue-700 w-96 text-white font-bold py-2 px-4 rounded"
+                className="mx-3 my-4 bg-blue-500 hover:bg-blue-700 w-1/2 text-white font-bold py-2 px-4 rounded"
               >
-                Save
+                Save Changes
               </button>
         </form>
       </div>
