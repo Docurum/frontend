@@ -53,12 +53,19 @@ const Chart = dynamic(() => import("../Chart"), {
 });
 
 export default function Profile() {
+  const [checkstatuss, setCheckstatus] = useState("");
   let isApplied :any= promise
   const [files, setFiles] = useState<any[]>([]);
   const profileImage = useRef("");
 
   const [isPageLinkCopied, setIsLinkCopied] = useState(false);
+  const checkstatus=async()=>{
+        isApplied = await  isAppliedDoctor();
+   console.log(isApplied?.data?.message?.message);
+   setCheckstatus(isApplied?.data?.message?.message)
+console.log(isApplied);
 
+  }
   const uploadFile = async () => {
     const client = new S3Client({
       region: "ap-south-1",
@@ -92,16 +99,15 @@ export default function Profile() {
   const router = useRouter();
 useEffect(() => {
 
-   
+   checkstatus();
   
-})
+},[])
   useEffect(() => {
-     isApplied = isAppliedDoctor();
-   console.log(isApplied);
+ 
     
     
     uploadFile();
-  }, [files]);
+  }, []);
   const userQuery = GetUserQuery();
 
   const clinics = GetClinicsQuery();
@@ -215,9 +221,19 @@ useEffect(() => {
                 <></>
               )}
             </div>
-           { userQuery.data.isDoctor?  <DoctorDetails /> : <>Not yet Verified</>}
+         
+           { userQuery.data.isDoctor?   <DoctorDetails /> : 
+           <div className="flex flex-row justify-center items-center   h-7 bg-yellow-400 w-25 lg:w-40 rounded-lg mb-7 ">
+              <div className="text-stone-900  text-sm lg:text-[15px] ml-1 font-bold text-center ">
+     {checkstatuss}
+              
+            </div>
+            </div>
+          
+           }
             <div className="hidden max-sm:flex flex-col ml-4 w-20 h-20">
               <Lottie animationData={lungsAnimation} play />
+              
             </div>
           </div>
         </div>
@@ -442,3 +458,5 @@ const DoctorDetails = () => {
     </>
   );
 };
+
+
