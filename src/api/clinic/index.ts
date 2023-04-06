@@ -108,7 +108,15 @@ const GetClinicsQuery = () =>
       return resp as Array<IClinicType>;
     },
   });
-
+const getApplyQuery = () =>{
+  useQuery({
+    queryKey: ["applied-doctors"],
+    queryFn: isAppliedDoctor,
+    select: (data: any) => {
+   return data as Array<any>;
+    },
+  })
+}
 const GetClinicByIdQuery = (id: string) =>
   useQuery({
     queryKey: ["get-clinic-id", id],
@@ -129,5 +137,5 @@ const GetClinicByUsernameQuery = (username: string) =>
     },
   });
 
-export { getClinics,isAppliedDoctor,editClinicById, deleteClinic, GetClinicsQuery, verificationRequest,GetClinicByIdQuery, createClinic, getClinicById, GetClinicByUsernameQuery };
+export {getApplyQuery, getClinics,isAppliedDoctor,editClinicById, deleteClinic, GetClinicsQuery, verificationRequest,GetClinicByIdQuery, createClinic, getClinicById, GetClinicByUsernameQuery };
 export type { IClinicType };

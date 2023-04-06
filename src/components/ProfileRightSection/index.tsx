@@ -13,10 +13,11 @@ import { isAppliedDoctor } from "../../api/clinic";
 
 import { promise } from "zod";
 import { MdVerified } from "react-icons/md";
+import { GetUserQuery } from "../../api/user";
 const ProfileRightSection = () => {
   const router = useRouter();
   let isApplied: any = promise;
-
+const userquery =GetUserQuery()
   async function checkApplied() {
     isApplied = await isAppliedDoctor();
     if (isApplied.data.message.applied) {
@@ -28,8 +29,13 @@ const ProfileRightSection = () => {
 
   return (
     <div className="hidden  lg:flex flex-col  w-1/4 items-center mt-4 mb-10">
-      <CreateClinic />
-      <div className="flex flex-row mt-4">
+  
+         <div >
+    { userquery.data?.isDoctor ?  <CreateClinic />  : ""}
+    <div>
+      {
+        !userquery.data?.isDoctor ? (
+            <div className="flex flex-row mt-4">
       <div className="h-48 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
         <div className="z-1 absolute w-full h-32 bg-blue-100 rounded-lg"></div>
         <div className="absolute z-2 w-full justify-end items-end flex flex-col">
@@ -51,7 +57,12 @@ const ProfileRightSection = () => {
           </div>
         </div>
         </div>
+        ) :""
+      }
+    </div>
       </div>
+
+    </div>
    
   );
 };
