@@ -247,10 +247,10 @@ console.log(formdata);
  
       <div
         className={classNames([
-          "hidden lg:flex flex-col w-[75vw]   mt-6 ",
+          "hidden lg:flex flex-col w-[75vw]  mt-6 ",
         ])}
       >
-        <h2 className="text-2xl font-bold">Submit for Verification</h2>
+        <h2 className="text-2xl font-bold m-2 p-1">Submit for Verification</h2>
         <div className="mt-2 w-5/6">
           <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex ">
@@ -322,7 +322,7 @@ console.log(formdata);
                 }}
                 className="bg-blue-500 hover:bg-blue-700 w-96 text-white font-bold py-2 px-4 rounded"
               >
-                Save
+                Apply for Verification
               </button>
             </div>
           <div className="w-full gap-8 flex flex-col ">
@@ -383,6 +383,7 @@ console.log(formdata);
               />
             </label>
 
+
             <label className="block">
               
               <TextField
@@ -395,13 +396,13 @@ console.log(formdata);
               
                 placeholder="bio"
               ></TextField>
-            </label>
+            </label>          
           </div>
         
-          <div className=" flex  items-center justify-center flex-col ">
+          <div className=" flex     items-center justify-center flex-col ">
               <div
                 {...registrationDropZone.getRootProps()}
-                className=""
+                className="w-36"
               >
                 <input {...registrationDropZone.getInputProps()} />
                 {registration.current === "" ? (
@@ -424,7 +425,7 @@ console.log(formdata);
               </div>
               <div
                 {...degreeDropZone.getRootProps()}
-                className="w-36"
+                className="w-36 mt-4"
               >
                 <input {...degreeDropZone.getInputProps()} />
                 {degree.current === "" ? (
@@ -447,7 +448,7 @@ console.log(formdata);
               </div>
               <div
                 {...photoIdDropZone.getRootProps()}
-                className="flex flex-col items-center mt-4"
+                className="w=36 mt-4"
               >
                 <input {...photoIdDropZone.getInputProps()} />
                 {photoId.current === "" ? (

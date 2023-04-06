@@ -308,7 +308,7 @@ useEffect(() => {
           <div className="flex flex-row p-4 items-center justify-between">
             <div className="text-blue-600 text-xl font-bold">Clinic</div>
             <div className="hidden max-sm:flex ">
-              <div
+         {   userQuery.data.isDoctor ?     <div
                 onClick={() => {
                   router.push("/create-clinic");
                 }}
@@ -318,7 +318,7 @@ useEffect(() => {
                 <div className="text-white text-md font-bold ml-1">
                   Add Clinic
                 </div>
-              </div>
+              </div> : ""}
             </div>
           </div>
           {clinics.isLoading ? (
@@ -457,30 +457,34 @@ useEffect(() => {
 }
 
 const DoctorDetails = () => {
+  const userQuery =GetUserQuery();
+  
+  console.log(userQuery,'data');
+  
   return (
     <div className="">
       <div className="flex flex-row items-center mt-4">
         <AiFillMedicineBox size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
-          Pulmonology | Respiratory Medicine
+      {userQuery.data?.doctor?.speciality}
         </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <FcGraduationCap size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
-          MBBS, MD (Resp. Med.), PhD, FCCP, DAA
+         {userQuery.data?.doctor?.qualification}
         </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <ImProfile size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
-          Registration No. : 71547
+          Registration No. : {userQuery.data?.doctor?.registrationNumber}
         </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <BsGlobe size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
-          English, Hindi, Bengali
+         {userQuery.data?.doctor?.languages}
         </div>
       </div>
     </div>

@@ -24,6 +24,16 @@ interface IUser {
   username: string;
   picture: string;
   isDoctor: boolean;
+  doctor: {
+    id: string;
+    speciality: string;
+    experience: number;
+    qualification: string;
+    hospital: string;
+    isVerified: boolean;
+    languages: string;
+    registrationNumber: string;
+  }
 }
 
 const getUser = () => {
@@ -34,7 +44,7 @@ const getUser = () => {
   }
 };
 const editUser = (data: { name: string; username: string,bio:string , phoneNumber :number,dob:Date}) => {
-  console.log(data);
+ 
   
   try {
     return AuthAPI().put("/user/edit-user", data);
