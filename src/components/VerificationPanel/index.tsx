@@ -247,7 +247,7 @@ console.log(formdata);
  
       <div
         className={classNames([
-          "flex flex-col w-[75vw]   mt-6 ",
+          "hidden lg:flex flex-col w-[75vw]   mt-6 ",
         ])}
       >
         <h2 className="text-2xl font-bold">Submit for Verification</h2>

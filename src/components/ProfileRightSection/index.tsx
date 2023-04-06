@@ -20,7 +20,7 @@ const ProfileRightSection = () => {
 const userquery =GetUserQuery()
   async function checkApplied() {
     isApplied = await isAppliedDoctor();
-    if (isApplied.data.message.applied) {
+    if (isApplied.data.message.message==="Pending Approval") {
       toast.error("you have alreaady Applied please wait for the approval");
     } else if (!isApplied.data.message.applied) {
       router.push("/verify-credentials");

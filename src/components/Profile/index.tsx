@@ -107,7 +107,7 @@ useEffect(() => {
     
     
     uploadFile();
-  }, []);
+  }, [files]);
   const userQuery = GetUserQuery();
 
   const clinics = GetClinicsQuery();
@@ -168,6 +168,15 @@ useEffect(() => {
     return <div>Oops! Something went wrong. Try refreshing</div>;
   }
 
+  async function checkApplied() {
+    isApplied = await isAppliedDoctor();
+    if (isApplied.data.message.applied) {
+      toast.error("you have alreaady Applied please wait for the approval");
+    } else if (!isApplied.data.message.applied) {
+      router.push("/verify-credentials");
+    }
+  }
+
   return (
     <div
       className={classNames(
@@ -223,7 +232,7 @@ useEffect(() => {
             </div>
          
            { userQuery.data.isDoctor?   <DoctorDetails /> : 
-           <div className="flex flex-row justify-center items-center   h-7 bg-yellow-400 w-25 lg:w-40 rounded-lg mb-7 ">
+           <div className="flex flex-row justify-center items-center   h-7 bg-yellow-400 w-29 lg:w-43 rounded-lg mb-7 ">
               <div className="text-stone-900  text-sm lg:text-[15px] ml-1 font-bold text-center ">
      {checkstatuss}
               
@@ -235,6 +244,19 @@ useEffect(() => {
               <Lottie animationData={lungsAnimation} play />
               
             </div>
+         <div
+            onClick={() => {
+              checkApplied();
+            }}
+            className="hidden max-sm:flex flex-row justify-center items-center  h-12 bg-blue-600 w-50 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+          >
+              <MdVerified size={25} color={"white"} className="shrink-0" />
+            <div className="text-white  font-bold text-center ">
+              Doctor Verification
+              
+            </div>
+            
+          </div>
           </div>
         </div>
 
@@ -243,8 +265,11 @@ useEffect(() => {
         </div>
       </div>
  <div className="hidden max-sm:flex flex-col ml-4">
-          <DoctorDetails />
-          {isApplied}
+           { userQuery.data.isDoctor?   <DoctorDetails /> : 
+         ""
+         
+          
+           }
         </div>
       {/* {isApplied?.data?.message.applied ? (
         <>pending</>
