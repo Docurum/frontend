@@ -15,7 +15,7 @@ import { FcGraduationCap } from "react-icons/fc";
 import { AiFillMedicineBox, AiOutlinePlus } from "react-icons/ai";
 import { ImProfile } from "react-icons/im";
 import { BsFillTelephoneFill, BsGlobe } from "react-icons/bs";
-import { FC, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDropzone } from "react-dropzone";
 import classNames from "classnames";
@@ -23,12 +23,9 @@ import styles from "./index.module.css";
 import { QandASection } from "../QandASection";
 import BottomNavBar from "../BottomNavBar";
 import { BADGE, Badge, GoldBadge, SilverBadge } from "../ProfileRightSection";
-import { useQuery } from "@tanstack/react-query";
 import { CgProfile } from "react-icons/cg";
 import { createId } from "@paralleldrive/cuid2";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import Consult from "../Consult";
-import CreateClinic from "../CreateClinic";
 import Logo from "../Logo/Logo";
 import { CiEdit } from "react-icons/ci";
 import axios from "axios";
@@ -45,6 +42,7 @@ import { GetUserQuery, updateProfilePicture } from "../../api/user";
 import EditClinic from "../EditClinic";
 import { promise } from "zod";
 import MobileEditClinic from "../MobileEditClinic";
+import { FiCopy } from "react-icons/fi";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -58,6 +56,9 @@ export default function Profile() {
   let isApplied :any= promise
   const [files, setFiles] = useState<any[]>([]);
   const profileImage = useRef("");
+
+  const [isPageLinkCopied, setIsLinkCopied] = useState(false);
+
   const uploadFile = async () => {
     const client = new S3Client({
       region: "ap-south-1",
@@ -236,14 +237,27 @@ useEffect(() => {
       )} */}
 
       {/* <CreateClinic /> */}
-      <div className="hidden max-sm:grid grid-cols-2 items-center mt-4 mb-2">
+      {/* <div className="hidden max-sm:grid grid-cols-2 items-center mt-4 mb-2">
         <GoldBadge />
         <SilverBadge />
-        <Badge
-          name={BADGE.BRONZE}
-          number={13}
-          list={["Critic", "Nice Question"]}
-        />
+        <Badge name={BADGE.BRONZE} number={13} list={["Critic", "Nice Question"]} />
+      </div> */}
+      <div className="flex mt-2 flex-col shadow-md shadow-blue-200 w-min p-3 rounded-md ml-2">
+        <div className="font-bold text-slate-600">Share your page:</div>
+
+        <div className="flex flex-row items-center">
+          <div className="text-blue-600 text-lg w-[79vw] lg:w-80  mr-4 font-bold">{`https://docurum.com/user/${userQuery.data.username}`}</div>
+          <div
+            className="hover:cursor-pointer"
+            onClick={() => {
+              navigator.clipboard.writeText(`https://docurum.com/user/${userQuery.data.username}`);
+              setIsLinkCopied(true);
+              toast.success("Link copied successfully");
+            }}
+          >
+            <FiCopy size={22} color={isPageLinkCopied ? "green" : "gray"} />
+          </div>
+        </div>
       </div>
       <div className="shadow-md w-[98.5%] shadow-blue-200 mx-2 mt-2 rounded-md">
         <div className="flex flex-col">

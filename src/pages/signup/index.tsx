@@ -15,6 +15,7 @@ import { googleProfile } from "../../types/googleProfile";
 import { registerSchemaType } from "../../types/signup";
 import capsEveryFirstLetter from "../../utils/capsEveryFirstLetter";
 import getGoogleOAuthURL from "../../utils/getGoogleUrl";
+import { useRouter } from "next/router";
 
 export function getServerSideProps(ctx: any) {
   const googleUser = ctx.req.cookies.googleUser ? JSON.parse(ctx.req.cookies.googleUser) : null;
@@ -47,6 +48,7 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState<boolean>(false);
+  const router = useRouter();
 
   const {
     reset,
@@ -84,6 +86,7 @@ const RightHalf = ({ googleUser }: { googleUser: googleProfile | null }) => {
       setValue("picture", null);
       setShowPassword(false);
       setShowConfirmPassword(false);
+      router.replace("/login");
     } catch (err: any) {
       if (err.response) {
         const errorMessage = err.response.data.message;
