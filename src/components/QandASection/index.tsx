@@ -16,13 +16,15 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/router";
 import { downvoteTopic, GetCategoriesById, GetSearchTopics, GetTopicByIdQuery, GetTopicByUserIdQuery, GetTopicByUsernameQuery, upvoteTopic } from "../../api/forum";
 import { ReadOnlyRichText } from "../RichText";
-import { RxCross2 } from "react-icons/rx";
+import searchAnimation from "../../animations/Search.json";
+import shakingEmptyBoxAnimation from "../../animations/shaking_empty_box.json";
 import Logo from "../Logo/Logo";
 import toast from "react-hot-toast";
+import Lottie from "react-lottie-player";
 
 const QandASectionHome = () => {
   return (
-    <div className={classNames([styles["scrollbar"]], ["flex flex-col overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
+    <div className={classNames([styles["scrollbar"]], ["flex flex-col items-center overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
       <QandASection />
       <BottomNavBar />
     </div>
@@ -31,8 +33,20 @@ const QandASectionHome = () => {
 
 const QandASection = () => {
   const topics = GetSearchTopics({ name: "", categories: [] });
+
   if (topics.isLoading) {
-    return <div>Loading ...</div>;
+    return <div>Loading...</div>;
+  }
+  if (topics.data?.length! <= 0) {
+    return (
+      <div className="ml-12 flex flex-row mt-10 justify-center w-[100vw] lg:w-[50vw] items-center">
+        <div>
+          <div className="text-blue-600 font-bold text-lg sm:text-2xl">Sorry 🥲 </div>
+          <div className="text-blue-700 font-bold text-lg sm:text-2xl mt-4">No topics found</div>
+        </div>
+        <Lottie animationData={shakingEmptyBoxAnimation} play className="w-96 sm:w-[40vw] h-96" />
+      </div>
+    );
   }
   return (
     <div className="flex flex-col mb-12">
@@ -62,6 +76,18 @@ const MyTopicsSection = () => {
 
   if (topics.isLoading) {
     return <div>Loading ...</div>;
+  }
+
+  if (topics.data?.length! <= 0) {
+    return (
+      <div className="ml-12 flex flex-row mt-10 justify-center w-[100vw] lg:w-[50vw] items-center">
+        <div>
+          <div className="text-blue-600 font-bold sm:text-lg text-2xl">Sorry 🥲 </div>
+          <div className="text-blue-700 font-bold sm:text-lg text-2xl mt-4">No topics found</div>
+        </div>
+        <Lottie animationData={shakingEmptyBoxAnimation} play className="w-96 sm:w-[40vw] h-96" />
+      </div>
+    );
   }
 
   if (topics.isError) {
@@ -107,6 +133,19 @@ const UserQandASection: FC<{
   if (topics.isError) {
     return <div>SomeThing went wrong ...</div>;
   }
+
+  if (topics.data?.length! <= 0) {
+    return (
+      <div className="ml-12 flex flex-row mt-10 justify-center w-[100vw] lg:w-[50vw] items-center">
+        <div>
+          <div className="text-blue-600 font-bold lg:text-2xl ">Sorry 🥲 </div>
+          <div className="text-blue-700 font-bold text-xl lg:text-2xl mt-4">No topics found</div>
+        </div>
+        <Lottie animationData={shakingEmptyBoxAnimation} play className="w-96 sm:w-[40vw] h-96" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col mb-4">
       {Array.isArray(topics.data) &&
