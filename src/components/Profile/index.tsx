@@ -44,6 +44,7 @@ import { useRouter } from "next/router";
 import { GetUserQuery, updateProfilePicture } from "../../api/user";
 import EditClinic from "../EditClinic";
 import { promise } from "zod";
+import MobileEditClinic from "../MobileEditClinic";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -89,11 +90,13 @@ export default function Profile() {
   };
   const router = useRouter();
 useEffect(() => {
-   isApplied = isAppliedDoctor();
+
+   
   
 })
   useEffect(() => {
-  
+     isApplied = isAppliedDoctor();
+   console.log(isApplied);
     
     
     uploadFile();
@@ -211,7 +214,7 @@ useEffect(() => {
                 <></>
               )}
             </div>
-           
+           { userQuery.data.isDoctor?  <DoctorDetails /> : <>Not yet Verified</>}
             <div className="hidden max-sm:flex flex-col ml-4 w-20 h-20">
               <Lottie animationData={lungsAnimation} play />
             </div>
@@ -222,15 +225,15 @@ useEffect(() => {
           <Lottie animationData={lungsAnimation} play />
         </div>
       </div>
-
-      {!isApplied?.data?.message.applied ? (
-        <>pending</>
-      ) : (
-        <div className="hidden max-sm:flex flex-col ml-4">
+ <div className="hidden max-sm:flex flex-col ml-4">
           <DoctorDetails />
           {isApplied}
         </div>
-      )}
+      {/* {isApplied?.data?.message.applied ? (
+        <>pending</>
+      ) : (
+       
+      )} */}
 
       {/* <CreateClinic /> */}
       <div className="hidden max-sm:grid grid-cols-2 items-center mt-4 mb-2">
@@ -298,9 +301,19 @@ useEffect(() => {
                       </div>
                     </div>
                     <div className="flex flex-row">
-                      <div className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer">
+                      <div className= "hidden sm:flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer">
+                       
+                       
                         <EditClinic data={clinic} />
+                        
                       </div>
+                      <div
+                      className="hidden max-sm:flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer"
+                      onClick={()=>{
+                        router.push(`/edit-clinic/${clinic.id}`)
+                      }}>
+                        <MdEdit size={25} color="gray" /> 
+                        </div>
                       <div
                         className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer"
                         onClick={async () => {

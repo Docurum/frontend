@@ -1,17 +1,13 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
-import { MdDeleteForever, MdLocalHospital } from "react-icons/md";
-import Image from "next/image";
+import { MdDeleteForever, MdEdit, MdLocalHospital } from "react-icons/md";
 import * as Dialog from "@radix-ui/react-dialog";
 import Lottie from "react-lottie-player";
-import clinicAnimation from "../../animations/Clinic_report.json";
 import clinicSetupAnimation from "../../animations/clinic.json";
 import Logo from "../Logo/Logo";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { DialogActions, TextField } from "@mui/material";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { FiUpload } from "react-icons/fi";
 import { Dropzone } from "../Dropzone";
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import React, { FC, ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import clinicSchema from "../../schemas/clinicSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,12 +19,15 @@ import { MdOutlineCancel } from "react-icons/md";
 import classNames from "classnames";
 import { createId } from "@paralleldrive/cuid2";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { useDropzone } from "react-dropzone";
-import axios from "axios";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createClinic, GetClinicsQuery } from "../../api/clinic";
+import { useDropzone } from "react-dropzone"
+import { editClinicById, GetClinicsQuery, IClinicType } from "../../api/clinic";
+import { TextField } from "@mui/material";
 
-export default function MobileCreateClinic() {
+const  MobileEditClinic: FC<any> =({data})=> {
+const userId=data?.id
+console.log(data,'data');
+
+  const [open, setOpen] =useState(true);
   const [files, setFiles] = useState<any[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
   const uploadedImages: React.MutableRefObject<any[]> = useRef([]);
@@ -88,17 +87,17 @@ export default function MobileCreateClinic() {
     mode: "onChange",
     resolver: zodResolver(clinicSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      phoneNumber: "",
-      type: "",
-      address: "",
-      country: "",
-      pincode: "",
-      state: "",
-      city: "",
-      displayImages: [],
-      logo: "",
+      name: data?.name,
+      email: data?.email,
+      phoneNumber: data?.phoneNumber,
+      type: data?.type,
+      address: data?.address,
+      country: data?.country,
+      pincode: data?.pincode,
+      state: data?.state,
+      city: data?.city,
+      displayImages: data?.displayImages,
+      logo: data?.logo,
     },
   });
 
@@ -177,6 +176,23 @@ export default function MobileCreateClinic() {
       }
     }
   };
+useEffect(() => {
+//   uploadedImages.current=data?.displayImages;
+//   logoImage.current=data?.logo;
+//   const url = data?.displayImages[0]
+// const fileName = 'myFile.jpg'
+
+// fetch(url)
+//   .then(async response => {
+//     const contentType = response.headers.get('content-type') 
+//     const blob = await response.blob()
+//     let filePropertyBag = { contentType } as FilePropertyBag
+//     const file = new File([blob], fileName, filePropertyBag)  
+//     setUploadedFiles([file])
+//     // access file here
+//   })
+
+},[]);
 
   useEffect(() => {
     uploadFile();
@@ -187,32 +203,19 @@ export default function MobileCreateClinic() {
   }, [logoFiles.length]);
 
   const [type, setType] = useState<string>("");
-
-  const onSubmit: SubmitHandler<z.infer<typeof clinicSchema>> = async (formData) => {
-    formData.displayImages = uploadedImages.current;
-    formData.logo = logoImage.current;
-    // uploadedImages.current.forEach((img, index) => {
-    //   console.log("Image ", index, " :", img);
-    // });
-    // console.log("Formdata images", formData.displayImages);
-    // console.table(formData);
+const clinics = GetClinicsQuery();
+  const onSubmit: SubmitHandler<z.infer<typeof clinicSchema>> = async (formdata) => {
+    formdata.displayImages = uploadedImages.current;
+    formdata.logo = logoImage.current;
+ 
     try {
-      const { data } = await createClinic(formData);
+      const { data } = await editClinicById(userId,formdata);
       getClinics.refetch();
-      toast.success(data.message, { id: data.message });
-      reset();
-      // As reset will fallback to defaultValues
-      // so they have to be cleared explicitly
-      setValue("name", "");
-      setValue("email", "");
-      setValue("logo", "");
-      setType("");
-      uploadedImages.current = [];
-      logoImage.current = "";
-      setFiles([]);
+      toast.success(data?.message, { id: data?.message });
+   
     } catch (err: any) {
       if (err.response) {
-        const errorMessage = err.response.data.message;
+        const errorMessage = err.response.data?.message;
         if (Array.isArray(errorMessage)) {
           errorMessage.forEach((error: { message: string; path: [keyof z.infer<typeof clinicSchema>] }) => {
             setError(error.path[0], {
@@ -227,7 +230,22 @@ export default function MobileCreateClinic() {
       }
     }
   };
+useEffect(()=>{
+      setValue("name", data?.name);
+  setValue("email", data?.email);
+  setValue("phoneNumber", data?.phoneNumber);
+    setValue("type", data?.type);
+    setValue("address", data?.address);
+    setValue("country", data?.country);
+    setValue("pincode", data?.pincode);
 
+
+    setValue("state", data?.state);
+    setValue("city", data?.city);
+    setValue("displayImages", data?.displayImages);
+    setValue("logo", data?.logo);
+    
+},[data])
   const deleteFile = (file: any) => {
     setFiles((files) => {
       const newFiles = files.filter((f) => f.path !== file.path);
@@ -236,8 +254,9 @@ export default function MobileCreateClinic() {
   };
 
   return (
-    <div className={classNames(["hidden max-sm:flex  mb-[10vh]  flex-col w-[100vw] h-[90vh]  scrollbar overflow-y-scroll  overflow-x-hidden  p-2  mt-6 "])}>
-      <h2 className="text-2xl p-4 font-bold">Add your Clinic</h2>
+ <div className={classNames(["flex  mb-[10vh]  flex-col w-[100vw] h-[90vh]  scrollbar overflow-y-scroll  overflow-x-hidden  p-2  mt-6 "])}>
+      <h2 className="text-2xl p-4 font-bold"> Edit your Clinic</h2>
+      <MdEdit className="text-2xl p-4 font-bold" />
       <div className="mt-2 px-3">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex  ">
@@ -449,7 +468,7 @@ export default function MobileCreateClinic() {
             <div></div>
             
           </div>
-      
+            
             <button
                 type="submit"
                 onClick={() => {
@@ -462,6 +481,6 @@ export default function MobileCreateClinic() {
         </form>
       </div>
     </div>
-    
   );
 }
+export default MobileEditClinic;
