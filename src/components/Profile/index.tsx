@@ -32,7 +32,6 @@ import axios from "axios";
 import clinicSchema from "../../schemas/clinicSchema";
 import {
   deleteClinic,
-  getApplyQuery,
   GetClinicsQuery,
   IClinicType,
   isAppliedDoctor,
