@@ -21,68 +21,20 @@ enum FileTupes {
 }
 const verifyDoctorSchema = z
   .object({
-    medicalCouncil: z
-      .string()
-      .min(4, "medicalCouncil must contain at least 4 characters")
-      .max(150, "medicalCouncil must contain at most 150 characters")
-      .trim(),
-    registrationNumber: z
-      .string()
-      .min(6, "registrationNumber must contain at least 4 characters")
-      .max(150, "registrationNumber must contain at most 150 characters")
-      .trim(),
-    registrationYear: z
-      .string()
-      .min(4, "registrationYear must contain at least 4 characters")
-      .max(150, "registrationYear must contain at most 150 characters")
-      .trim(),
-    hospital: z
-      .string()
-      .min(4, "hospital must contain at least 4 characters")
-      .max(150, "hospital must contain at most 150 characters")
-      .trim(),
-    photoId: z.string().min(4, "Please upload your photoId"),
-    registrationCertificate: z
-      .string()
-      .min(4, "Please upload your registrationCertificate"),
-    degreeCertificate: z
-      .string()
-      .min(4, "Please upload your degreeCertificate"),
-    biography: z
-      .string()
-      .min(4, "biography must contain at least 4 characters")
-      .max(150, "biography must contain at most 150 characters")
-      .trim(),
-    qualification: z
-      .string()
-      .min(4, "qualification must contain at least 4 characters")
-      .max(150, "qualification must contain at most 150 characters")
-      .trim(),
-    title: z
-      .string()
-      .min(4, "title must contain at least 4 characters")
-      .max(150, "title must contain at most 150 characters")
-      .trim(),
-    speciality: z
-      .string()
-      .min(4, "speciality must contain at least 4 characters")
-      .max(150, "speciality must contain at most 150 characters")
-      .trim(),
-    experience: z
-      .string()
-      .min(4, "experience must contain at least 4 characters")
-      .max(150, "experience must contain at most 150 characters")
-      .trim(),
-    languages: z
-      .string()
-      .min(4, "languages must contain at least 4 characters")
-      .max(150, "languages must contain at most 150 characters")
-      .trim(),
-    contact: z
-      .string()
-      .min(10, "contact must contain at least 4 characters")
-      .max(10, "contact must contain at most 150 characters")
-      .trim(),
+    medicalCouncil: z.string(),
+    registrationNumber: z.string(),
+    registrationYear: z.string(),
+    hospital: z.string(),
+    photoId: z.string(),
+    registrationCertificate: z.string(),
+    degreeCertificate: z.string(),
+    biography: z.string(),
+    qualification: z.string(),
+    title: z.string(),
+    speciality: z.string(),
+    experience: z.string(),
+    languages: z.string(),
+    contact: z.string(),
   })
   .strict();
 export type verifyDoctorSchemaType = z.infer<typeof verifyDoctorSchema>;
@@ -128,7 +80,7 @@ const VerfiicationPanel = () => {
 
   const onSubmit: SubmitHandler<z.infer<any>> = async (formdata: any) => {
     formdata.degreeCertificate = degree.current;
-
+console.log(formdata);
     formdata.speciality = formdata.speciality.split(",");
 
     formdata.registrationCertificate = registration.current;
@@ -136,16 +88,9 @@ const VerfiicationPanel = () => {
     formdata.languages = formdata.languages.split(",");
     formdata.experience = parseInt(formdata.experience);
 
-    if (
-      formdata.degreeCertificate === "" ||
-      formdata.registrationCertificate === "" ||
-      formdata.photoId === ""
-    ) {
-      toast.error("Please upload all the files");
-      return;
-    }
+
     try {
-      reset();
+      console.log(formdata);
       const { data } = await verificationRequest(formdata);
       toast.success(data.message);
       router.push("/profile");
@@ -245,8 +190,8 @@ const VerfiicationPanel = () => {
       photoId: "",
       registrationCertificate: "",
       degreeCertificate: "",
-      biography: "",
-      qualification: "",
+     
+      qualification: "", 
       title: "",
       speciality: "",
       experience: 0,
@@ -299,99 +244,78 @@ const VerfiicationPanel = () => {
     uploadFile();
   }, [uploadType, currentFile]);
   return (
-    <div className={classNames([" hidden sm:flex  flex-col w-[75vw]    mt-6 "])}>
-      <h2 className="text-2xl font-bold">Submit for Verification</h2>
-      <div className="mt-2 w-5/6">
-        <form onSubmit={handleSubmit(onSubmit)}>
+ 
+      <div
+        className={classNames([
+          "flex flex-col w-[75vw]   mt-6 ",
+        ])}
+      >
+        <h2 className="text-2xl font-bold">Submit for Verification</h2>
+        <div className="mt-2 w-5/6">
+          <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex ">
-            <div className="w-full gap-8 flex flex-col  ">
+              <div className="w-full gap-8 flex flex-col  ">
+
               <label className="block">
-                <TextField
-                  error={Boolean(errors.medicalCouncil)}
-                  helperText={
-                    errors.medicalCouncil
-                      ? (errors.medicalCouncil.message as string)
-                      : ""
-                  }
-                  {...register("medicalCouncil")}
-                  type="text"
-                  className="w-96"
-                  id="Medical Council"
-                  required
-                  label="Medical Council: *"
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
-              <label className="block">
-                <TextField
-                  error={Boolean(errors.hospital)}
-                  helperText={
-                    errors.hospital ? (errors.hospital.message as string) : ""
-                  }
-                  {...register("hospital")}
-                  type="text"
-                  className="w-96"
-                  id="Hospital"
-                  label="Hospital *"
-                  required
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
-              <label className="block">
-                <TextField
-                  error={Boolean(errors.qualification)}
-                  helperText={
-                    errors.qualification
-                      ? (errors.qualification.message as string)
-                      : ""
-                  }
-                  {...register("qualification")}
-                  type="text"
-                  className="w-96"
-                  id="qualification"
-                  label="qualification *"
-                  variant="outlined"
-                  placeholder=""
-                  required
-                />
-              </label>
-              <label className="block">
-                <TextField
-                  error={Boolean(errors.title)}
-                  helperText={
-                    errors.title ? (errors.title.message as string) : ""
-                  }
-                  type="text"
-                  required
-                  {...register("title")}
-                  className="w-96"
-                  id="Title"
-                  label="Title *"
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
-              <label className="block">
-                <TextField
-                  {...register("speciality")}
-                  type="text"
-                  className="w-96"
-                  required
-                  error={Boolean(errors.speciality)}
-                  helperText={
-                    errors.speciality
-                      ? (errors.speciality.message as string)
-                      : ""
-                  }
-                  id="speciality"
-                  label="speciality *"
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
-              <button
+              <TextField
+                {...register("medicalCouncil")}
+                type="text"
+                className="w-96"
+                id="Medical Council"
+                label="Medical Council: *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
+            <label className="block">
+              <TextField
+                {...register("hospital")}
+                type="text"
+               className="w-96"
+                id="Hospital"
+                label="Hospital *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
+            <label className="block">
+              <TextField
+                {...register("qualification")}
+                type="text"
+               className="w-96"
+                id="qualification"
+                label="qualification *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
+            <label className="block">
+              <TextField
+                type="text"
+                {...register("title")}
+                
+            className="w-96"
+                id="Title"
+                label="Title *"
+
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
+            <label className="block">
+              <TextField
+                {...register("speciality")}
+                type="text"
+              className="w-96"
+                error={Boolean(errors.speciality)}
+                            helperText={errors.speciality ? (errors.speciality.message as string) : ""}
+                id="speciality"
+                label="speciality *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
+  <button
                 type="submit"
                 onClick={() => {
                   handleSubmit(onSubmit);
@@ -401,101 +325,84 @@ const VerfiicationPanel = () => {
                 Save
               </button>
             </div>
-            <div className="w-full gap-8 flex flex-col ">
+          <div className="w-full gap-8 flex flex-col ">
               <label className="block">
-                <TextField
-                  required
-                  error={Boolean(errors.languages)}
-                  helperText={
-                    errors.languages ? (errors.languages.message as string) : ""
-                  }
-                  {...register("languages")}
-                  type="text"
-                  className="w-96"
-                  id="languages"
-                  label="languages *"
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
-              <label className="block">
-                <TextField
-                  required
-                  error={Boolean(errors.contact)}
-                  helperText={
-                    errors.contact ? (errors.contact.message as string) : ""
-                  }
-                  {...register("contact")}
-                  type="text"
-                  className="w-96"
-                  id="Contact"
-                  label="Contact *"
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
+              <TextField
+                {...register("languages")}
+                type="text"
+                 className="w-96"
+                id="languages"
+                label="languages *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
+            <label className="block">
+              <TextField
+                {...register("contact")}
+                type="text"
+              className="w-96"
+                id="Contact"
+                label="Contact *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
 
-              <label className="block">
-                <TextField
-                  required
-                  error={Boolean(errors.experience)}
-                  helperText={
-                    errors.experience
-                      ? (errors.experience.message as string)
-                      : ""
-                  }
-                  {...register("experience")}
-                  type="nubmer"
-                  className="w-96"
-                  id="Experience"
-                  label="Experience *"
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
-              <label className="block">
-                <TextField
-                  error={Boolean(errors.registrationYear)}
-                  helperText={
-                    errors.registrationYear
-                      ? (errors.registrationYear.message as string)
-                      : ""
-                  }
-                  {...register("registrationYear")}
-                  type="text"
-                  required
-                  className="w-96"
-                  id="registration Year"
-                  label="registration Year *"
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
-              <label className="block">
-                <TextField
-                  required
-                  error={Boolean(errors.registrationNumber)}
-                  helperText={
-                    errors.registrationNumber
-                      ? (errors.registrationNumber.message as string)
-                      : ""
-                  }
-                  {...register("registrationNumber")}
-                  type="text"
-                  className="w-96"
-                  id="registrationNumber"
-                  label="registrationNumber *"
-                  variant="outlined"
-                  placeholder=""
-                />
-              </label>
+            <label className="block">
+              <TextField
+                {...register("experience")}
+                type="nubmer"
+              className="w-96"
+                id="Experience"
+                label="Experience *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
+            <label className="block">
+              <TextField
+                {...register("registrationYear")}
+                type="text"
+                className="w-96"
+                id="registration Year"
+                label="registration Year *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
+      <label className="block">
+              <TextField
+                {...register("registrationNumber")}
+                type="text"
+                className="w-96"
+                id="registrationNumber"
+                label="registrationNumber *"
+                variant="outlined"
+                placeholder=""
+              />
+            </label>
 
+            <label className="block">
               
-             
-            </div>
-
-            <div className=" flex  items-center justify-center flex-col ">
-              <div {...registrationDropZone.getRootProps()} className="">
+              <TextField
+                {...register("biography")}
+                type="text"
+                className="w-96"
+                id="registration Year"
+                label="bio *"
+                variant="outlined"
+              
+                placeholder="bio"
+              ></TextField>
+            </label>
+          </div>
+        
+          <div className=" flex  items-center justify-center flex-col ">
+              <div
+                {...registrationDropZone.getRootProps()}
+                className=""
+              >
                 <input {...registrationDropZone.getInputProps()} />
                 {registration.current === "" ? (
                   <div className="flex flex-row items-center justify-center w-28 h-28 bg-slate-200 rounded-2xl">
@@ -510,12 +417,15 @@ const VerfiicationPanel = () => {
                     className="rounded-2xl w-28 h-28"
                   />
                 )}
-                <div className="flex flex-row mt-2 items-center ">
-                  <FiUpload className="" size={20} />
+                <div  className="flex flex-row mt-2 items-center ">
+                  <FiUpload  className="" size={20} />
                   <div className="text-sm font-bold ml-1">Upload degree</div>
                 </div>
               </div>
-              <div {...degreeDropZone.getRootProps()} className="w-36">
+              <div
+                {...degreeDropZone.getRootProps()}
+                className="w-36"
+              >
                 <input {...degreeDropZone.getInputProps()} />
                 {degree.current === "" ? (
                   <div className="flex flex-row items-center justify-center w-28 h-28 bg-slate-200 rounded-2xl">
@@ -530,8 +440,8 @@ const VerfiicationPanel = () => {
                     className="rounded-2xl  w-28 h-28"
                   />
                 )}
-                <div className="flex w-36 flex-row mt-2 items-center ">
-                  <FiUpload className="" size={20} />
+                <div  className="flex w-36 flex-row mt-2 items-center ">
+                  <FiUpload  className="" size={20} />
                   <div className="text-sm font-bold ml-1">Upload photoID</div>
                 </div>
               </div>
@@ -561,11 +471,19 @@ const VerfiicationPanel = () => {
                 </div>
               </div>
             </div>
-            <div></div>
+          <div>
+            
           </div>
-        </form>
+          </div>
+       
+          </form>
+        </div>
+        
       </div>
-    </div>
+           
+  
+      
+    
   );
 };
 

@@ -4,7 +4,13 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Lottie from "react-lottie-player";
 import lungsAnimation from "../../animations/lungs.json";
-import { MdDelete, MdEdit, MdEmail, MdLocationOn, MdVerified } from "react-icons/md";
+import {
+  MdDelete,
+  MdEdit,
+  MdEmail,
+  MdLocationOn,
+  MdVerified,
+} from "react-icons/md";
 import { FcGraduationCap } from "react-icons/fc";
 import { AiFillMedicineBox, AiOutlinePlus } from "react-icons/ai";
 import { ImProfile } from "react-icons/im";
@@ -27,10 +33,17 @@ import Logo from "../Logo/Logo";
 import { CiEdit } from "react-icons/ci";
 import axios from "axios";
 import clinicSchema from "../../schemas/clinicSchema";
-import { deleteClinic, GetClinicsQuery, IClinicType, isAppliedDoctor } from "../../api/clinic";
+import {
+  deleteClinic,
+  getApplyQuery,
+  GetClinicsQuery,
+  IClinicType,
+  isAppliedDoctor,
+} from "../../api/clinic";
 import { useRouter } from "next/router";
 import { GetUserQuery, updateProfilePicture } from "../../api/user";
 import EditClinic from "../EditClinic";
+import { promise } from "zod";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -41,6 +54,7 @@ const Chart = dynamic(() => import("../Chart"), {
 });
 
 export default function Profile() {
+  let isApplied :any= promise
   const [files, setFiles] = useState<any[]>([]);
   const profileImage = useRef("");
   const uploadFile = async () => {
@@ -74,53 +88,67 @@ export default function Profile() {
     }
   };
   const router = useRouter();
-
+useEffect(() => {
+   isApplied = isAppliedDoctor();
+  
+})
   useEffect(() => {
-
+  
+    
+    
     uploadFile();
   }, [files]);
   const userQuery = GetUserQuery();
 
-
   const clinics = GetClinicsQuery();
 
-  const onDrop: any = useCallback((acceptedFiles: string[], fileRejections: any[]) => {
-    if (acceptedFiles.length > 0) {
-      setFiles((files) => {
-        const newFiles = [...files.concat(acceptedFiles)];
-        const paths = newFiles.map((o) => o.path);
-        const uniqueFiles = newFiles.filter(({ path }, index) => !paths.includes(path, index + 1));
-        return uniqueFiles;
-      });
-    }
-    fileRejections.forEach((selectedFile) => {
-      selectedFile.errors.forEach((err: any) => {
-        if (err.code === "file-too-large") {
-          toast.error("File is larger than 10 MB", { id: "Large-File" });
-        }
-        if (err.code === "file-invalid-type") {
-          toast.error("Invalid file type", { id: "Invalid-File" });
-        }
-      });
-    });
-  }, []);
-
-  const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({
-    onDrop,
-    multiple: false,
-    maxSize: 10485760,
-    validator: (file) => {
-      const fileFormat = file.name.split(".")[1];
-      if (fileFormat === "jpg" || fileFormat === "png" || fileFormat === "jpeg") {
-        return null;
+  const onDrop: any = useCallback(
+    (acceptedFiles: string[], fileRejections: any[]) => {
+      if (acceptedFiles.length > 0) {
+        setFiles((files) => {
+          const newFiles = [...files.concat(acceptedFiles)];
+          const paths = newFiles.map((o) => o.path);
+          const uniqueFiles = newFiles.filter(
+            ({ path }, index) => !paths.includes(path, index + 1)
+          );
+          return uniqueFiles;
+        });
       }
-
-      return {
-        code: "file-invalid-type",
-        message: "Only jpg/png files supported!",
-      };
+      fileRejections.forEach((selectedFile) => {
+        selectedFile.errors.forEach((err: any) => {
+          if (err.code === "file-too-large") {
+            toast.error("File is larger than 10 MB", { id: "Large-File" });
+          }
+          if (err.code === "file-invalid-type") {
+            toast.error("Invalid file type", { id: "Invalid-File" });
+          }
+        });
+      });
     },
-  });
+    []
+  );
+
+  const { getRootProps, getInputProps, isDragAccept, isDragReject } =
+    useDropzone({
+      onDrop,
+      multiple: false,
+      maxSize: 10485760,
+      validator: (file) => {
+        const fileFormat = file.name.split(".")[1];
+        if (
+          fileFormat === "jpg" ||
+          fileFormat === "png" ||
+          fileFormat === "jpeg"
+        ) {
+          return null;
+        }
+
+        return {
+          code: "file-invalid-type",
+          message: "Only jpg/png files supported!",
+        };
+      },
+    });
 
   if (userQuery.isLoading) {
     return <div>Loading...</div>;
@@ -131,10 +159,20 @@ export default function Profile() {
   }
 
   return (
-    <div className={classNames([styles["scrollbar"]], ["mt-2 flex flex-col w-full lg:w-2/4 lg:max-w-1/2 h-[90vh] overflow-y-scroll scrollbar"])}>
+    <div
+      className={classNames(
+        [styles["scrollbar"]],
+        [
+          "mt-2 flex flex-col w-full lg:w-2/4 lg:max-w-1/2 h-[90vh] overflow-y-scroll scrollbar",
+        ]
+      )}
+    >
       <div className="flex flex-row justify-between items-center">
         <div className="flex flex-row">
-          <div {...getRootProps()} className="flex flex-row h-40 max-sm:w-28 max-sm:h-28 rounded-2xl m-4 shrink-0 hover:cursor-pointer">
+          <div
+            {...getRootProps()}
+            className="flex flex-row h-40 max-sm:w-28 max-sm:h-28 rounded-2xl m-4 shrink-0 hover:cursor-pointer"
+          >
             <input {...getInputProps()} />
 
             {!userQuery.data.picture ? (
@@ -146,7 +184,11 @@ export default function Profile() {
                 style={{
                   borderRadius: "20px",
                 }}
-                src={profileImage.current === "" ? userQuery.data.picture : profileImage.current}
+                src={
+                  profileImage.current === ""
+                    ? userQuery.data.picture
+                    : profileImage.current
+                }
                 alt={""}
                 height={30}
                 width={160}
@@ -156,15 +198,20 @@ export default function Profile() {
           <div className="flex flex-col mt-4">
             <div className="flex flex-row items-center">
               <div className="text-xl font-bold text-slate-700">
-                {userQuery.data.isDoctor ?? "Dr. "} {userQuery.data.name}
+                {userQuery.data.isDoctor
+                  ? "Dr. " + userQuery.data.name
+                  : userQuery.data.name}
               </div>
-              <div className="ml-1">
-                <MdVerified size={25} color={"green"} className="shrink-0" />
-              </div>
+
+              {userQuery.data.isDoctor ? (
+                <div className="ml-1">
+                  <MdVerified size={25} color={"green"} className="shrink-0" />
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
-            <div className="hidden sm:flex flex-col">
-              <DoctorDetails />
-            </div>
+           
             <div className="hidden max-sm:flex flex-col ml-4 w-20 h-20">
               <Lottie animationData={lungsAnimation} play />
             </div>
@@ -176,24 +223,42 @@ export default function Profile() {
         </div>
       </div>
 
-      <div className="hidden max-sm:flex flex-col ml-4">
-        <DoctorDetails />
-      </div>
+      {!isApplied?.data?.message.applied ? (
+        <>pending</>
+      ) : (
+        <div className="hidden max-sm:flex flex-col ml-4">
+          <DoctorDetails />
+          {isApplied}
+        </div>
+      )}
+
       {/* <CreateClinic /> */}
       <div className="hidden max-sm:grid grid-cols-2 items-center mt-4 mb-2">
         <GoldBadge />
         <SilverBadge />
-        <Badge name={BADGE.BRONZE} number={13} list={["Critic", "Nice Question"]} />
+        <Badge
+          name={BADGE.BRONZE}
+          number={13}
+          list={["Critic", "Nice Question"]}
+        />
       </div>
       <div className="shadow-md w-[98.5%] shadow-blue-200 mx-2 mt-2 rounded-md">
         <div className="flex flex-col">
           <div className="flex flex-row p-4 items-center justify-between">
             <div className="text-blue-600 text-xl font-bold">Clinic</div>
-            <div className="flex flex-row bg-blue-600 px-3 py-2 rounded-lg shadow-md shadow-blue-400 hover:cursor-pointer">
-              <AiOutlinePlus size={25} color="white" />
-              <div className="text-white text-md font-bold ml-1">Add Clinic</div>
+            <div className="hidden max-sm:flex ">
+              <div
+                onClick={() => {
+                  router.push("/create-clinic");
+                }}
+                className="flex flex-row bg-blue-600 px-3 py-2 rounded-lg shadow-md shadow-blue-400 hover:cursor-pointer"
+              >
+                <AiOutlinePlus size={25} color="white" />
+                <div className="text-white text-md font-bold ml-1">
+                  Add Clinic
+                </div>
+              </div>
             </div>
-           
           </div>
           {clinics.isLoading ? (
             <></>
@@ -218,15 +283,23 @@ export default function Profile() {
                         </div>
                       ) : (
                         <div className="flex flex-row items-center justify-center max-w-16 h-12 bg-slate-200 rounded-2xl">
-                          <Image alt="clinic-logo" src={clinic.logo!} width={48} height={48} className="max-w-16 h-12" />
+                          <Image
+                            alt="clinic-logo"
+                            src={clinic.logo!}
+                            width={48}
+                            height={48}
+                            className="max-w-16 h-12"
+                          />
                         </div>
                       )}
 
-                      <div className="text-blue-600 text-xl ml-2 font-bold">{clinic.name}</div>
+                      <div className="text-blue-600 text-xl ml-2 font-bold">
+                        {clinic.name}
+                      </div>
                     </div>
                     <div className="flex flex-row">
                       <div className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer">
-                   <EditClinic data={clinic} />
+                        <EditClinic data={clinic} />
                       </div>
                       <div
                         className="flex flex-row items-center px-2 py-2 rounded-lg hover:cursor-pointer"
@@ -249,24 +322,42 @@ export default function Profile() {
                   <div className="flex flex-row mt-4 ml-2">
                     <MdLocationOn size={25} color="red" />
                     <div className="text-slate-500 text-md ml-6 font-bold">
-                      {clinic.address}, {clinic.city}, {clinic.state}, {clinic.country}, {clinic.pincode}
+                      {clinic.address}, {clinic.city}, {clinic.state},{" "}
+                      {clinic.country}, {clinic.pincode}
                     </div>
                   </div>
                   <div className="flex flex-row mt-4 ml-3 items-center">
                     <BsFillTelephoneFill size={20} color="green" />
-                    <div className="text-slate-500 text-md ml-6 font-bold">{clinic.phoneNumber}</div>
+                    <div className="text-slate-500 text-md ml-6 font-bold">
+                      {clinic.phoneNumber}
+                    </div>
                   </div>
                   <div className="flex flex-row mt-4 ml-3 items-center">
                     <MdEmail size={22} color="gray" />
-                    <div className="text-slate-500 text-md ml-6 font-bold">{clinic.email}</div>
+                    <div className="text-slate-500 text-md ml-6 font-bold">
+                      {clinic.email}
+                    </div>
                   </div>
                   <div className="flex ml-4 overflow-x-scroll scrollbar custom-scrollbar mt-4">
                     <div className="flex gap-x-1">
                       {clinic.displayImages.map((file, index) => {
                         return (
-                          <div key={index} className="flex flex-col items-center justify-center">
-                            <div className={classNames(["flex relative w-48 h-28 rounded-lg font-medium"])}>
-                              <Image src={file} alt={file} width={220} height={100} className="absolute -z-10 w-48 h-28 rounded-lg" />
+                          <div
+                            key={index}
+                            className="flex flex-col items-center justify-center"
+                          >
+                            <div
+                              className={classNames([
+                                "flex relative w-48 h-28 rounded-lg font-medium",
+                              ])}
+                            >
+                              <Image
+                                src={file}
+                                alt={file}
+                                width={220}
+                                height={100}
+                                className="absolute -z-10 w-48 h-28 rounded-lg"
+                              />
                             </div>
                           </div>
                         );
@@ -299,19 +390,27 @@ const DoctorDetails = () => {
     <>
       <div className="flex flex-row items-center mt-4">
         <AiFillMedicineBox size={25} color="gray" className="shrink-0" />
-        <div className="text-sm font-bold text-slate-500 ml-2">Pulmonology | Respiratory Medicine</div>
+        <div className="text-sm font-bold text-slate-500 ml-2">
+          Pulmonology | Respiratory Medicine
+        </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <FcGraduationCap size={25} color="gray" className="shrink-0" />
-        <div className="text-sm font-bold text-slate-500 ml-2">MBBS, MD (Resp. Med.), PhD, FCCP, DAA</div>
+        <div className="text-sm font-bold text-slate-500 ml-2">
+          MBBS, MD (Resp. Med.), PhD, FCCP, DAA
+        </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <ImProfile size={25} color="gray" className="shrink-0" />
-        <div className="text-sm font-bold text-slate-500 ml-2">Registration No. : 71547</div>
+        <div className="text-sm font-bold text-slate-500 ml-2">
+          Registration No. : 71547
+        </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <BsGlobe size={25} color="gray" className="shrink-0" />
-        <div className="text-sm font-bold text-slate-500 ml-2">English, Hindi, Bengali</div>
+        <div className="text-sm font-bold text-slate-500 ml-2">
+          English, Hindi, Bengali
+        </div>
       </div>
     </>
   );
