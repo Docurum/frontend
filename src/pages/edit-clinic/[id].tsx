@@ -7,6 +7,8 @@ import {
   getClinicById,
 } from "../../api/clinic";
 import { useRouter } from "next/router";
+import AppBar from "../../components/AppBar";
+import BottomNavBar from "../../components/BottomNavBar";
 
 function MobileEditClinicPage() {
   const clinics = GetClinicsQuery();
@@ -36,7 +38,9 @@ function MobileEditClinicPage() {
   if(getclinic.isSuccess){
   return (
     <div>
+      <AppBar/>
       <MobileEditClinic data={getclinic.data} />
+      <BottomNavBar/>
     </div>
   );
   }

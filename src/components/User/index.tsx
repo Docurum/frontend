@@ -52,7 +52,10 @@ const User: FC<{
   }
 
   if (userQuery.isError) {
-    return <div>Oops! Something went wrong. Try refreshing</div>;
+    router.push("/login");
+    return (
+<><h1>Something went wrong please try again </h1></>
+    )
   }
 
   return (

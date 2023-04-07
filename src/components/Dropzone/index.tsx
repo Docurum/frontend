@@ -36,7 +36,7 @@ const Dropzone = ({
 
   const { getRootProps, getInputProps, isDragAccept, isDragReject } = useDropzone({ onDrop, multiple: true, maxSize: 10485760 });
   return (
-    <div className="my-4  w-10">
+    <div className="hidden lg:flex my-4 px-4">
       <div {...getRootProps()} className={className}>
         <input {...getInputProps()} />
         <div className="flex flex-col gap-y-2 items-center justify-center border-2 border-gray-400 rounded-xl border-dashed h-full text-md text-slate-500 font-bold">
