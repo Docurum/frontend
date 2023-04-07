@@ -42,6 +42,7 @@ import EditClinic from "../EditClinic";
 import { promise } from "zod";
 import MobileEditClinic from "../MobileEditClinic";
 import { FiCopy } from "react-icons/fi";
+import ProfileLoader from "../PulseLoaders";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -160,7 +161,9 @@ useEffect(() => {
     });
 
   if (userQuery.isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <ProfileLoader/>
+    )
   }
 
   if (userQuery.isError) {

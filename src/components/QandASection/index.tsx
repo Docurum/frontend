@@ -21,6 +21,7 @@ import shakingEmptyBoxAnimation from "../../animations/shaking_empty_box.json";
 import Logo from "../Logo/Logo";
 import toast from "react-hot-toast";
 import Lottie from "react-lottie-player";
+import TopicLoader from "../TopicLoaders";
 
 const QandASectionHome = () => {
   return (
@@ -35,7 +36,9 @@ const QandASection = () => {
   const topics = GetSearchTopics({ name: "", categories: [] });
 
   if (topics.isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <TopicLoader/>
+    )
   }
   if (topics.data?.length! <= 0) {
     return (
