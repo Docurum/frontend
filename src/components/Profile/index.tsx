@@ -417,7 +417,7 @@ useEffect(() => {
                       {clinic.displayImages.map((file, index) => {
                         return (
                           <div
-                            
+                            key={index}
                             className="flex flex-col items-center justify-center"
                           >
                             <div
