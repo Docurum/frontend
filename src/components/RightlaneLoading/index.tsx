@@ -4,23 +4,49 @@ function RightLoading() {
   return (
     <div className=" hidden lg:flex h-full w-[25%] flex-col">
       <div className=" flex flex-col items-center justify-center animate-pulse space-y-4 p-10 h-full">
-        <div className="">
-          <div className="h-2 w-48 bg-slate-500 rounded col-span-2"></div>
-        </div>
-        <div className="h-2 w-48 my-10 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 bg-slate-500 rounded"></div>
-
-        <div className="h-2 w-48 my-10 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 bg-slate-500 rounded"></div>
-
-        <div className="h-2 w-48 my-10 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 my-10 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 bg-slate-500 rounded"></div>
-        <div className="h-2 w-48 bg-slate-500 rounded"></div>
+    
+       <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+           <div className="flex items-center">
+          <div className="w-9 h-9 bg-slate-500  rounded-full"></div>
+     <div className="h-2 m-3 w-48 bg-slate-500 rounded"></div>
+       </div>
+       
+       
       </div>
     </div>
   );
