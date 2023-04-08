@@ -78,7 +78,9 @@ const MyTopicsSection = () => {
   const topics = GetTopicByUserIdQuery();
 
   if (topics.isLoading) {
-    return <div>Loading ...</div>;
+    return (
+      <TopicLoader/>
+    )
   }
 
   if (topics.data?.length! <= 0) {

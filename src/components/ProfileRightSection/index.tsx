@@ -31,7 +31,7 @@ const userquery =GetUserQuery()
     <div className="hidden  lg:flex flex-col  w-1/4 items-center mt-4 mb-10">
   
          <div >
-    { userquery.data?.isDoctor ?  <CreateClinic />  : ""}
+    <CreateClinic />  
     <div>
       {
         !userquery.data?.isDoctor ? (

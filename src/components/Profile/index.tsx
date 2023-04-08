@@ -167,6 +167,7 @@ useEffect(() => {
   }
 
   if (userQuery.isError) {
+    router.push('/login')
     return <div>Oops! Something went wrong. Try refreshing</div>;
   }
 
@@ -233,13 +234,9 @@ useEffect(() => {
               )}
             </div>
          
-           { userQuery.data.isDoctor?   <div className="hidden sm:flex flex-col"> <DoctorDetails /></div> : 
-           <div className="flex flex-row justify-center items-center   h-7 bg-gray-200 w-29 lg:w-43 p-2 my-1 rounded-lg mb-7 ">
-              <div className="text-red-500  text-sm lg:text-[15px] ml-1 font-bold text-center ">
-     {checkstatuss}
-              
-            </div>
-            </div>
+           { userQuery.data.isDoctor?   <div className="hidden sm:flex flex-col"> <DoctorDetails /></div> : <h1 className="hidden lg:flex">{userQuery.data.bio}</h1>
+       
+           
           
            }
             <div className="hidden max-sm:flex flex-col ml-10 w-20 h-20">
@@ -271,8 +268,8 @@ useEffect(() => {
         </div>
       </div>
  <div className="hidden max-sm:flex flex-col ml-4">
-           { userQuery.data.isDoctor?   <DoctorDetails /> : 
-         ""
+           { userQuery.data.isDoctor?   <DoctorDetails /> : <h1 className="max-sm:flex">{userQuery.data.bio}</h1>
+     
          
           
            }
@@ -311,7 +308,7 @@ useEffect(() => {
           <div className="flex flex-row p-4 items-center justify-between">
             <div className="text-blue-600 text-xl font-bold">Clinic</div>
             <div className="hidden max-sm:flex ">
-         {   userQuery.data.isDoctor ?     <div
+            <div
                 onClick={() => {
                   router.push("/create-clinic");
                 }}
@@ -321,7 +318,7 @@ useEffect(() => {
                 <div className="text-white text-md font-bold ml-1">
                   Add Clinic
                 </div>
-              </div> : ""}
+              </div> 
             </div>
           </div>
           {clinics.isLoading ? (
@@ -488,6 +485,12 @@ const DoctorDetails = () => {
         <BsGlobe size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
          {userQuery.data?.doctor?.languages}
+        </div>
+      </div>
+       <div className="flex flex-row items-center mt-1">
+        <BsGlobe size={25} color="gray" className="shrink-0" />
+        <div className="text-sm font-bold text-slate-500 ml-2">
+         {userQuery.data?.bio}
         </div>
       </div>
     </div>
