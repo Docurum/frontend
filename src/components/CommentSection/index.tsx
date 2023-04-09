@@ -6,6 +6,7 @@ import { FC } from "react";
 import { ReadOnlyRichText } from "../RichText";
 import toast from "react-hot-toast";
 import { downvoteComment, GetCommentByTopicIdQuery, upvoteComment } from "../../api/forum/commentService";
+import CommentsLoader from "../commentsLoader";
 
 // const QandASectionHome = () => {
 //   return (
@@ -25,7 +26,9 @@ const CommentSection: FC<{
   const commentsQuery = GetCommentByTopicIdQuery(topicId);
 
   if (commentsQuery.isLoading) {
-    return <div>Comments Loading ...</div>;
+    return (
+      <CommentsLoader/>
+    )
   }
 
   if (commentsQuery.isError) {

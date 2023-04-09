@@ -10,7 +10,7 @@ import Logo from "../Logo/Logo";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { DialogActions, TextField } from "@mui/material";
 import { FiUpload } from "react-icons/fi";
-import { Dropzone } from "../Dropzone";
+import { Dropzone, DropzoneMobile } from "../Dropzone";
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import clinicSchema from "../../schemas/clinicSchema";
@@ -396,7 +396,7 @@ export default function MobileCreateClinic() {
                       </div>
 
                       {files.length <4 ? (
-                        <Dropzone setFiles={setFiles} title="Add upto four other clinic images" className="w-[190px] h-[137px] rounded-2xl hover:cursor-pointer text-center focus:outline-none" />
+                       <DropzoneMobile setFiles={setFiles} />
                       ) : (
                         <></>
                       )}

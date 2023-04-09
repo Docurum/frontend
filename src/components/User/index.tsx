@@ -21,6 +21,7 @@ import { deleteClinic, GetClinicByUsernameQuery, GetClinicsQuery, IClinicType } 
 import { useRouter } from "next/router";
 import { FC, useEffect } from "react";
 import { GetUserByUsernameQuery } from "../../api/user";
+import ProfileLoader from "../PulseLoaders";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -45,15 +46,20 @@ const User: FC<{
   }, [username]);
 
   if (userQuery.isLoading) {
-    return <div>Loading...</div>;
+    return <ProfileLoader />;
   }
 
   if (userQuery.isError) {
+    router.push("/login");
     return <></>;
   }
 
   if (userQuery.isError && username !== "") {
-    return <div>Oops! Something went wrong. Try refreshing</div>;
+    return (
+      <>
+        <h1>Something went wrong please try again </h1>
+      </>
+    );
   }
 
   return (

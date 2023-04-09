@@ -1,11 +1,11 @@
 import { AiOutlinePlus } from "react-icons/ai";
-import { AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai";
 import Image from "next/image";
 import classNames from "classnames";
 import { FC, useState } from "react";
 import styles from "./index.module.css";
 import { useRouter } from "next/router";
 import { GetRecommendedUserQuery, GetUserQuery } from "../../api/user";
+import RightLoading from "../RightlaneLoading";
 
 export default function RightLane() {
   const router = useRouter();
@@ -14,7 +14,9 @@ export default function RightLane() {
   const userQuery = GetUserQuery();
 
   if (recommendedUserQuery.isLoading) {
-    return <div>Loading ...</div>;
+    return (
+      <RightLoading/>
+    )
   }
 
   if (recommendedUserQuery.isError) {

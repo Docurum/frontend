@@ -3,6 +3,7 @@ import Edit from "../../components/EditUser"
 import React from 'react'   
 import LeftLane from "../../components/LeftLane"
 import RightLane from "../../components/RightLane"
+import BottomNavBar from "../../components/BottomNavBar"
 function EditUser() {
 
   return (
@@ -13,7 +14,7 @@ function EditUser() {
           <LeftLane/>
          <Edit/>
        <RightLane/>
-      
+      <BottomNavBar/>
         </div>
       </div>
     </div>

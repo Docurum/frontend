@@ -42,6 +42,7 @@ import EditClinic from "../EditClinic";
 import { promise } from "zod";
 import MobileEditClinic from "../MobileEditClinic";
 import { FiCopy } from "react-icons/fi";
+import ProfileLoader from "../PulseLoaders";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -160,10 +161,13 @@ useEffect(() => {
     });
 
   if (userQuery.isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <ProfileLoader/>
+    )
   }
 
   if (userQuery.isError) {
+    router.push('/login')
     return <div>Oops! Something went wrong. Try refreshing</div>;
   }
 
@@ -230,13 +234,9 @@ useEffect(() => {
               )}
             </div>
          
-           { userQuery.data.isDoctor?   <div className="hidden sm:flex flex-col"> <DoctorDetails /></div> : 
-           <div className="flex flex-row justify-center items-center   h-7 bg-gray-200 w-29 lg:w-43 p-2 my-1 rounded-lg mb-7 ">
-              <div className="text-red-500  text-sm lg:text-[15px] ml-1 font-bold text-center ">
-     {checkstatuss}
-              
-            </div>
-            </div>
+           { userQuery.data.isDoctor?   <div className="hidden sm:flex flex-col"> <DoctorDetails /></div> : <h1 className="hidden lg:flex">{userQuery.data.bio}</h1>
+       
+           
           
            }
             <div className="hidden max-sm:flex flex-col ml-10 w-20 h-20">
@@ -268,8 +268,8 @@ useEffect(() => {
         </div>
       </div>
  <div className="hidden max-sm:flex flex-col ml-4">
-           { userQuery.data.isDoctor?   <DoctorDetails /> : 
-         ""
+           { userQuery.data.isDoctor?   <DoctorDetails /> : <h1 className="max-sm:flex">{userQuery.data.bio}</h1>
+     
          
           
            }
@@ -308,7 +308,7 @@ useEffect(() => {
           <div className="flex flex-row p-4 items-center justify-between">
             <div className="text-blue-600 text-xl font-bold">Clinic</div>
             <div className="hidden max-sm:flex ">
-              <div
+            <div
                 onClick={() => {
                   router.push("/create-clinic");
                 }}
@@ -318,7 +318,7 @@ useEffect(() => {
                 <div className="text-white text-md font-bold ml-1">
                   Add Clinic
                 </div>
-              </div>
+              </div> 
             </div>
           </div>
           {clinics.isLoading ? (
@@ -414,7 +414,7 @@ useEffect(() => {
                       {clinic.displayImages.map((file, index) => {
                         return (
                           <div
-                            
+                            key={index}
                             className="flex flex-col items-center justify-center"
                           >
                             <div
@@ -457,30 +457,40 @@ useEffect(() => {
 }
 
 const DoctorDetails = () => {
+  const userQuery =GetUserQuery();
+  
+  console.log(userQuery,'data');
+  
   return (
     <div className="">
       <div className="flex flex-row items-center mt-4">
         <AiFillMedicineBox size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
-          Pulmonology | Respiratory Medicine
+      {userQuery.data?.doctor?.speciality}
         </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <FcGraduationCap size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
-          MBBS, MD (Resp. Med.), PhD, FCCP, DAA
+         {userQuery.data?.doctor?.qualification}
         </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <ImProfile size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
-          Registration No. : 71547
+          Registration No. : {userQuery.data?.doctor?.registrationNumber}
         </div>
       </div>
       <div className="flex flex-row items-center mt-1">
         <BsGlobe size={25} color="gray" className="shrink-0" />
         <div className="text-sm font-bold text-slate-500 ml-2">
-          English, Hindi, Bengali
+         {userQuery.data?.doctor?.languages}
+        </div>
+      </div>
+       <div className="flex flex-row items-center mt-1">
+        <BsGlobe size={25} color="gray" className="shrink-0" />
+        <div className="text-sm font-bold text-slate-500 ml-2">
+         {userQuery.data?.bio}
         </div>
       </div>
     </div>

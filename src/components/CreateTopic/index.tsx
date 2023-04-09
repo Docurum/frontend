@@ -13,6 +13,7 @@ import CategoriesDialog from "../CategoriesDialog";
 import { createTopic, GetCategoriesById } from "../../api/forum";
 import Logo from "../Logo/Logo";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
 
 const Editor = dynamic(() => import("../RichText").then((mod) => mod.RichTextExample), {
   ssr: false,
@@ -22,6 +23,8 @@ const CreateTopic: FC<{
   files: any[];
   setFiles: Dispatch<SetStateAction<any[]>>;
 }> = ({ files, setFiles }) => {
+
+  const router =useRouter()
   const initialValues = {
     title: "",
     description: [] as any[],
@@ -119,6 +122,7 @@ const CreateTopic: FC<{
       uploadedImageFiles.current = [];
       setCategoryIncludedId([]);
       setFormValues(values);
+      router.push("/my-topics")
     } catch (e) {
       toast.error("Something went wrong! Unable to Create topic", { id: "server-conn-fail" });
     }
