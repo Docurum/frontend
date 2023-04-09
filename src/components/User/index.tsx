@@ -56,7 +56,7 @@ const User: FC<{
   if (userQuery.isError && username !== "") {
     return (
       <>
-        <h1>Something went wrong please try again </h1>
+        <div>Something went wrong please try again </div>
       </>
     );
   }
