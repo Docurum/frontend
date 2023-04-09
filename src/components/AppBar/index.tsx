@@ -13,11 +13,19 @@ import { MdOutlineReportProblem, MdOutlineBlock } from "react-icons/md";
 import { AiOutlineArrowDown, AiOutlineArrowUp, AiOutlineSearch } from "react-icons/ai";
 import { useRouter } from "next/router";
 import type { ImageLoaderProps } from "next/image";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import Notification from "../Notification";
+import { isJWTValid } from "../../pages/_app";
+import { GetUserQuery } from "../../api/user";
 
 export default function AppBar() {
   const router = useRouter();
+
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setLoggedIn(isJWTValid());
+  }, []);
   return (
     <div className="flex flex-row shadow max-h-[10vh] h-[8vh] sm:h-[10vh] items-center justify-between">
       <div className="flex flex-row items-center ml-2 sm:ml-8 hover:cursor-pointer" onClick={() => router.push("/home")}>
@@ -38,7 +46,15 @@ export default function AppBar() {
         <div className="hidden sm:flex">
           <NotificationDropdownMenu />
         </div> */}
-        <ProfileDropdownMenu />
+        {isLoggedIn ? (
+          <ProfileDropdownMenu />
+        ) : (
+          <div className="flex-row items-center justify-end mr-4 sm:mr-8 shrink-0 flex md:w-36 hover:cursor-pointer">
+            <div onClick={() => router.push("/login")} className="text-lg text-white bg-blue-600 py-2 px-4 rounded-lg shadow-lg shadow-blue-200">
+              Log In
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -65,12 +81,23 @@ const NotificationDropdownMenu = () => {
 
 const ProfileDropdownMenu = () => {
   const router = useRouter();
+  const userQuery = GetUserQuery();
+
+  if (userQuery.isLoading) {
+    return <div>Loading ...</div>;
+  }
 
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger className="outline-none">
-        <div className="border-2 border-gray-400 rounded-2xl ml-5 shrink-0 hover:cursor-pointer">
-          <Image src={"https://avatars.dicebear.com/api/personas/her.svg"} alt={"avatar"} height={30} width={30} />
+        <div className="flex flex-row items-center ml-4">
+          <div className="border-2 border-gray-400 rounded-2xl shrink-0">
+            {userQuery.data?.picture ? (
+              <Image src={userQuery.data?.picture} alt={"avatar"} height={30} width={30} className="rounded-full" />
+            ) : (
+              <Image src={`https://avatars.dicebear.com/api/personas/${name}.svg`} alt={"avatar"} height={30} width={30} className="" />
+            )}
+          </div>
         </div>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
@@ -91,7 +118,7 @@ const ProfileDropdownMenu = () => {
               </div>
               <div className="ml-4 text-md font-bold text-slate-700">Edit</div>
             </div>
-          </DropdownMenu.Item> 
+          </DropdownMenu.Item>
 
           <DropdownMenu.Item
             className="outline-none"

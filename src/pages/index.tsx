@@ -26,8 +26,8 @@ const Home: NextPage = () => {
             <IoIosSearch size={28} />
           </div>
           <div className="flex-row items-center justify-end mr-4 sm:mr-8 shrink-0 flex md:w-36">
-            <div onClick={() => router.push("/signup")} className="text-lg text-white bg-blue-600 py-2 px-4 rounded-lg shadow-lg shadow-blue-200">
-              Sign up
+            <div onClick={() => router.push("/login")} className="text-lg text-white bg-blue-600 py-2 px-4 rounded-lg shadow-lg shadow-blue-200">
+              Log In
             </div>
           </div>
         </div>

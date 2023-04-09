@@ -14,14 +14,16 @@ import "../styles/globals.css";
 import capsEveryFirstLetter from "../utils/capsEveryFirstLetter";
 import cookieOptions from "../utils/cookieOptions";
 
-function isJWTValid() {
-  const token = localStorage.getItem("token");
-  if (token) {
-    const tokenDecodablePart = token.split(".")[1];
-    const decoded = JSON.parse(Buffer.from(tokenDecodablePart, "base64").toString());
-    const currentTime = Date.now() / 1000;
-    if (decoded.exp > currentTime) {
-      return true;
+export function isJWTValid() {
+  if (typeof window !== "undefined") {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const tokenDecodablePart = token.split(".")[1];
+      const decoded = JSON.parse(Buffer.from(tokenDecodablePart, "base64").toString());
+      const currentTime = Date.now() / 1000;
+      if (decoded.exp > currentTime) {
+        return true;
+      }
     }
   }
   return false;
@@ -96,7 +98,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <main className={ssp.className}>
       {/* Don't show google one tap on signup and login page */}
-      {/* {isWindowInit && !["signup", "login", "email-confirm", "forgot-password", "reset-password", "start-topic"].includes(router.asPath.slice(1).split("/")[0]) && (
+      {isWindowInit && (
+        // !["signup", "login", "email-confirm", "forgot-password", "reset-password", "start-topic"].includes(router.asPath.slice(1).split("/")[0])
+        // &&
         <GoogleOneTapLogin
           onError={(error) => {
             console.error(error);
@@ -112,7 +116,7 @@ export default function App({ Component, pageProps }: AppProps) {
           }}
           googleAccountConfigs={{ client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string }}
         />
-      )} */}
+      )}
       <QueryClientProvider client={queryClient}>
         <Toaster position="bottom-right" reverseOrder={false} toastOptions={{ duration: 5000 }} />
         <NextNProgress color="#2548f5" height={5} />

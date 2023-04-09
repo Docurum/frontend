@@ -49,6 +49,10 @@ const User: FC<{
   }
 
   if (userQuery.isError) {
+    return <></>;
+  }
+
+  if (userQuery.isError && username !== "") {
     return <div>Oops! Something went wrong. Try refreshing</div>;
   }
 

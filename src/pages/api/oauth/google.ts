@@ -1,9 +1,28 @@
 import axios from "axios";
+import cookie from "cookie";
 import { CookieSerializeOptions, serialize } from "cookie";
 import jwt from "jsonwebtoken";
 import type { NextApiRequest, NextApiResponse } from "next";
 import qs from "qs";
 import cookieOptions from "../../../utils/cookieOptions";
+
+import { google } from "googleapis";
+
+const oauth2Client = new google.auth.OAuth2(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_OAUTH_REDIRECT_URL);
+
+const scopes = ["https://www.googleapis.com/auth/calendar"];
+
+const generateOAuthUrl = () => {
+  const url = oauth2Client.generateAuthUrl({
+    // 'online' (default) or 'offline' (gets refresh_token)
+    access_type: "offline",
+
+    // If you only need one scope you can pass it as a string
+    scope: scopes,
+  });
+
+  return url;
+};
 
 const setCookie = (res: NextApiResponse, name: string, value: unknown, options: CookieSerializeOptions = {}) => {
   const stringValue = typeof value === "object" ? JSON.stringify(value) : String(value);
@@ -13,7 +32,7 @@ const setCookie = (res: NextApiResponse, name: string, value: unknown, options: 
   res.setHeader("Set-Cookie", serialize(name, stringValue, options));
 };
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const Handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // https://stackoverflow.com/a/57485401
   const path = req.query.state as string;
   try {
@@ -25,7 +44,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       email: googleUser.email,
       picture: googleUser.picture,
     };
+    console.log("User info:", user);
     setCookie(res, "googleUser", user, cookieOptions);
+
+    const name = "googleTokenCookie";
+    const value = id_token;
+    const options = {
+      maxAge: 60 * 60 * 24, // 1 day
+      path: "/",
+    };
+    const serializedCookie = cookie.serialize(name, value, options);
+    res.setHeader("Set-Cookie", serializedCookie);
+
     return res.redirect(307, path);
   } catch (err: any) {
     console.log(err);
@@ -64,4 +94,4 @@ const getGoogleOAuthTokens = async (code: string) => {
   }
 };
 
-export default handler;
+export default Handler;

@@ -1,4 +1,4 @@
-const getGoogleOAuthURL = (pathName: "signup" | "login"): string => {
+const getGoogleOAuthURL = (pathName: "signup" | "login" | "home"): string => {
   const rootURL = "https://accounts.google.com/o/oauth2/v2/auth";
   const options = {
     redirect_uri: process.env.NEXT_PUBLIC_GOOGLE_OAUTH_REDIRECT_URL as string,
@@ -6,7 +6,7 @@ const getGoogleOAuthURL = (pathName: "signup" | "login"): string => {
     access_type: "offline",
     response_type: "code",
     prompt: "consent",
-    scope: ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"].join(" "),
+    scope: ["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/calendar"].join(" "),
     state: "/" + pathName,
   };
   const qs = new URLSearchParams(options);
