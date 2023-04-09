@@ -50,7 +50,6 @@ const User: FC<{
   }
 
   if (userQuery.isError) {
-    router.push("/login");
     return <></>;
   }
 
