@@ -6,6 +6,7 @@ import { FC, useState } from "react";
 import CreateClinic from "../CreateClinic";
 
 import clinicAnimation from "../../animations/113974-verified.json";
+import pricingAnimation from "../../animations/pricing.json";
 import { useRouter } from "next/router";
 
 import { toast } from "react-hot-toast";
@@ -14,13 +15,16 @@ import { isAppliedDoctor } from "../../api/clinic";
 import { promise } from "zod";
 import { MdVerified } from "react-icons/md";
 import { GetUserQuery } from "../../api/user";
+import { AiFillDollarCircle } from "react-icons/ai";
+import { RiMoneyDollarCircleFill } from "react-icons/ri";
 const ProfileRightSection = () => {
   const router = useRouter();
   let isApplied: any = promise;
-const userquery =GetUserQuery()
+  const userquery = GetUserQuery();
+
   async function checkApplied() {
     isApplied = await isAppliedDoctor();
-    if (isApplied.data.message.message==="Pending Approval") {
+    if (isApplied.data.message.message === "Pending Approval") {
       toast.error("you have alreaady Applied please wait for the approval");
     } else if (!isApplied.data.message.applied) {
       router.push("/verify-credentials");
@@ -29,41 +33,54 @@ const userquery =GetUserQuery()
 
   return (
     <div className="hidden  lg:flex flex-col  w-1/4 items-center mt-4 mb-10">
-  
-         <div >
-    <CreateClinic />  
-    <div>
-      {
-        !userquery.data?.isDoctor ? (
+      <div>
+        <CreateClinic />
+        <div>
+          {!userquery.data?.isDoctor ? (
             <div className="flex flex-row mt-4">
-      <div className="h-48 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
-        <div className="z-1 absolute w-full h-32 bg-blue-100 rounded-lg"></div>
-        <div className="absolute z-2 w-full justify-end items-end flex flex-col">
-          <Lottie animationData={clinicAnimation} play className="h-56" />
-        </div>
-      
-          <div
-            onClick={() => {
-              checkApplied();
-            }}
-            className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
-          >
-              <MdVerified size={25} color={"white"} className="shrink-0" />
-            <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">
-              Doctor Verification
-              
+              <div className="h-48 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
+                <div className="z-1 absolute w-full h-32 bg-blue-100 rounded-lg"></div>
+                <div className="absolute z-2 w-full justify-end items-end flex flex-col">
+                  <Lottie animationData={clinicAnimation} play className="h-56" />
+                </div>
+
+                <div
+                  onClick={() => {
+                    checkApplied();
+                  }}
+                  className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+                >
+                  <MdVerified size={25} color={"white"} className="shrink-0" />
+                  <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">Doctor Verification</div>
+                </div>
+              </div>
             </div>
-            
+          ) : (
+            ""
+          )}
+        </div>
+        <div>
+          <div className="flex flex-row mt-8">
+            <div className="h-48 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
+              <div className="z-1 absolute w-full h-32 bg-blue-100 rounded-lg"></div>
+              <div className="absolute z-2 w-full justify-center items-center mb-8 flex flex-col">
+                <Lottie animationData={pricingAnimation} play className="h-48" />
+              </div>
+
+              <div
+                onClick={() => {
+                  router.push("/create-pricing");
+                }}
+                className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+              >
+                <RiMoneyDollarCircleFill size={25} color={"white"} className="shrink-0" />
+                <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">Add Pricing</div>
+              </div>
+            </div>
           </div>
         </div>
-        </div>
-        ) :""
-      }
-    </div>
       </div>
-
     </div>
-   
   );
 };
 
@@ -75,9 +92,7 @@ const GoldBadge = () => {
           <Lottie animationData={goldTrophy} play loop={false} />
         </div>
         <div className="flex flex-col items-start mr-3 mt-2">
-          <div className="text-sm sm:text-md text-slate-600 font-bold">
-            Gold Badge
-          </div>
+          <div className="text-sm sm:text-md text-slate-600 font-bold">Gold Badge</div>
           <div className="text-xl text-[#FFA834] font-bold">3</div>
         </div>
       </div>
@@ -106,9 +121,7 @@ const SilverBadge = () => {
         </div>
 
         <div className="flex flex-col items-start mr-3 mt-2 sm:mt-4">
-          <div className="text-sm sm:text-md text-slate-600 font-bold">
-            Silver Badge
-          </div>
+          <div className="text-sm sm:text-md text-slate-600 font-bold">Silver Badge</div>
           <div className="text-xl sm:text-2xl text-slate-400 font-bold">1</div>
         </div>
       </div>
@@ -148,9 +161,7 @@ const Badge: FC<IBadgeProps> = ({ name, number, list }) => {
           <Lottie animationData={lottieJosn} play loop={false} />
         </div>
         <div className="flex flex-col items-start mr-3 mt-2 sm:mt-4">
-          <div className="text-sm sm:text-md text-slate-600 font-bold">
-            Bronze Badge
-          </div>
+          <div className="text-sm sm:text-md text-slate-600 font-bold">Bronze Badge</div>
           <div className="text-xl sm:text-2xl text-[#CD7F32] font-bold">13</div>
         </div>
       </div>
