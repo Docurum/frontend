@@ -1,5 +1,5 @@
 import AppBar from "../../components/AppBar";
-import CreatePricing from "../../components/CreatePricing";
+import { CreatePricing } from "../../components/CreatePricing";
 import LeftLane from "../../components/LeftLane";
 import RightLane from "../../components/RightLane";
 

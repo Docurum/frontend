@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { FC, useEffect } from "react";
 import { GetUserByUsernameQuery } from "../../api/user";
 import ProfileLoader from "../PulseLoaders";
+import { PublicProfilePricing } from "../CreatePricing";
 
 const myLoader = (imageUrl: any) => {
   return imageUrl;
@@ -109,11 +110,12 @@ const User: FC<{
       <div className="hidden max-sm:flex flex-col ml-4">
         <DoctorDetails />
       </div>
-      <div className="hidden max-sm:grid grid-cols-2 items-center mt-4 mb-2">
+      {/* <div className="hidden max-sm:grid grid-cols-2 items-center mt-4 mb-2">
         <GoldBadge />
         <SilverBadge />
         <Badge name={BADGE.BRONZE} number={13} list={["Critic", "Nice Question"]} />
-      </div>
+      </div> */}
+      <PublicProfilePricing username={userQuery.data.username} />
       <div className="shadow-md w-[98.5%] shadow-blue-200 mx-2 mt-2 rounded-md">
         <div className="flex flex-col">
           <div className="flex flex-row p-4 items-center justify-between">

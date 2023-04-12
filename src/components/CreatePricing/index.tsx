@@ -6,29 +6,32 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Dispatch, FC, SetStateAction, useState } from "react";
-import { CgProfile } from "react-icons/cg";
+import { GetPricingQuery, GetPricingQueryByUsername, createPricing, deletePricing } from "../../api/pricing";
+import { MdDelete } from "react-icons/md";
 
 const pricingSchema = z
   .object({
-    title: z.string(),
-    costPerSession: z.number(),
-    numberOfSessions: z.number(),
-    durationInMinutes: z.number(),
+    title: z.string().min(3),
+    costPerSession: z.number().min(3),
+    numberOfSessions: z.number().min(1),
+    durationInMinutes: z.number().min(5),
   })
   .strict();
 
 type pricingSchemaType = z.infer<typeof pricingSchema>;
 
-export default function CreatePricing() {
+const CreatePricing = () => {
   return (
     <div className={classNames([styles["scrollbar"]], ["flex flex-col items-center overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
       <Pricing />
       <BottomNavBar />
     </div>
   );
-}
+};
 
 const Pricing = () => {
+  const pricingQuery = GetPricingQuery();
+
   const {
     reset,
     register,
@@ -48,11 +51,16 @@ const Pricing = () => {
     },
   });
 
-  const [tabIndex, setTabIndex] = useState(0);
+  const [tabIndex, setTabIndex] = useState(1);
 
   const onSubmit: SubmitHandler<pricingSchemaType> = async (formData) => {
-    console.table(formData);
     try {
+      const { data } = await createPricing(formData);
+      toast.success(data.message, { id: data.message });
+      reset();
+
+      setTabIndex(1);
+      pricingQuery.refetch();
     } catch (err: any) {
       toast.error("Unable to Connect to Server", { id: "server-conn-fail" });
     }
@@ -140,17 +148,115 @@ const Pricing = () => {
           </button>
         </form>
       ) : (
-        <div className="flex mt-6 flex-col items-start px-6 py-4 justify-center w-80 lg:w-92 shadow-md shadow-blue-200 mx-2 rounded-md">
-          <div className="text-xl text-slate-600 font-bold mt-2">Basic</div>
-          <div className="text-5xl text-slate-800 font-bold mt-4">$999</div>
-          <div className="text-lg text-slate-500 font-bold mt-4">1 Session</div>
-          <div className="text-md text-slate-500 font-bold mt-1">( * $999 per session for 15 mins)</div>
-          <button className="p-6 mt-8 mb-2 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed" type="submit">
-            Buy Now
-          </button>
-        </div>
+        <ProfilePricing />
       )}
     </>
+  );
+};
+
+const ProfilePricing = () => {
+  const pricingQuery = GetPricingQuery();
+  const loadingArray = [1, 2];
+  if (pricingQuery.isLoading) {
+    return (
+      <div className="flex flex-row">
+        {loadingArray.map((i) => {
+          return <PricingLoading key={i} />;
+        })}
+      </div>
+    );
+  }
+  if (pricingQuery.isError) {
+    return <div>Oops! Something went wrong</div>;
+  }
+  return (
+    <div className="flex flex-row">
+      {pricingQuery.data?.map((pricing, index) => {
+        const totalCost = pricing.costPerSession * pricing.numberOfSessions;
+        return (
+          <div key={index} className="flex mt-6 flex-col items-start px-6 py-4 justify-center w-76 shadow-md shadow-blue-200 mx-2 rounded-md">
+            <div className="text-lg text-slate-600 font-bold mt-2">{pricing.title}</div>
+            <div className="text-3xl text-slate-800 font-bold mt-2">${totalCost}</div>
+            <div className="text-lg text-slate-500 font-bold mt-2">{pricing.numberOfSessions} Session</div>
+            <div className="text-sm text-slate-500 font-bold mt-1">
+              ( * ${pricing.costPerSession} per session for {pricing.durationInMinutes} mins)
+            </div>
+            <div className="mt-6 flex flex-row items-center justify-between w-full">
+              <button className="p-6 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed" type="submit">
+                Buy Now
+              </button>
+              <div
+                className="hover:cursor-pointer"
+                onClick={async () => {
+                  try {
+                    const { data } = await deletePricing(pricing.id);
+                    toast.success(data.message, { id: data.message });
+                    pricingQuery.refetch();
+                  } catch (err) {
+                    toast.error("Unable to delete.", { id: pricing.id });
+                  }
+                }}
+              >
+                <MdDelete size={25} color="red" />
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const PublicProfilePricing: FC<{
+  username: string;
+}> = ({ username }) => {
+  const pricingQuery = GetPricingQueryByUsername(username);
+  const loadingArray = [1, 2];
+  if (pricingQuery.isLoading) {
+    return (
+      <div className="flex flex-row">
+        {loadingArray.map((i) => {
+          return <PricingLoading key={i} />;
+        })}
+      </div>
+    );
+  }
+  if (pricingQuery.isError) {
+    return <div>Oops! Something went wrong</div>;
+  }
+  return (
+    <div className="flex flex-col sm:flex-row">
+      {pricingQuery.data?.map((pricing, index) => {
+        const totalCost = pricing.costPerSession * pricing.numberOfSessions;
+        return (
+          <div key={index} className="flex mt-6 flex-col items-start px-6 py-4 justify-center w-76 shadow-md shadow-blue-200 mx-2 rounded-md">
+            <div className="text-lg text-slate-600 font-bold mt-2">{pricing.title}</div>
+            <div className="text-3xl text-slate-800 font-bold mt-2">${totalCost}</div>
+            <div className="text-lg text-slate-500 font-bold mt-2">{pricing.numberOfSessions} Session</div>
+            <div className="text-sm text-slate-500 font-bold mt-1">
+              ( * ${pricing.costPerSession} per session for {pricing.durationInMinutes} mins)
+            </div>
+            <div className="mt-6 flex flex-row items-center justify-between w-full">
+              <button className="p-6 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed" type="submit">
+                Buy Now
+              </button>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+const PricingLoading = () => {
+  return (
+    <div className="flex mt-6 flex-col animate-pulse items-start px-6 py-4 justify-center w-80 lg:w-92 shadow-md shadow-blue-200 mx-2 rounded-md">
+      <div className="h-8 w-14 rounded-md bg-slate-400 text-slate-600 font-bold mt-2"></div>
+      <div className="bg-slate-600 h-12 rounded-md w-24 text-slate-700 font-bold mt-4"></div>
+      <div className="h-6 bg-slate-300 w-20 rounded-md font-bold mt-4"></div>
+      <div className="h-8 bg-slate-300 w-44 rounded-md font-bold mt-1"></div>
+      <button className="p-6 mt-8 mb-2 h-12 w-20 bg-slate-600 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed" type="submit"></button>
+    </div>
   );
 };
 
@@ -181,3 +287,5 @@ const Tab: FC<{
     </div>
   );
 };
+
+export { CreatePricing, PublicProfilePricing };
