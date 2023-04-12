@@ -51,7 +51,7 @@ const Pricing = () => {
     },
   });
 
-  const [tabIndex, setTabIndex] = useState(1);
+  const [tabIndex, setTabIndex] = useState(0);
 
   const onSubmit: SubmitHandler<pricingSchemaType> = async (formData) => {
     try {
@@ -170,7 +170,7 @@ const ProfilePricing = () => {
     return <div>Oops! Something went wrong</div>;
   }
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-col sm:flex-row">
       {pricingQuery.data?.map((pricing, index) => {
         const totalCost = pricing.costPerSession * pricing.numberOfSessions;
         return (
@@ -288,4 +288,4 @@ const Tab: FC<{
   );
 };
 
-export { CreatePricing, PublicProfilePricing };
+export { CreatePricing, PublicProfilePricing, ProfilePricing };
