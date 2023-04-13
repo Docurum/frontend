@@ -6,6 +6,7 @@ import { RiQuestionMark, RiQuestionAnswerLine } from "react-icons/ri";
 import { MdLocalHospital } from "react-icons/md";
 import { useRouter } from "next/router";
 import Consult from "../Consult";
+import { GiVideoConference } from "react-icons/gi";
 
 export default function LeftLane() {
   const [index, setIndex] = useState(0);
@@ -43,8 +44,8 @@ export default function LeftLane() {
           </div>
           <div className={`flex flex-row ${index === 3 ? "bg-blue-50" : "bg-white"}  w-46 xl:w-72 h-10 items-center hover:cursor-pointer mb-4`} onClick={() => setIndex(3)}>
             <div className={`w-1 mr-3 h-10 ${index === 3 ? "bg-blue-600" : "bg-white"}`}></div>
-            <RiQuestionAnswerLine size={20} color={`${index === 3 ? "#2563eb" : "gray"}`} />
-            <div className={`text-md ${index === 3 ? "text-blue-600" : "text-slate-500"} font-bold ml-2`}>My Answers</div>
+            <GiVideoConference size={25} color={`${index === 3 ? "#2563eb" : "gray"}`} />
+            <div className={`text-md ${index === 3 ? "text-blue-600" : "text-slate-500"} font-bold ml-2`}>Consultations</div>
           </div>
         </div>
         <Consult />
