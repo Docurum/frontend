@@ -18,9 +18,10 @@ const AuthAPI = () => {
 interface IUser {
   id: string;
   name: string;
-  bio:string,
-  dob:string,
+  bio: string;
+  dob: string;
   phoneNumber: string;
+  email: string;
   username: string;
   picture: string;
   isDoctor: boolean;
@@ -33,7 +34,7 @@ interface IUser {
     isVerified: boolean;
     languages: string;
     registrationNumber: string;
-  }
+  };
 }
 
 const getUser = () => {
@@ -43,15 +44,13 @@ const getUser = () => {
     return e;
   }
 };
-const editUser = (data: { name: string; username: string,bio:string , phoneNumber :number,dob:Date}) => {
- 
-  
+const editUser = (data: { name: string; username: string; bio: string; phoneNumber: number; dob: Date }) => {
   try {
     return AuthAPI().put("/user/edit-user", data);
   } catch (e) {
     return e;
   }
-}
+};
 const getRecommendedUser = () => {
   try {
     return AuthAPI().get("/user/get-recommended-users");
@@ -109,4 +108,4 @@ const GetRecommendedUserQuery = () =>
     },
   });
 
-export { getUserByUsername, editUser,GetUserByUsernameQuery, GetUserQuery, GetRecommendedUserQuery, updateProfilePicture };
+export { getUserByUsername, editUser, GetUserByUsernameQuery, GetUserQuery, GetRecommendedUserQuery, updateProfilePicture };

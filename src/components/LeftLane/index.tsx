@@ -42,7 +42,13 @@ export default function LeftLane() {
             <RiQuestionMark size={20} color={`${index === 2 ? "#2563eb" : "gray"}`} />
             <div className={`text-md ${index === 2 ? "text-blue-600" : "text-slate-500"} font-bold ml-2`}>My Topics</div>
           </div>
-          <div className={`flex flex-row ${index === 3 ? "bg-blue-50" : "bg-white"}  w-46 xl:w-72 h-10 items-center hover:cursor-pointer mb-4`} onClick={() => setIndex(3)}>
+          <div
+            className={`flex flex-row ${index === 3 ? "bg-blue-50" : "bg-white"}  w-46 xl:w-72 h-10 items-center hover:cursor-pointer mb-4`}
+            onClick={() => {
+              router.push("/consultation");
+              setIndex(3);
+            }}
+          >
             <div className={`w-1 mr-3 h-10 ${index === 3 ? "bg-blue-600" : "bg-white"}`}></div>
             <GiVideoConference size={25} color={`${index === 3 ? "#2563eb" : "gray"}`} />
             <div className={`text-md ${index === 3 ? "text-blue-600" : "text-slate-500"} font-bold ml-2`}>Consultations</div>

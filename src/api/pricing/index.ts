@@ -76,3 +76,4 @@ const GetPricingQueryByUsername = (username: string) =>
   });
 
 export { createPricing, deletePricing, GetPricingQuery, GetPricingQueryByUsername };
+export type { IPricingType };

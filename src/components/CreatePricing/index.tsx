@@ -6,8 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Dispatch, FC, SetStateAction, useState } from "react";
-import { GetPricingQuery, GetPricingQueryByUsername, createPricing, deletePricing } from "../../api/pricing";
+import { GetPricingQuery, GetPricingQueryByUsername, IPricingType, createPricing, deletePricing } from "../../api/pricing";
 import { MdDelete } from "react-icons/md";
+import axios from "axios";
+import { createPaymentOrder, paymentSuccess } from "../../api/consultation";
+import { GetUserByUsernameQuery, GetUserQuery } from "../../api/user";
 
 const pricingSchema = z
   .object({
@@ -211,6 +214,7 @@ const PublicProfilePricing: FC<{
   username: string;
 }> = ({ username }) => {
   const pricingQuery = GetPricingQueryByUsername(username);
+  const userQuery = GetUserQuery();
   const loadingArray = [1, 2];
   if (pricingQuery.isLoading) {
     return (
@@ -224,6 +228,87 @@ const PublicProfilePricing: FC<{
   if (pricingQuery.isError) {
     return <div>Oops! Something went wrong</div>;
   }
+
+  function loadScript(src: string) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  }
+
+  async function displayRazorpay(data: IPricingType) {
+    try {
+      const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+
+      if (!res) {
+        alert("Razorpay SDK failed to load. Are you online?");
+        return;
+      }
+      const ob = {
+        pricingId: data.id,
+      };
+
+      // creating a new order
+      const result = await createPaymentOrder(ob);
+
+      if (!result) {
+        alert("Server error. Are you online?");
+        return;
+      }
+
+      console.log("Payment Order data: ", result);
+
+      // Getting the order details back
+      const { amount, id: order_id, currency } = result.data.message;
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY, // Enter the Key ID generated from the Dashboard
+        amount: amount.toString(),
+        currency: currency,
+        name: "Docurum",
+        description: data.title,
+        image: "",
+        order_id: order_id,
+        handler: async function (response: { razorpay_payment_id: any; razorpay_order_id: any; razorpay_signature: any }) {
+          const paymentSuccessPayload = {
+            orderCreationId: order_id,
+            razorpayPaymentId: response.razorpay_payment_id,
+            razorpayOrderId: response.razorpay_order_id,
+            razorpaySignature: response.razorpay_signature,
+            pricingId: data.id,
+          };
+
+          const result = await paymentSuccess(paymentSuccessPayload);
+
+          // alert(result.data.msg);
+        },
+        prefill: {
+          name: userQuery.data?.name,
+          email: userQuery.data?.email,
+          contact: userQuery.data?.phoneNumber,
+        },
+        notes: {
+          address: "",
+        },
+        theme: {
+          color: "#61dafb",
+        },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div className="flex flex-col sm:flex-row">
       {pricingQuery.data?.map((pricing, index) => {
@@ -237,7 +322,11 @@ const PublicProfilePricing: FC<{
               ( * ${pricing.costPerSession} per session for {pricing.durationInMinutes} mins)
             </div>
             <div className="mt-6 flex flex-row items-center justify-between w-full">
-              <button className="p-6 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed" type="submit">
+              <button
+                onClick={() => displayRazorpay(pricing)}
+                className="p-6 bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-lg focus:outline-none text-lg disabled:opacity-80 disabled:cursor-not-allowed"
+                type="submit"
+              >
                 Buy Now
               </button>
             </div>
