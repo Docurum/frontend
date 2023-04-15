@@ -22,20 +22,16 @@ interface IConsultation {
   durationInMinutes: number;
   attachment: Array<string>;
   attendee: {
-    select: {
-      id: string;
-      picture: string;
-      name: string;
-      username: string;
-    };
+    id: string;
+    picture: string;
+    name: string;
+    username: string;
   };
   host: {
-    select: {
-      id: string;
-      picture: string;
-      name: string;
-      username: string;
-    };
+    id: string;
+    picture: string;
+    name: string;
+    username: string;
   };
 }
 

@@ -13,6 +13,7 @@ import NextNProgress from "nextjs-progressbar";
 import "../styles/globals.css";
 import capsEveryFirstLetter from "../utils/capsEveryFirstLetter";
 import cookieOptions from "../utils/cookieOptions";
+import { AppState } from "../context/app-context";
 
 export function isJWTValid() {
   if (typeof window !== "undefined") {
@@ -120,7 +121,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <Toaster position="bottom-right" reverseOrder={false} toastOptions={{ duration: 5000 }} />
         <NextNProgress color="#2548f5" height={5} />
-        <Component {...pageProps} />
+        <AppState>
+          <Component {...pageProps} />
+        </AppState>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
       </QueryClientProvider>
     </main>
