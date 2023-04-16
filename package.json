@@ -52,6 +52,7 @@
     "react-hot-toast": "^2.4.0",
     "react-icons": "^4.7.1",
     "react-lottie-player": "^1.5.4",
+    "react-timezone-select": "^2.1.0",
     "react-use": "^17.4.0",
     "recharts": "^2.3.2",
     "slate-history": "^0.86.0",
