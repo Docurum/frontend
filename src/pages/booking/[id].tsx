@@ -1,5 +1,9 @@
+import dynamic from "next/dynamic";
+
 import AppBar from "../../components/AppBar";
-import { Booking } from "../../components/Booking/booking";
+const Booking = dynamic(() => import("../../components/Booking/booking").then((mod) => mod.Booking), {
+  ssr: false,
+});
 import LeftLane from "../../components/LeftLane";
 import RightLane from "../../components/RightLane";
 
