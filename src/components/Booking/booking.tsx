@@ -31,6 +31,7 @@ export const time = [
 ];
 
 const Booking = () => {
+  const timeZone = Intl.DateTimeFormat().resolvedOptions();
   const [selectedTimezone, setSelectedTimezone] = useState({
     label: "",
     value: "",
@@ -54,8 +55,15 @@ const Booking = () => {
   };
 
   const handleSaveSchedules = () => {
-    if (JSON.stringify(selectedTimezone) !== "{}") {
+    let initVal = {
+      label: "",
+      value: "",
+    };
+
+    if (JSON.stringify(selectedTimezone) !== JSON.stringify(initVal)) {
       console.log(schedule);
+      console.log("Timezone: ", selectedTimezone);
+      console.log("Client Timezone: ", timeZone);
     } else {
       toast.error("Select your timezone");
     }
@@ -63,18 +71,20 @@ const Booking = () => {
 
   return (
     <div className={classNames([styles["scrollbar"]], ["flex flex-col items-center overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]"])}>
-      <main className="dashboard__main">
-        <h2 className="dashboard__heading">Select your availability</h2>
-        <div className="timezone__wrapper">
-          <p>Pick your timezone</p>
-          <TimezoneSelect value={selectedTimezone} onChange={setSelectedTimezone} />
+      <div className="flex flex-col items-center">
+        <div className="font-bold text-xl text-blue-600">Select your availability</div>
+        <div className="flex flex-col ">
+          <div className="flex flex-row mt-4">
+            <div className="font-bold text-lg text-slate-600 my-2">Timezone: </div>
+            <TimezoneSelect className="ml-4 border-slate-400 w-60" value={selectedTimezone} onChange={setSelectedTimezone} />
+          </div>
 
           {schedule.map((sch, id) => (
-            <div className="form" key={id}>
-              <p>{sch.day}</p>
-              <div className="select__wrapper">
+            <div className="flex flex-row my-4 items-center" key={id}>
+              <div className="font-bold text-slate-600 mt-2 w-12">{sch.day}</div>
+              <div className="flex flex-col ml-4">
                 <label htmlFor="startTime">Start Time</label>
-                <select name="startTime" id="startTime" onChange={(e) => handleTimeChange(e, id)}>
+                <select className="w-32 border-2 mt-2 border-slate-400 h-8 rounded-md" name="startTime" id="startTime" onChange={(e) => handleTimeChange(e, id)}>
                   {time.map((t) => (
                     <option key={t.id} value={t.t} id={t.id}>
                       {t.t}
@@ -82,9 +92,9 @@ const Booking = () => {
                   ))}
                 </select>
               </div>
-              <div className="select__wrapper">
+              <div className="flex flex-col ml-4">
                 <label htmlFor="endTime">End Time</label>
-                <select name="endTime" id="endTime" onChange={(e) => handleTimeChange(e, id)}>
+                <select className="w-32 border-2 mt-2 border-slate-400 h-8 rounded-md" name="endTime" id="endTime" onChange={(e) => handleTimeChange(e, id)}>
                   {time.map((t) => (
                     <option key={t.id} value={t.t} id={t.id}>
                       {t.t}
@@ -95,11 +105,10 @@ const Booking = () => {
             </div>
           ))}
         </div>
-
-        <div className="saveBtn__container">
-          <button onClick={handleSaveSchedules}>SAVE SCHEDULES</button>
-        </div>
-      </main>
+        <button onClick={handleSaveSchedules} className="h-10 w-36 mb-8 max-sm:mb-16 flex flex-row items-center justify-center font-bold rounded-md text-white  bg-blue-600">
+          SAVE SCHEDULES
+        </button>
+      </div>
       <BottomNavBar />
     </div>
   );

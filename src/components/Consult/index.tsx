@@ -31,22 +31,22 @@ export default function Consult() {
       <div className="absolute z-2 w-full items-end flex flex-col">
         <Image src="/female_doctor.png" alt="female doctor" height={200} width={170} />
       </div>
-      {/* <Dialog.Root> */}
-      {/* <Dialog.Trigger className="flex flex-row justify-center items-center z-3 absolute h-12 bg-green-500 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"> */}
-      <div
-        className="flex flex-row justify-center items-center z-3 absolute h-12 bg-green-500 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
-        onClick={() => {
-          // router.push("/api/oauth/google");
-          // window.location.href = getGoogleOAuthURL("home");
-          console.log("Cookie value: ", cookieValue);
-        }}
-      >
-        <MdLocalHospital size={28} color="white" />
-        <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">Consult a doctor</div>
-        <div className="text-white hidden text-md lg:text-[16px] ml-1 font-bold text-center max-lg:flex">Consult</div>
-      </div>
-      {/* </Dialog.Trigger> */}
-      {/* <Dialog.Portal className="">
+      <Dialog.Root>
+        <Dialog.Trigger className="flex flex-row justify-center items-center z-3 absolute h-12 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer outline-none">
+          <div
+            className="flex flex-row justify-center items-center z-3 absolute h-12 bg-green-500 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+            onClick={() => {
+              // router.push("/api/oauth/google");
+              // window.location.href = getGoogleOAuthURL("home");
+              console.log("Cookie value: ", cookieValue);
+            }}
+          >
+            <MdLocalHospital size={28} color="white" />
+            <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">Consult a doctor</div>
+            <div className="text-white hidden text-md lg:text-[16px] ml-1 font-bold text-center max-lg:flex">Consult</div>
+          </div>
+        </Dialog.Trigger>
+        <Dialog.Portal className="">
           <Dialog.Overlay className="bg-slate-700 h-[100vh] w-[100vw]">
             <Dialog.Content className="z-10 p-4 h-[80vh] w-[300px] sm:w-[70vw] rounded-md bg-white shadow-md shadow-slate-200 fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
               <ScheduleMeeting borderRadius={10} primaryColor="#3f5b85" eventDurationInMinutes={30} availableTimeslots={availableTimeslots} onStartTimeSelect={console.log} />
@@ -70,8 +70,8 @@ export default function Consult() {
               <Dialog.Close />
             </Dialog.Content>
           </Dialog.Overlay>
-        </Dialog.Portal> */}
-      {/* </Dialog.Root> */}
+        </Dialog.Portal>
+      </Dialog.Root>
     </div>
   );
 }
