@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import Lottie from "react-lottie-player";
 import lungsAnimation from "../../animations/lungs.json";
-import { MdDelete, MdEdit, MdEmail, MdLocationOn, MdVerified } from "react-icons/md";
+import { MdDelete, MdEdit, MdEmail, MdEventAvailable, MdLocationOn, MdVerified } from "react-icons/md";
 import { FcGraduationCap } from "react-icons/fc";
 import { AiFillMedicineBox, AiOutlinePlus } from "react-icons/ai";
 import { ImProfile } from "react-icons/im";
@@ -246,6 +246,22 @@ export default function Profile() {
             }}
           >
             <FiCopy size={22} color={isPageLinkCopied ? "green" : "gray"} />
+          </div>
+        </div>
+      </div>
+      <div
+        className="flex mt-2 flex-col bg-blue-600 shadow-lg shadow-blue-300 w-min p-3 rounded-md ml-2 hover:cursor-pointer"
+        onClick={() =>
+          router.push({
+            pathname: "/booking/[id]",
+            query: { id: userQuery.data.id },
+          })
+        }
+      >
+        <div className="flex flex-row items-center">
+          <div className="text-white text-lg w-[79vw] lg:w-80  mr-4 font-bold">Update Availability</div>
+          <div>
+            <MdEventAvailable size={25} color={"white"} />
           </div>
         </div>
       </div>
