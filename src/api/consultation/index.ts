@@ -43,6 +43,14 @@ const createPaymentOrder = (data: any) => {
   }
 };
 
+const getAiChatCompletion = (data: any) => {
+  try {
+    return AuthAPI().post("/consult/get-ai-chat-completion", data);
+  } catch (e) {
+    return e as any;
+  }
+};
+
 const paymentSuccess = (data: any) => {
   try {
     return AuthAPI().post("/consult/payment-success", data);
@@ -87,4 +95,4 @@ const GetAttendeeCompletedConsultations = () =>
     },
   });
 
-export { createPaymentOrder, paymentSuccess, GetAttendeePendingConsultations, GetAttendeeCompletedConsultations };
+export { createPaymentOrder, paymentSuccess, getAiChatCompletion, GetAttendeePendingConsultations, GetAttendeeCompletedConsultations };
