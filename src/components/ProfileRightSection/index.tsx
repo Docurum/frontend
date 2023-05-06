@@ -38,20 +38,20 @@ const ProfileRightSection = () => {
         <div>
           {!userquery.data?.isDoctor ? (
             <div className="flex flex-row mt-4">
-              <div className="h-48 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
-                <div className="z-1 absolute w-full h-32 bg-blue-100 rounded-lg"></div>
-                <div className="absolute z-2 w-full justify-end items-end flex flex-col">
-                  <Lottie animationData={clinicAnimation} play className="h-56" />
+              <div className="h-40 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
+                <div className="z-1 absolute w-10/12 h-32 bg-blue-100 rounded-lg"></div>
+                <div className="absolute z-2 w-10/12 justify-end items-end flex flex-col">
+                  <Lottie animationData={clinicAnimation} play className="h-48" />
                 </div>
 
                 <div
                   onClick={() => {
                     checkApplied();
                   }}
-                  className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+                  className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-28 lg:w-40 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
                 >
-                  <MdVerified size={25} color={"white"} className="shrink-0" />
-                  <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">Doctor Verification</div>
+                  <MdVerified size={20} color={"white"} className="shrink-0" />
+                  <div className="text-white hidden text-[10px] lg:text-[15px] ml-1 font-bold text-center lg:flex">Doctor Verification</div>
                 </div>
               </div>
             </div>
@@ -61,20 +61,20 @@ const ProfileRightSection = () => {
         </div>
         <div>
           <div className="flex flex-row mt-8">
-            <div className="h-48 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
-              <div className="z-1 absolute w-full h-32 bg-blue-100 rounded-lg"></div>
-              <div className="absolute z-2 w-full justify-center items-center mb-8 flex flex-col">
-                <Lottie animationData={pricingAnimation} play className="h-48" />
+            <div className="h-40 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
+              <div className="z-1 absolute w-10/12 h-32 bg-blue-100 rounded-lg"></div>
+              <div className="absolute z-2 w-10/12 justify-center items-center mb-8 flex flex-col">
+                <Lottie animationData={pricingAnimation} play className="h-40" />
               </div>
 
               <div
                 onClick={() => {
                   router.push("/create-pricing");
                 }}
-                className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
+                className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-28 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none"
               >
-                <RiMoneyDollarCircleFill size={25} color={"white"} className="shrink-0" />
-                <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">Add Pricing</div>
+                <RiMoneyDollarCircleFill size={20} color={"white"} className="shrink-0" />
+                <div className="text-white hidden text-sm lg:text-[15px] ml-1 font-bold text-center lg:flex">Add Pricing</div>
               </div>
             </div>
           </div>

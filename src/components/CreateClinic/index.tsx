@@ -237,16 +237,16 @@ export default function CreateClinic() {
 
   return (
     <div className="flex flex-row mt-4">
-      <div className="h-48 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
-        <div className="z-1 absolute h-32 bg-blue-100 w-full rounded-lg"></div>
-        <div className="absolute z-2 w-full items-end flex flex-col">
+      <div className="h-40 relative w-52 xl:w-72 mb-4 rounded-md hidden flex-col items-center justify-end md:flex">
+        <div className="z-1 absolute h-32 bg-blue-100 w-10/12 rounded-lg"></div>
+        <div className="absolute z-2 w-10/12 items-end flex flex-col">
           {/* <Image src="/doc.png" alt="female doctor" height={200} width={190} /> */}
-          <Lottie animationData={clinicAnimation} play className="h-56" />
+          <Lottie animationData={clinicAnimation} play className="h-48" />
         </div>
         <Dialog.Root>
-          <Dialog.Trigger className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-32 lg:w-48 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none">
+          <Dialog.Trigger className="flex flex-row justify-center items-center z-3 absolute h-12 bg-blue-600 w-32 lg:w-40 rounded-lg mb-4 hover:cursor-pointer hover:shadow-md hover:shadow-green-200 outline-none">
             <MdLocalHospital size={28} color="white" />
-            <div className="text-white hidden text-sm lg:text-[16px] ml-1 font-bold text-center lg:flex">Add a clinic</div>
+            <div className="text-white hidden text-sm lg:text-[15px] ml-1 font-bold text-center lg:flex">Add a clinic</div>
             <div className="text-white hidden text-md lg:text-[16px] ml-1 font-bold text-center max-lg:flex">Consult</div>
           </Dialog.Trigger>
           <Dialog.Portal className="">
