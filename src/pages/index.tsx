@@ -6,10 +6,14 @@ import Image from "next/image";
 import { QandASection } from "../components/QandASection";
 import SearchBar from "../components/SearchBar";
 import SEO from "../components/SEO";
-import { AiOutlineSearch } from "react-icons/ai";
+import { AiFillFacebook, AiFillInstagram, AiFillLinkedin, AiOutlineSearch, AiOutlineTwitter } from "react-icons/ai";
 import clickAnimation from "../animations/click.json";
+import doctorAnimation from "../animations/doctor.json";
+import doctionDancingAnimation from "../animations/doctor-dancing.json";
+import doctorPushupAnimation from "../animations/doctor-push-ups.json";
 import { MdHealthAndSafety, MdVerified } from "react-icons/md";
 import Lottie from "react-lottie-player";
+import Link from "next/link";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -108,6 +112,59 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
+      <div className="w-full flex flex-col items-center justify-center my-10">
+        <div className="text-2xl md:text-4xl text-center mx-5 font-extrabold text-blue-600">
+          Connect with your patients, share your
+          <a className="text-3xl md:text-4xl text-center mx-5 font-extrabold bg-gradient-to-r from-blue-700 to-indigo-500 via-pink-500 inline-block text-transparent bg-clip-text">unique link</a>across
+          all the social sites
+        </div>
+        <div className="flex flex-col items-center md:flex-row w-full mt-20">
+          <div className="w-full md:w-1/2 flex flex-row items-center justify-center">
+            <Lottie animationData={doctorAnimation} play className="w-96 h-96" />
+          </div>
+          <div className="w-11/12 md:w-1/2 flex flex-col items-center md:items-start justify-center">
+            <div className="flex flex-col w-full md:w-[500px] h-24">
+              <div className="text-lg md:text-xl font-bold text-slate-800">Quick Consultations 🚀</div>
+              <div className="text-sm md:text-lg mt-1 font-bold text-slate-600">Summarize previous prescriptions, reports and get a detailed patient history beforehand.</div>
+            </div>
+            <div className="flex flex-col w-full md:w-[500px] h-24 mt-1 md:mt-5">
+              <div className="text-lg md:text-xl font-bold text-slate-800">Generate more revenue 💲</div>
+              <div className="text-sm md:text-lg mt-1 font-bold text-slate-600">Take consultations from high value patients with your brand and make it your advantage.</div>
+            </div>
+            <div className="flex flex-col w-full md:w-[500px] h-24 mt-1 md:mt-5">
+              <div className="text-lg md:text-xl font-bold text-slate-800">Relationship 💝</div>
+              <div className="text-sm md:text-lg mt-1 font-bold text-slate-600">Never lose your patients, if you happen to relocate due to hospital/job change or other reasons.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-full flex flex-col items-center justify-center my-10">
+        <div className="text-2xl md:text-4xl mt-10 text-center mx-5 font-extrabold text-blue-600">
+          Deliver
+          <a className="text-3xl md:text-4xl text-center mx-5 font-extrabold bg-gradient-to-r from-blue-700 to-indigo-500 via-pink-500 inline-block text-transparent bg-clip-text">great experience</a>
+          to your patients and take back control
+        </div>
+        <div className="flex flex-col items-center md:flex-row w-full mt-20">
+          <div className="w-11/12 md:w-1/2 flex flex-col items-center md:items-end md:pr-20 justify-center">
+            <div className="flex flex-col w-full md:w-[500px] h-24">
+              <div className="text-lg md:text-xl font-bold text-slate-800">Avoid Burnout 🔥</div>
+              <div className="text-sm md:text-lg mt-1 font-bold text-slate-600">Only work when you want to, set your consultation timings according to your availability.</div>
+            </div>
+            <div className="flex flex-col w-full md:w-[500px] h-24 mt-1 md:mt-5">
+              <div className="text-lg md:text-xl font-bold text-slate-800">Consult patients worldwide 🌎</div>
+              <div className="text-sm md:text-lg mt-1 font-bold text-slate-600">Take consultations from around the world beyond the geographical borders.</div>
+            </div>
+            <div className="flex flex-col w-full md:w-[500px] h-24 mt-1 md:mt-5">
+              <div className="text-lg md:text-xl font-bold text-slate-800">Analytics 📊</div>
+              <div className="text-sm md:text-lg mt-1 font-bold text-slate-600">Compare patient count, revenue generated and many metrics to optimize your pricing.</div>
+            </div>
+          </div>
+          <div className="w-full md:w-1/2 flex flex-row items-center justify-center">
+            {/* <Lottie animationData={doctorPushupAnimation} play className="w-96 h-96" /> */}
+            <Lottie animationData={doctionDancingAnimation} play className="w-96 h-96" />
+          </div>
+        </div>
+      </div>
       <div className="flex flex-column">
         <div className="hidden lg:flex flex-row w-[100vw] justify-between items-center">
           <div className="flex flex-col w-1/2 ml-20">
@@ -160,6 +217,20 @@ const Home: NextPage = () => {
         <div className="flex flex-col w-1/2 py-8 ml-8 h-[400px] justify-start">
           <div className="text-2xl text-blue-600 font-bold">Contact</div>
           <div className="text-lg mt-2 text-slate-600 font-bold">docurumbusiness@gmail.com</div>
+          <div className="flex flex-row">
+            <Link className="p-2 hover:cursor-pointer" href={"https://www.linkedin.com/company/docurum/?viewAsMember=true"} rel="noopener noreferrer" target="_blank">
+              <AiFillLinkedin size={30} color="#2548f5" />
+            </Link>
+            <Link className="p-2 hover:cursor-pointer" href={"https://twitter.com/docurum"} rel="noopener noreferrer" target="_blank">
+              <AiOutlineTwitter size={30} color="#2548f5" />
+            </Link>
+            <Link className="p-2 hover:cursor-pointer" href={"https://www.instagram.com/docurum/"} rel="noopener noreferrer" target="_blank">
+              <AiFillInstagram size={30} color="#2548f5" />
+            </Link>
+            <Link className="p-2 hover:cursor-pointer" href={"https://www.facebook.com/groups/1393265961421378"} rel="noopener noreferrer" target="_blank">
+              <AiFillFacebook size={30} color="#2548f5" />
+            </Link>
+          </div>
           <div className="text-lg font-bold w-24 mt-6 hover:cursor-pointer text-white bg-blue-600 py-2 px-4 rounded-lg shadow-lg shadow-blue-200" onClick={() => router.push("/signup")}>
             Sign up
           </div>
@@ -173,13 +244,27 @@ const Home: NextPage = () => {
             <div className="text-2xl sm:text-3xl font-bold text-blue-600">urum</div>
           </div>
           <div className="flex flex-col mt-6 items-start">
-            <div className="text-[40px] font-extrabold bg-gradient-to-r from-blue-700 to-indigo-500 via-pink-500 inline-block text-transparent bg-clip-text">Hey guys 👋</div>
-            <div className="text-[30px] text-slate-600 font-bold">{"let's discuss 💡"}</div>
+            <div className="text-[35px] font-extrabold bg-gradient-to-r from-blue-700 to-indigo-500 via-pink-500 inline-block text-transparent bg-clip-text">Hey guys 👋</div>
+            <div className="text-[25px] text-slate-600 font-bold">{"let's discuss 💡"}</div>
           </div>
         </div>
-        <div className="flex flex-col w-full ml-4 mt-2 justify-start">
+        <div className="flex flex-col w-full ml-4 justify-start">
           <div className="text-2xl text-blue-600 font-bold">Contact</div>
           <div className="text-lg text-slate-600 font-bold">docurumbusiness@gmail.com</div>
+          <div className="flex flex-row">
+            <Link className="p-2 hover:cursor-pointer" href={"https://www.linkedin.com/company/docurum/?viewAsMember=true"} rel="noopener noreferrer" target="_blank">
+              <AiFillLinkedin size={30} color="#2548f5" />
+            </Link>
+            <Link className="p-2 hover:cursor-pointer" href={"https://twitter.com/docurum"} rel="noopener noreferrer" target="_blank">
+              <AiOutlineTwitter size={30} color="#2548f5" />
+            </Link>
+            <Link className="p-2 hover:cursor-pointer" href={"https://www.instagram.com/docurum/"} rel="noopener noreferrer" target="_blank">
+              <AiFillInstagram size={30} color="#2548f5" />
+            </Link>
+            <Link className="p-2 hover:cursor-pointer" href={"https://www.facebook.com/groups/1393265961421378"} rel="noopener noreferrer" target="_blank">
+              <AiFillFacebook size={30} color="#2548f5" />
+            </Link>
+          </div>
           <div onClick={() => router.push("/signup")} className="text-lg font-bold w-24 mt-2 hover:cursor-pointer text-white bg-blue-600 py-2 px-4 rounded-lg shadow-lg shadow-blue-200">
             Sign up
           </div>
