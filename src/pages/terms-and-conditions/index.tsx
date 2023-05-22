@@ -21,7 +21,7 @@ const TermsAndConditionsComponent = () => {
   return (
     <div className="flex custom-scrollbar p-4 scrollbar flex-col items-start overflow-y-scroll scrollbar mt-2 w-full lg:w-1/2 h-[90vh]">
       <div className="content-container">
-        <p className="content-head">Terms &amp; Conditions</p>
+        <p className="content-head text-xl my-2 font-bold">Terms &amp; Conditions</p>
         <div className="content-seprater"></div>
         <p className="updated-date">Last updated on Apr 15th 2023</p>
         <p className="content-text">
@@ -44,7 +44,7 @@ const TermsAndConditionsComponent = () => {
         WEST BENGAL
         721301. The term 'you' refers to the user or viewer of our website.`}
         </p>
-        <p className="content-text">
+        <p className="content-text mt-8 mb-2">
           <strong>The use of this website is subject to the following terms of use:</strong>
         </p>
         <ul className="unorder-list">

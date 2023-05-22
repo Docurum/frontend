@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
 import TimezoneSelect from "react-timezone-select";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
+import TextField from "@mui/material/TextField";
 
 import classNames from "classnames";
 import BottomNavBar from "../BottomNavBar";
@@ -7,14 +12,15 @@ import styles from "./index.module.css";
 import toast from "react-hot-toast";
 
 interface ScheduleItem {
-  [key: string]: string;
+  [key: string]: string | number;
   day: string;
   startTime: string;
   endTime: string;
+  numberOfConsultations: number;
 }
 
 export const time = [
-  { id: "null", t: "Select" },
+  { id: "null", t: "Timezone" },
   { id: "7", t: "7:00am" },
   { id: "8", t: "8:00am" },
   { id: "9", t: "9:00am" },
@@ -37,16 +43,25 @@ const Booking = () => {
     value: "",
   });
   const [schedule, setSchedule] = useState<ScheduleItem[]>([
-    { day: "Sun", startTime: "", endTime: "" },
-    { day: "Mon", startTime: "", endTime: "" },
-    { day: "Tue", startTime: "", endTime: "" },
-    { day: "Wed", startTime: "", endTime: "" },
-    { day: "Thu", startTime: "", endTime: "" },
-    { day: "Fri", startTime: "", endTime: "" },
-    { day: "Sat", startTime: "", endTime: "" },
+    { day: "Sun", startTime: "", endTime: "", numberOfConsultations: 0 },
+    { day: "Mon", startTime: "", endTime: "", numberOfConsultations: 0 },
+    { day: "Tue", startTime: "", endTime: "", numberOfConsultations: 0 },
+    { day: "Wed", startTime: "", endTime: "", numberOfConsultations: 0 },
+    { day: "Thu", startTime: "", endTime: "", numberOfConsultations: 0 },
+    { day: "Fri", startTime: "", endTime: "", numberOfConsultations: 0 },
+    { day: "Sat", startTime: "", endTime: "", numberOfConsultations: 0 },
   ]);
 
   const handleTimeChange = (e: React.ChangeEvent<HTMLSelectElement>, id: number): void => {
+    const { name, value } = e.target;
+    if (value === "Select") return;
+    const list = [...schedule];
+    list[id][name] = value;
+    setSchedule(list);
+  };
+  const [fromDate, setFromDate] = useState(dayjs(new Date()));
+  const [toDate, setToDate] = useState(dayjs(new Date()));
+  const handleNumberOfConsultChange = (e: React.ChangeEvent<HTMLInputElement>, id: number): void => {
     const { name, value } = e.target;
     if (value === "Select") return;
     const list = [...schedule];
@@ -74,9 +89,54 @@ const Booking = () => {
       <div className="flex flex-col items-center">
         <div className="font-bold text-xl text-blue-600">Select your availability</div>
         <div className="flex flex-col ">
-          <div className="flex flex-row mt-4">
-            <div className="font-bold text-lg text-slate-600 my-2">Timezone: </div>
-            <TimezoneSelect className="ml-4 border-slate-400 w-60" value={selectedTimezone} onChange={setSelectedTimezone} />
+          <div className="flex flex-row mt-4 justify-around">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <div className="flex flex-row mr-2 w-[180px]">
+                <DatePicker
+                  label="From"
+                  minDate={dayjs(new Date("01-01-2021"))}
+                  maxDate={dayjs(Date.now())}
+                  value={fromDate}
+                  onChange={(newValue: any) => {
+                    let month = newValue["$M"] + 1;
+                    if (month < 10) {
+                      month = "0" + month.toString();
+                    }
+                    let day = newValue["$D"];
+                    if (day < 10) {
+                      day = "0" + day.toString();
+                    }
+                    let d = newValue["$y"] + "-" + month + "-" + day;
+                    console.log("From date: ", newValue["$d"]);
+                    console.log("From date: ", d);
+                    setFromDate(newValue);
+                  }}
+                />
+              </div>
+              <div className="flex flex-row mr-2 w-[180px]">
+                <DatePicker
+                  minDate={dayjs(fromDate)}
+                  maxDate={dayjs(new Date())}
+                  label="To"
+                  value={toDate}
+                  onChange={(newValue: any) => {
+                    let month = newValue["$M"] + 1;
+                    if (month < 10) {
+                      month = "0" + month.toString();
+                    }
+                    let day = newValue["$D"];
+                    if (day < 10) {
+                      day = "0" + day.toString();
+                    }
+                    let d = newValue["$y"] + "-" + month + "-" + day;
+                    setToDate(newValue);
+                  }}
+                />
+              </div>
+            </LocalizationProvider>
+            <div className="flex flex-col">
+              <TimezoneSelect  className=" border-slate-40 w-60" minMenuHeight={50} value={selectedTimezone} onChange={setSelectedTimezone} />
+            </div>
           </div>
 
           {schedule.map((sch, id) => (
@@ -101,6 +161,16 @@ const Booking = () => {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="flex flex-col ml-4">
+                <label htmlFor="endTime">No. of Consultations</label>
+                <input
+                  type="number"
+                  className="w-32 border-2 p-2 mt-2 border-slate-400 h-8 rounded-md"
+                  name="numberOfConsultations"
+                  id="numberOfConsultations"
+                  onChange={(e) => handleNumberOfConsultChange(e, id)}
+                />
               </div>
             </div>
           ))}

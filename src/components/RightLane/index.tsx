@@ -14,9 +14,7 @@ export default function RightLane() {
   const userQuery = GetUserQuery();
 
   if (recommendedUserQuery.isLoading) {
-    return (
-      <RightLoading/>
-    )
+    return <RightLoading />;
   }
 
   if (recommendedUserQuery.isError) {
@@ -43,15 +41,21 @@ export default function RightLane() {
       </div>
       <div className="flex flex-row mt-4 ml-10 w-[80%] items-start justify-start">
         <div className="flex flex-col">
-          <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer">About Us</div>
+          <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer" onClick={() => router.push("/contact")}>
+            Contact
+          </div>
           <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer">Help</div>
           <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer">Careers</div>
           <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer">Blog</div>
         </div>
         <div className="flex flex-col ml-10">
           <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer">Faqs</div>
-          <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer">Terms of Service</div>
-          <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer">Privacy Policy</div>
+          <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer" onClick={() => router.push("/terms-and-conditions")}>
+            Terms of Service
+          </div>
+          <div className="font-bold text-sm text-slate-400 mt-2 hover:cursor-pointer" onClick={() => router.push("/privacy-policy")}>
+            Privacy Policy
+          </div>
         </div>
       </div>
     </div>

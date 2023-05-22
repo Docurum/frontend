@@ -87,7 +87,7 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   // https://github.com/timolins/react-hot-toast/issues/31#issuecomment-803359550
-  const MAX_TOAST_LIMIT = 2;
+  const MAX_TOAST_LIMIT = 1;
   const { toasts } = useToasterStore();
   useEffect(() => {
     toasts
