@@ -218,7 +218,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
     }
   };
   return (
-    <div className="shadow-md ml-2 w-[95%] shadow-blue-200 mt-2 rounded-md">
+    <div className="shadow-md ml-2 w-[95%] sm:w-[99%] shadow-blue-200 mt-2 rounded-md">
       <div className="basis-1 flex flex-row">
         <div className="hidden flex-col mt-8 mx-4 items-center sm:flex">
           <div className="hover:cursor-pointer" onClick={upvote}>
@@ -286,7 +286,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
             </div>
-            <div className="flex flex-row w-[calc(100%-23px)] scrollbar overflow-x-scroll mt-2">
+            <div className={classNames([styles["scrollbar"]], ["flex flex-row w-[calc(100%-23px)] scrollbar overflow-x-scroll mt-2"])}>
               {categoryQuery.data?.map((item, index) => {
                 return (
                   <div key={index} className="flex flex-row mb-2 mr-2 items-center">

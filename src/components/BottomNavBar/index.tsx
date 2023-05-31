@@ -40,14 +40,20 @@ export default function BottomNavBar() {
           </div>
           <div
             className={`flex flex-col ${appContext?.navigationIndex === 2 ? "bg-blue-50" : "bg-white"}  w-[20vw] h-14 justify-center items-center hover:cursor-pointer`}
-            onClick={() => appContext?.setNavigationIndex(2)}
+            onClick={() => {
+              appContext?.setNavigationIndex(2);
+              router.push("/my-topics");
+            }}
           >
             <RiQuestionMark size={20} color={`${appContext?.navigationIndex === 2 ? "#2563eb" : "gray"}`} />
             <div className={`text-sm ${appContext?.navigationIndex === 2 ? "text-blue-600" : "text-slate-500"} font-bold`}>Topics</div>
           </div>
           <div
             className={`flex flex-col ${appContext?.navigationIndex === 3 ? "bg-blue-50" : "bg-white"}  w-[20vw] h-14 justify-center items-center hover:cursor-pointer`}
-            onClick={() => appContext?.setNavigationIndex(3)}
+            onClick={() => {
+              appContext?.setNavigationIndex(3);
+              router.push("/consultation");
+            }}
           >
             <GiVideoConference size={20} color={`${appContext?.navigationIndex === 3 ? "#2563eb" : "gray"}`} />
             <div className={`text-sm ${appContext?.navigationIndex === 3 ? "text-blue-600" : "text-slate-500"} font-bold`}>Consult</div>
