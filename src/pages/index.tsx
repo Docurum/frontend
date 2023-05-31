@@ -112,6 +112,17 @@ const Home: NextPage = () => {
           </div>
         </div>
       </div>
+      {/* <div className="flex flex-row justify-center items-center">
+        <iframe
+          width="560"
+          height="315"
+          src="https://www.youtube.com/embed/G4h-YXu_0r8"
+          title="YouTube video player"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+        ></iframe>
+      </div> */}
       <div className="w-full flex flex-col items-center justify-center my-10">
         <div className="text-2xl md:text-4xl text-center mx-5 font-extrabold text-blue-600">
           Connect with your patients, share your
