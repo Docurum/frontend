@@ -35,9 +35,7 @@ const QandASection = () => {
   const topics = GetSearchTopics({ name: "", categories: [] });
 
   if (topics.isLoading) {
-    return (
-      <TopicLoader/>
-    )
+    return <TopicLoader />;
   }
   if (topics.data?.length! <= 0) {
     return (
@@ -77,9 +75,7 @@ const MyTopicsSection = () => {
   const topics = GetTopicByUserIdQuery();
 
   if (topics.isLoading) {
-    return (
-      <TopicLoader/>
-    )
+    return <TopicLoader />;
   }
 
   if (topics.data?.length! <= 0) {
@@ -222,7 +218,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
     }
   };
   return (
-    <div className="shadow-md shadow-blue-200 mx-2 mt-2 rounded-md">
+    <div className="shadow-md ml-2 w-[95%] shadow-blue-200 mt-2 rounded-md">
       <div className="basis-1 flex flex-row">
         <div className="hidden flex-col mt-8 mx-4 items-center sm:flex">
           <div className="hover:cursor-pointer" onClick={upvote}>
@@ -242,7 +238,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
               })
             }
           >
-            <div className="flex flex-row items-center justify-between mr-8">
+            <div className="flex flex-row items-center justify-between mr-0 sm:mr-8">
               <div className="text-xl font-bold hover:cursor-pointer">{title}</div>
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger className="outline-none">
@@ -290,7 +286,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
                 </DropdownMenu.Portal>
               </DropdownMenu.Root>
             </div>
-            <div className="flex flex-row custom-scrollbar scrollbar overflow-x-scroll mt-2">
+            <div className="flex flex-row w-[calc(100%-23px)] scrollbar overflow-x-scroll mt-2">
               {categoryQuery.data?.map((item, index) => {
                 return (
                   <div key={index} className="flex flex-row mb-2 mr-2 items-center">
@@ -322,7 +318,7 @@ const QandACard: FC<IQandCardProps> = ({ title, description, author, commentCoun
             <ReadOnlyRichText data={description} />
           </div>
           <div className="h-[2px] bg-gray-400 mr-8 mt-4"></div>
-          <div className="flex flex-row my-4 items-center justify-between mr-8">
+          <div className="flex flex-row my-4 items-center justify-between mr-2 sm:mr-8">
             <div className="hidden flex-row  items-center max-sm:flex">
               <div className="hover:cursor-pointer" onClick={upvote}>
                 <AiOutlineArrowUp size={25} color={votes > 0 ? "#2548f5" : "gray"} />

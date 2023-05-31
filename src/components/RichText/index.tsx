@@ -94,7 +94,7 @@ const ReadOnlyRichText: FC<{
 
   return (
     <Slate editor={editor} value={data}>
-      <Editable readOnly className="text-md text-gray-600 mt-2 pr-6 font-bold items-start justify-start outline-none w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw]" />
+      <Editable readOnly className="text-md text-gray-600 mt-2 pr-2 sm:pr-6 font-bold items-start justify-start outline-none w-[95vw] sm:w-[75vw] md:w-[60vw] lg:w-[45vw]" />
     </Slate>
   );
 };
