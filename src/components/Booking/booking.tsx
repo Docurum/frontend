@@ -10,6 +10,7 @@ import classNames from "classnames";
 import BottomNavBar from "../BottomNavBar";
 import styles from "./index.module.css";
 import toast from "react-hot-toast";
+import { MdDelete, MdDeleteForever } from "react-icons/md";
 
 interface ScheduleItem {
   [key: string]: string | number;
@@ -93,6 +94,7 @@ const Booking = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <div className="flex flex-row mr-2 w-[180px]">
                 <DatePicker
+                  className=""
                   label="From"
                   minDate={dayjs(new Date("01-01-2021"))}
                   maxDate={dayjs(Date.now())}
@@ -111,10 +113,13 @@ const Booking = () => {
                     console.log("From date: ", d);
                     setFromDate(newValue);
                   }}
+                  selectedSections={undefined}
+                  onSelectedSectionsChange={undefined}
                 />
               </div>
               <div className="flex flex-row mr-2 w-[180px]">
                 <DatePicker
+                  className=""
                   minDate={dayjs(fromDate)}
                   maxDate={dayjs(new Date())}
                   label="To"
@@ -134,46 +139,64 @@ const Booking = () => {
                 />
               </div>
             </LocalizationProvider>
-            <div className="flex flex-col">
-              <TimezoneSelect  className=" border-slate-40 w-60" minMenuHeight={50} value={selectedTimezone} onChange={setSelectedTimezone} />
-            </div>
+            {/* <div className="flex flex-col">
+              <TimezoneSelect className=" border-slate-40 w-60" minMenuHeight={50} value={selectedTimezone} onChange={setSelectedTimezone} />
+            </div> */}
           </div>
-
-          {schedule.map((sch, id) => (
-            <div className="flex flex-row my-4 items-center" key={id}>
-              <div className="font-bold text-slate-600 mt-2 w-12">{sch.day}</div>
-              <div className="flex flex-col ml-4">
-                <label htmlFor="startTime">Start Time</label>
-                <select className="w-32 border-2 mt-2 border-slate-400 h-8 rounded-md" name="startTime" id="startTime" onChange={(e) => handleTimeChange(e, id)}>
-                  {time.map((t) => (
-                    <option key={t.id} value={t.t} id={t.id}>
-                      {t.t}
-                    </option>
-                  ))}
-                </select>
+          <div className="grid grid-cols-1 xl:grid-cols-2">
+            {schedule.map((sch, id) => (
+              <div
+                className="flex transition duration-500 ease-out flex-col m-2 p-4 items-start bg-slate-50 hover:scale-110 hover:bg-blue-50 rounded-md shadow-sm hover:shadow-lg hover:shadow-blue-300 shadow-blue-200"
+                key={id}
+              >
+                <div className="font-bold text-lg text-blue-600 w-12 mb-2">{sch.day}</div>
+                <div className="flex flex-row">
+                  <div className="flex flex-col">
+                    <label className="font-bold text-slate-600" htmlFor="startTime">
+                      Start Time
+                    </label>
+                    <select className="w-32 border-2 mt-2 border-slate-400 h-8 rounded-md" name="startTime" id="startTime" onChange={(e) => handleTimeChange(e, id)}>
+                      {time.map((t) => (
+                        <option key={t.id} value={t.t} id={t.id}>
+                          {t.t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col ml-4">
+                    <label className="font-bold text-slate-600" htmlFor="endTime">
+                      End Time
+                    </label>
+                    <select className="w-32 border-2 mt-2 border-slate-400 h-8 rounded-md" name="endTime" id="endTime" onChange={(e) => handleTimeChange(e, id)}>
+                      {time.map((t) => (
+                        <option key={t.id} value={t.t} id={t.id}>
+                          {t.t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="flex flex-row items-end justify-between w-full">
+                  <div className="flex flex-col mt-2">
+                    <label className="font-bold text-slate-600" htmlFor="endTime">
+                      Consult Count
+                    </label>
+                    <input
+                      type="number"
+                      className="w-32 border-2 p-2 mt-2 border-slate-400 h-8 rounded-md"
+                      name="numberOfConsultations"
+                      id="numberOfConsultations"
+                      onChange={(e) => handleNumberOfConsultChange(e, id)}
+                    />
+                  </div>
+                  <div className="flex flex-row p-2 rounded-md bg-red-100 shadow-md shadow-red-200 hover:cursor-pointer">
+                    <div className="text-red-600 text-sm font-bold mr-1">Delete</div>
+                    <MdDelete size={20} color="red" />
+                  </div>
+                </div>
               </div>
-              <div className="flex flex-col ml-4">
-                <label htmlFor="endTime">End Time</label>
-                <select className="w-32 border-2 mt-2 border-slate-400 h-8 rounded-md" name="endTime" id="endTime" onChange={(e) => handleTimeChange(e, id)}>
-                  {time.map((t) => (
-                    <option key={t.id} value={t.t} id={t.id}>
-                      {t.t}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex flex-col ml-4">
-                <label htmlFor="endTime">No. of Consultations</label>
-                <input
-                  type="number"
-                  className="w-32 border-2 p-2 mt-2 border-slate-400 h-8 rounded-md"
-                  name="numberOfConsultations"
-                  id="numberOfConsultations"
-                  onChange={(e) => handleNumberOfConsultChange(e, id)}
-                />
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         <button onClick={handleSaveSchedules} className="h-10 w-36 mb-8 max-sm:mb-16 flex flex-row items-center justify-center font-bold rounded-md text-white  bg-blue-600">
           SAVE SCHEDULES
