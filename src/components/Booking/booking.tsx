@@ -244,7 +244,7 @@ const AvailabilityDay: FC<IAvailabilityDayProps> = ({ sch, id, handleTimeChange,
             </div>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>
-            <DropdownMenu.Content className="w-20 h-[90px] flex flex-col items-end  bg-white rounded-md shadow-lg shadow-slate-200" side="bottom" align="end" sideOffset={2}>
+            <DropdownMenu.Content className="w-24 h-[90px] flex flex-col items-end  bg-white rounded-md shadow-lg shadow-slate-200" side="bottom" align="end" sideOffset={2}>
               <div className="items-end mr-[2px] w-0 h-0 border-l-transparent border-l-[6px] border-r-transparent border-r-[6px] border-b-[6px] border-b-slate-100"></div>
               {availabilityTypeList.map((a, index) => {
                 let color = "";
